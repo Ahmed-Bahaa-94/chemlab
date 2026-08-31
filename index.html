@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Interactive Periodic Table & Virtual Chemistry Lab | ChemLab</title>
+  <title>ChemLab | Interactive Periodic Elements & Virtual Lab</title>
   <style>
 /* =========================================================
    مختبر الكيمياء التفاعلي والجدول الدوري (ChemLab Stylesheet)
-   Modern Responsive Cyber-Lab, Mobile Optimization & Touch Gestures
+   Mobile-First Ultra Clean Responsive UI & Dynamic Physical FX
    ========================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
 :root {
-  /* Dark Theme (Default) */
-  --bg-primary: #090D16;
-  --bg-secondary: #0F172A;
-  --bg-card: rgba(15, 23, 42, 0.85);
-  --bg-card-hover: rgba(30, 41, 59, 0.9);
+  /* Dark Cyber-Lab Theme (Default) */
+  --bg-primary: #070B14;
+  --bg-secondary: #0D1527;
+  --bg-card: rgba(13, 21, 39, 0.88);
+  --bg-card-hover: rgba(26, 38, 66, 0.95);
   --border-color: rgba(51, 65, 85, 0.6);
   --border-glow: rgba(56, 189, 248, 0.3);
 
@@ -39,8 +39,8 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
   --radius-full: 9999px;
 
   --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.25);
@@ -48,14 +48,12 @@
 
   --bg-gradient: radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
                  radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
-                 linear-gradient(to bottom, #090D16, #020617);
+                 linear-gradient(to bottom, #070B14, #020617);
 }
 
-/* =========================================================
-   Light Theme Settings
-   ========================================================= */
+/* Light Theme */
 [data-theme="light"] {
-  --bg-primary: #F8FAFC;
+  --bg-primary: #F1F5F9;
   --bg-secondary: #FFFFFF;
   --bg-card: rgba(255, 255, 255, 0.95);
   --bg-card-hover: rgba(241, 245, 249, 0.98);
@@ -70,23 +68,22 @@
   
   --bg-gradient: radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.05) 0%, transparent 40%),
                  radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
-                 linear-gradient(to bottom, #F8FAFC, #EDF2F7);
+                 linear-gradient(to bottom, #F1F5F9, #E2E8F0);
 }
 
 [data-theme="light"] .element-cell {
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 [data-theme="light"] .search-input,
 [data-theme="light"] .temp-control-wrapper,
 [data-theme="light"] .phase-filters-group,
-[data-theme="light"] .view-mode-group,
 [data-theme="light"] .lab-select-wrapper select,
 [data-theme="light"] .recipe-item,
 [data-theme="light"] .res-equation-box,
 [data-theme="light"] .modal-props-grid {
-  background: rgba(241, 245, 249, 0.85);
+  background: rgba(241, 245, 249, 0.9);
   border-color: rgba(203, 213, 225, 0.85);
 }
 
@@ -95,7 +92,7 @@
 }
 
 [data-theme="light"] .beaker-element-item {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -112,84 +109,68 @@
 }
 
 body {
-  font-family: var(--font-arabic);
+  font-family: var(--font-english);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  direction: rtl;
+  direction: ltr;
   min-height: 100vh;
   overflow-x: hidden;
-  line-height: 1.6;
+  line-height: 1.5;
   background-image: var(--bg-gradient);
   transition: background-color 0.3s ease, color 0.3s ease;
   touch-action: manipulation;
 }
 
-/* LTR Support for English Mode */
-html[dir="ltr"] body {
-  font-family: var(--font-english);
-  direction: ltr;
+/* RTL Support for Arabic Mode */
+html[dir="rtl"] body {
+  font-family: var(--font-arabic);
+  direction: rtl;
 }
 
-html[dir="ltr"] .search-input {
-  padding: 0.65rem 2.5rem 0.65rem 1rem;
+html[dir="rtl"] .search-input {
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
 }
 
-html[dir="ltr"] .search-icon {
-  left: auto;
-  right: 0.85rem;
+html[dir="rtl"] .search-icon {
+  left: 0.85rem;
+  right: auto;
 }
 
-html[dir="ltr"] .modal-close-btn {
-  left: auto;
-  right: 1rem;
+html[dir="rtl"] .modal-close-btn {
+  left: 1rem;
+  right: auto;
 }
 
-html[dir="ltr"] .modal-visual-side {
-  border-left: none;
-  border-right: 1px solid var(--border-color);
+html[dir="rtl"] .modal-visual-side {
+  border-left: 1px solid var(--border-color);
+  border-right: none;
 }
 
-html[dir="ltr"] .modal-names {
-  margin-right: 0;
-  margin-left: 1rem;
+html[dir="rtl"] .modal-names {
+  margin-right: 1rem;
+  margin-left: 0;
 }
 
-html[dir="ltr"] .res-apps-list,
-html[dir="ltr"] .modal-uses-ul {
-  padding-right: 0;
-  padding-left: 1.2rem;
+html[dir="rtl"] .res-apps-list,
+html[dir="rtl"] .modal-uses-ul {
+  padding-right: 1.2rem;
+  padding-left: 0;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: var(--radius-full);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* Header & Navigation */
+/* Header & App Bar */
 .app-header {
   position: sticky;
   top: 0;
   z-index: 50;
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-color);
   padding: 0.65rem 1.25rem;
   transition: background 0.3s ease;
 }
 
 .header-container {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -200,40 +181,35 @@ html[dir="ltr"] .modal-uses-ul {
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.6rem;
   text-decoration: none;
   color: inherit;
   flex-shrink: 0;
 }
 
 .brand-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
 }
 
 .brand-title {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
-  background: linear-gradient(to left, #38BDF8, #818CF8, #C084FC);
+  background: linear-gradient(to right, #38BDF8, #818CF8, #C084FC);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.brand-subtitle {
-  font-size: 0.7rem;
-  color: var(--text-secondary);
-}
-
 .nav-tabs {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.35rem;
   background: var(--bg-secondary);
   padding: 0.3rem;
   border-radius: var(--radius-full);
@@ -245,9 +221,9 @@ html[dir="ltr"] .modal-uses-ul {
   border: none;
   color: var(--text-secondary);
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  padding: 0.45rem 1.1rem;
+  padding: 0.45rem 1rem;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: flex;
@@ -262,7 +238,7 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .nav-tab-btn.active {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.3));
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(99, 102, 241, 0.35));
   color: #0284C7;
   border: 1px solid rgba(56, 189, 248, 0.4);
   box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
@@ -279,35 +255,24 @@ html[dir="ltr"] .modal-uses-ul {
   flex-shrink: 0;
 }
 
-.action-btn {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.45rem 0.9rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .action-btn.icon-only {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.action-btn:hover {
-  background: var(--bg-card-hover);
-  color: var(--text-primary);
+.action-btn.icon-only:hover {
   border-color: var(--accent-cyan);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
@@ -315,9 +280,9 @@ html[dir="ltr"] .modal-uses-ul {
 
 /* Main Layout */
 .main-wrapper {
-  max-width: 1680px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 .tab-content-section {
@@ -329,19 +294,19 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 /* =========================================================
-   1. Interactive Periodic Table Styling
+   1. Interactive Elements Cards Explorer (Modern Cards Grid)
    ========================================================= */
 
 .pt-toolbar {
   background: var(--bg-card);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1rem;
   margin-bottom: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
   box-shadow: var(--shadow-card);
 }
 
@@ -349,13 +314,13 @@ html[dir="ltr"] .modal-uses-ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .search-box-wrapper {
   flex: 1;
-  min-width: 260px;
+  min-width: 240px;
   position: relative;
 }
 
@@ -364,10 +329,10 @@ html[dir="ltr"] .modal-uses-ul {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   transition: all 0.2s ease;
 }
 
@@ -379,7 +344,7 @@ html[dir="ltr"] .modal-uses-ul {
 
 .search-icon {
   position: absolute;
-  left: 0.85rem;
+  right: 0.85rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
@@ -389,31 +354,31 @@ html[dir="ltr"] .modal-uses-ul {
 .temp-control-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   background: var(--bg-secondary);
-  padding: 0.5rem 0.9rem;
+  padding: 0.45rem 0.85rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
 
 .temp-label {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
   white-space: nowrap;
 }
 
 .temp-slider {
-  width: 140px;
+  width: 120px;
   accent-color: var(--accent-cyan);
   cursor: pointer;
 }
 
 .temp-value-badge {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #0284C7;
-  min-width: 120px;
+  min-width: 110px;
   text-align: left;
 }
 
@@ -423,7 +388,7 @@ html[dir="ltr"] .modal-uses-ul {
 
 .phase-filters-group {
   display: flex;
-  gap: 0.3rem;
+  gap: 0.25rem;
   background: var(--bg-secondary);
   padding: 0.25rem;
   border-radius: var(--radius-md);
@@ -435,9 +400,9 @@ html[dir="ltr"] .modal-uses-ul {
   border: none;
   color: var(--text-secondary);
   font-family: inherit;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.4rem 0.75rem;
+  padding: 0.35rem 0.7rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -456,51 +421,17 @@ html[dir="ltr"] .modal-uses-ul {
   color: #38BDF8;
 }
 
-/* View Mode Switcher (Grid vs Cards) */
-.view-mode-group {
-  display: flex;
-  gap: 0.3rem;
-  background: var(--bg-secondary);
-  padding: 0.25rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-}
-
-.view-mode-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-family: inherit;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.4rem 0.75rem;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  transition: all 0.2s ease;
-}
-
-.view-mode-btn:hover {
-  color: var(--text-primary);
-}
-
-.view-mode-btn.active {
-  background: rgba(6, 182, 212, 0.2);
-  color: #0284C7;
-  border: 1px solid rgba(6, 182, 212, 0.4);
-}
-
-[data-theme="dark"] .view-mode-btn.active {
-  color: #38BDF8;
-}
-
 /* Category Filters Bar */
 .category-filters-container {
   display: flex;
-  flex-wrap: wrap;
+  overflow-x: auto;
   gap: 0.4rem;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.category-filters-container::-webkit-scrollbar {
+  height: 4px;
 }
 
 .filter-btn {
@@ -508,14 +439,15 @@ html[dir="ltr"] .modal-uses-ul {
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   font-family: inherit;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  padding: 0.35rem 0.7rem;
+  padding: 0.35rem 0.75rem;
   border-radius: var(--radius-full);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
@@ -532,79 +464,34 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .filter-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
-/* Mobile Scroll Hint */
-.mobile-scroll-hint {
-  display: none;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  color: #0284C7;
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-md);
-  text-align: center;
-  font-size: 0.82rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-  animation: pulse-hint 2s infinite;
-}
-
-[data-theme="dark"] .mobile-scroll-hint {
-  color: #38BDF8;
-}
-
-@keyframes pulse-hint {
-  0%, 100% { opacity: 0.8; }
-  50% { opacity: 1; transform: scale(1.01); }
-}
-
-/* Periodic Table Grid Layout */
-.pt-grid-scroll-wrapper {
-  overflow-x: auto;
-  padding-bottom: 1.5rem;
-  -webkit-overflow-scrolling: touch;
-}
-
-.periodic-table-grid {
-  display: grid;
-  grid-template-columns: repeat(18, minmax(70px, 1fr));
-  grid-template-rows: repeat(10, minmax(80px, 1fr));
-  gap: 6px;
-  min-width: 1300px;
-  position: relative;
-}
-
-/* Cards View for Mobile Responsive Layout */
-.periodic-table-grid.cards-view {
+/* Elements Responsive Cards Grid */
+.elements-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  grid-template-rows: auto;
-  min-width: unset;
   gap: 10px;
+  padding-bottom: 2rem;
 }
 
-.periodic-table-grid.cards-view .element-cell {
-  min-height: 95px;
-}
-
-/* Element Cell */
 .element-cell {
-  background: rgba(15, 23, 42, 0.85);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: 5px 6px;
+  border-radius: var(--radius-md);
+  padding: 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-height: 125px;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
 }
 
 .element-cell::before {
@@ -613,69 +500,69 @@ html[dir="ltr"] .modal-uses-ul {
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   background: currentColor;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .element-cell:hover {
-  transform: translateY(-3px) scale(1.03);
-  z-index: 20;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px var(--border-glow);
+  transform: translateY(-4px);
+  z-index: 10;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 15px var(--border-glow);
   border-color: rgba(56, 189, 248, 0.8);
 }
 
 .element-cell:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .element-cell.dimmed {
-  opacity: 0.2;
+  opacity: 0.15;
   filter: grayscale(0.8);
   transform: scale(0.96);
 }
 
 .element-cell.highlighted {
   opacity: 1;
-  animation: pulse-border 2s infinite;
+  animation: pulse-card-border 2s infinite;
 }
 
-@keyframes pulse-border {
+@keyframes pulse-card-border {
   0%, 100% { border-color: var(--border-color); }
-  50% { border-color: #38BDF8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+  50% { border-color: #38BDF8; box-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
 }
 
 .element-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 
 .element-number {
-  font-weight: 700;
+  font-weight: 800;
   font-family: var(--font-mono);
   color: var(--text-secondary);
 }
 
 .element-mass {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-family: var(--font-mono);
 }
 
 .element-symbol {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.75rem;
+  font-weight: 900;
   font-family: var(--font-mono);
   text-align: center;
-  line-height: 1.1;
-  margin: 1px 0;
+  line-height: 1;
+  margin: 4px 0 2px;
 }
 
-.element-name-ar {
-  font-size: 0.72rem;
-  font-weight: 700;
+.element-name-primary {
+  font-size: 0.85rem;
+  font-weight: 800;
   text-align: center;
   color: var(--text-primary);
   white-space: nowrap;
@@ -683,33 +570,55 @@ html[dir="ltr"] .modal-uses-ul {
   text-overflow: ellipsis;
 }
 
-.element-phase-badge {
-  font-size: 0.58rem;
+.element-name-secondary {
+  font-size: 0.72rem;
+  font-weight: 600;
   text-align: center;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.element-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding-top: 4px;
   border-top: 1px dashed var(--border-color);
-  padding-top: 2px;
+  font-size: 0.65rem;
+}
+
+.element-phase-tag {
+  background: rgba(56, 189, 248, 0.12);
+  color: #0284C7;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .element-phase-tag {
+  color: #38BDF8;
+}
+
+.element-group-tag {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
 }
 
 /* Category Borders & Colors */
-.category-alkali-metal { border-color: rgba(239, 68, 68, 0.4); color: #EF4444; }
-.category-alkaline-earth { border-color: rgba(249, 115, 22, 0.4); color: #F97316; }
-.category-transition-metal { border-color: rgba(234, 179, 8, 0.4); color: #EAB308; }
-.category-post-transition-metal { border-color: rgba(16, 185, 129, 0.4); color: #10B981; }
-.category-metalloid { border-color: rgba(6, 182, 212, 0.4); color: #06B6D4; }
-.category-nonmetal { border-color: rgba(59, 130, 246, 0.4); color: #3B82F6; }
-.category-halogen { border-color: rgba(139, 92, 246, 0.4); color: #8B5CF6; }
-.category-noble-gas { border-color: rgba(236, 72, 153, 0.4); color: #EC4899; }
-.category-lanthanide { border-color: rgba(20, 184, 166, 0.4); color: #14B8A6; }
-.category-actinide { border-color: rgba(244, 63, 94, 0.4); color: #F43F5E; }
-
-.placeholder-cell {
-  border-style: dashed;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background: var(--bg-card);
-}
+.category-alkali-metal { border-color: rgba(239, 68, 68, 0.5); color: #EF4444; }
+.category-alkaline-earth { border-color: rgba(249, 115, 22, 0.5); color: #F97316; }
+.category-transition-metal { border-color: rgba(234, 179, 8, 0.5); color: #EAB308; }
+.category-post-transition-metal { border-color: rgba(16, 185, 129, 0.5); color: #10B981; }
+.category-metalloid { border-color: rgba(6, 182, 212, 0.5); color: #06B6D4; }
+.category-nonmetal { border-color: rgba(59, 130, 246, 0.5); color: #3B82F6; }
+.category-halogen { border-color: rgba(139, 92, 246, 0.5); color: #8B5CF6; }
+.category-noble-gas { border-color: rgba(236, 72, 153, 0.5); color: #EC4899; }
+.category-lanthanide { border-color: rgba(20, 184, 166, 0.5); color: #14B8A6; }
+.category-actinide { border-color: rgba(244, 63, 94, 0.5); color: #F43F5E; }
 
 /* =========================================================
    2. Virtual Element Mixing Lab Styling
@@ -717,8 +626,8 @@ html[dir="ltr"] .modal-uses-ul {
 
 .lab-grid-container {
   display: grid;
-  grid-template-columns: 340px 1fr 420px;
-  gap: 1.5rem;
+  grid-template-columns: 320px 1fr 400px;
+  gap: 1.25rem;
   align-items: start;
 }
 
@@ -727,7 +636,7 @@ html[dir="ltr"] .modal-uses-ul {
   backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1.15rem;
   box-shadow: var(--shadow-card);
 }
 
@@ -735,14 +644,14 @@ html[dir="ltr"] .modal-uses-ul {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
   border-bottom: 1px solid var(--border-color);
 }
 
 .panel-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.05rem;
+  font-weight: 800;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -750,11 +659,11 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .panel-badge {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   background: rgba(56, 189, 248, 0.15);
   color: #0284C7;
-  padding: 0.2rem 0.6rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-full);
   border: 1px solid rgba(56, 189, 248, 0.3);
 }
@@ -766,12 +675,12 @@ html[dir="ltr"] .modal-uses-ul {
 /* Shelf & Chips */
 .element-shelf-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  max-height: 280px;
+  max-height: 270px;
   overflow-y: auto;
-  padding-left: 4px;
-  margin-bottom: 1rem;
+  padding-left: 2px;
+  margin-bottom: 0.85rem;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -779,7 +688,7 @@ html[dir="ltr"] .modal-uses-ul {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 8px 4px;
+  padding: 6px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -800,20 +709,23 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .chip-number {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
 }
 
 .chip-symbol {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   font-family: var(--font-mono);
 }
 
 .chip-name {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lab-select-wrapper select {
@@ -832,8 +744,8 @@ html[dir="ltr"] .modal-uses-ul {
 .recipe-book-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 260px;
+  gap: 7px;
+  max-height: 250px;
   overflow-y: auto;
   margin-top: 0.75rem;
   -webkit-overflow-scrolling: touch;
@@ -843,11 +755,11 @@ html[dir="ltr"] .modal-uses-ul {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 7px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.65rem;
   transition: all 0.2s ease;
 }
 
@@ -862,7 +774,7 @@ html[dir="ltr"] .modal-uses-ul {
 
 .recipe-formula {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #0284C7;
 }
@@ -876,13 +788,13 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .recipe-name {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .recipe-eq {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
 }
@@ -892,9 +804,9 @@ html[dir="ltr"] .modal-uses-ul {
   border: 1px solid rgba(56, 189, 248, 0.3);
   color: #0284C7;
   font-family: inherit;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -919,11 +831,11 @@ html[dir="ltr"] .modal-uses-ul {
 
 .beaker-dropzone {
   width: 100%;
-  min-height: 380px;
+  min-height: 360px;
   background: radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
   border: 2px dashed var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -964,27 +876,27 @@ html[dir="ltr"] .modal-uses-ul {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 220px;
+  height: 200px;
   color: var(--text-muted);
   text-align: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .empty-icon {
-  font-size: 3rem;
+  font-size: 2.8rem;
   opacity: 0.6;
   animation: float-flask 3s ease-in-out infinite;
 }
 
 @keyframes float-flask {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: translateY(-7px); }
 }
 
 .beaker-elements-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
   z-index: 5;
 }
@@ -994,7 +906,7 @@ html[dir="ltr"] .modal-uses-ul {
   backdrop-filter: blur(8px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1009,12 +921,12 @@ html[dir="ltr"] .modal-uses-ul {
 .beaker-item-info {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
 }
 
 .beaker-item-symbol {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.35rem;
+  font-weight: 900;
   font-family: var(--font-mono);
 }
 
@@ -1024,31 +936,31 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .beaker-item-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 .beaker-item-cat {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 
 .beaker-qty-controls {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .qty-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-color);
   background: var(--bg-secondary);
   color: var(--text-primary);
   font-family: inherit;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -1074,10 +986,10 @@ html[dir="ltr"] .modal-uses-ul {
 
 .qty-count {
   font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #0284C7;
-  min-width: 24px;
+  min-width: 22px;
   text-align: center;
 }
 
@@ -1087,9 +999,9 @@ html[dir="ltr"] .modal-uses-ul {
 
 .beaker-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.65rem;
   width: 100%;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
 }
 
 .react-btn {
@@ -1098,15 +1010,15 @@ html[dir="ltr"] .modal-uses-ul {
   border: none;
   color: #FFFFFF;
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 800;
-  padding: 0.85rem 1.25rem;
+  padding: 0.75rem 1.1rem;
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
   transition: all 0.25s ease;
 }
@@ -1128,9 +1040,9 @@ html[dir="ltr"] .modal-uses-ul {
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  padding: 0.85rem 0.9rem;
+  padding: 0.75rem 0.85rem;
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1148,7 +1060,7 @@ html[dir="ltr"] .modal-uses-ul {
 
 .lab-result-card {
   border-radius: var(--radius-lg);
-  padding: 1.5rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(16px);
   animation: card-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1176,12 +1088,12 @@ html[dir="ltr"] .modal-uses-ul {
 .result-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.85rem;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
   border-radius: var(--radius-full);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .badge-success {
@@ -1196,13 +1108,9 @@ html[dir="ltr"] .modal-uses-ul {
   border: 1px solid rgba(244, 63, 94, 0.4);
 }
 
-.res-title-group {
-  margin-bottom: 1rem;
-}
-
 .res-formula {
   font-family: var(--font-mono);
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 900;
   color: #0284C7;
   line-height: 1.1;
@@ -1213,13 +1121,13 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .res-name-ar {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .res-name-en {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
 }
 
@@ -1227,13 +1135,13 @@ html[dir="ltr"] .modal-uses-ul {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.85rem;
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #D97706;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 [data-theme="dark"] .res-equation-box {
@@ -1243,32 +1151,32 @@ html[dir="ltr"] .modal-uses-ul {
 .res-meta-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 1rem;
+  gap: 6px;
+  margin-bottom: 0.85rem;
 }
 
 .res-meta-item {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 6px 10px;
+  padding: 5px 8px;
 }
 
 .res-meta-label {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-muted);
   display: block;
 }
 
 .res-meta-value {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 
 /* 3D Molecule Container */
 .molecule-viewer-wrapper {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
   border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--border-color);
@@ -1278,7 +1186,7 @@ html[dir="ltr"] .modal-uses-ul {
 
 .molecule-canvas {
   width: 100%;
-  height: 240px;
+  height: 220px;
   display: block;
   cursor: grab;
   touch-action: none;
@@ -1291,8 +1199,8 @@ html[dir="ltr"] .modal-uses-ul {
 .molecule-hint {
   position: absolute;
   bottom: 6px;
-  right: 10px;
-  font-size: 0.7rem;
+  right: 8px;
+  font-size: 0.68rem;
   color: var(--text-muted);
   background: var(--bg-card);
   padding: 2px 6px;
@@ -1301,44 +1209,44 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .res-section-title {
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.35rem;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .res-summary-text {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
   line-height: 1.5;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .res-apps-list {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 
 .res-apps-list li {
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.3rem;
 }
 
 .fail-reason-box {
   background: var(--bg-secondary);
   border: 1px solid rgba(244, 63, 94, 0.3);
   border-radius: var(--radius-md);
-  padding: 1rem;
-  margin-top: 1rem;
+  padding: 0.85rem;
+  margin-top: 0.85rem;
 }
 
 .fail-reason-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #E11D48;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 [data-theme="dark"] .fail-reason-title {
@@ -1346,9 +1254,9 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .fail-reason-desc {
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 /* =========================================================
@@ -1384,28 +1292,28 @@ html[dir="ltr"] .modal-uses-ul {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  max-width: 960px;
+  max-width: 900px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.2);
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 340px 1fr;
   position: relative;
   -webkit-overflow-scrolling: touch;
 }
 
 .modal-close-btn {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0.85rem;
+  right: 0.85rem;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1421,8 +1329,8 @@ html[dir="ltr"] .modal-uses-ul {
 
 .modal-visual-side {
   background: radial-gradient(circle at 50% 50%, #0F172A, #020617);
-  border-left: 1px solid var(--border-color);
-  padding: 1.5rem;
+  border-right: 1px solid var(--border-color);
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1432,19 +1340,19 @@ html[dir="ltr"] .modal-uses-ul {
 
 .atom-canvas {
   width: 100%;
-  height: 320px;
+  height: 280px;
   display: block;
 }
 
 .atom-canvas-hint {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  margin-top: 0.75rem;
+  margin-top: 0.65rem;
   text-align: center;
 }
 
 .modal-info-side {
-  padding: 1.75rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1454,50 +1362,50 @@ html[dir="ltr"] .modal-uses-ul {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .modal-symbol-huge {
   font-family: var(--font-mono);
-  font-size: 3rem;
+  font-size: 2.75rem;
   font-weight: 900;
   line-height: 1;
 }
 
 .modal-names {
-  margin-right: 1rem;
+  margin-left: 0.85rem;
 }
 
 .modal-name-ar {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 800;
   color: var(--text-primary);
 }
 
 .modal-name-en {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
 .modal-category-badge {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  padding: 0.25rem 0.75rem;
+  padding: 0.2rem 0.65rem;
   border-radius: var(--radius-full);
   border: 1px solid;
-  margin-top: 0.4rem;
+  margin-top: 0.35rem;
 }
 
 .modal-props-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 7px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 0.9rem;
-  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .prop-box {
@@ -1506,26 +1414,26 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .prop-label {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--text-muted);
 }
 
 .prop-value {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   font-family: var(--font-mono);
   color: var(--text-primary);
 }
 
 .modal-text-section {
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 .modal-sec-title {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: #0284C7;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
 }
 
 [data-theme="dark"] .modal-sec-title {
@@ -1533,18 +1441,18 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 .modal-summary-p {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .modal-uses-ul {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-secondary);
 }
 
 .modal-uses-ul li {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
 }
 
 .modal-add-lab-btn {
@@ -1552,16 +1460,16 @@ html[dir="ltr"] .modal-uses-ul {
   border: none;
   color: #FFFFFF;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  padding: 0.75rem 1.5rem;
+  padding: 0.7rem 1.25rem;
   border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
   transition: all 0.2s ease;
 }
 
@@ -1571,10 +1479,9 @@ html[dir="ltr"] .modal-uses-ul {
 }
 
 /* =========================================================
-   5. Mobile & Tablet Responsive Media Queries
+   5. Mobile & Tablet Responsive Rules
    ========================================================= */
 
-/* Tablets (<= 1024px) */
 @media (max-width: 1024px) {
   .lab-grid-container {
     grid-template-columns: 1fr 1fr;
@@ -1584,32 +1491,9 @@ html[dir="ltr"] .modal-uses-ul {
   }
 }
 
-/* Tablets & Mobile (<= 860px) */
-@media (max-width: 860px) {
-  .mobile-scroll-hint {
-    display: block;
-  }
-
-  .modal-card {
-    grid-template-columns: 1fr;
-    max-height: 94vh;
-  }
-
-  .modal-visual-side {
-    border-left: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem;
-  }
-
-  .atom-canvas {
-    height: 240px;
-  }
-}
-
-/* Mobile Screens (<= 768px) */
 @media (max-width: 768px) {
   .main-wrapper {
-    padding: 0.75rem;
+    padding: 0.65rem;
   }
 
   .app-header {
@@ -1617,43 +1501,53 @@ html[dir="ltr"] .modal-uses-ul {
   }
 
   .header-container {
-    flex-wrap: nowrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
 
   .brand-title {
-    font-size: 1rem;
-  }
-
-  .brand-subtitle {
-    display: none;
+    font-size: 0.95rem;
   }
 
   .nav-tab-btn {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.82rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   .action-btn.icon-only {
-    width: 35px;
-    height: 35px;
-    font-size: 1.05rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  /* Responsive Element Cards on Mobile (2 or 3 columns) */
+  .elements-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+
+  .element-cell {
+    min-height: 110px;
+    padding: 8px;
+  }
+
+  .element-symbol {
+    font-size: 1.45rem;
+  }
+
+  .element-name-primary {
+    font-size: 0.78rem;
   }
 
   /* Toolbar */
   .pt-toolbar {
-    padding: 0.9rem;
-    gap: 0.75rem;
+    padding: 0.75rem;
+    gap: 0.65rem;
   }
 
   .pt-toolbar-row {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.65rem;
-  }
-
-  .search-box-wrapper {
-    min-width: 100%;
+    gap: 0.5rem;
   }
 
   .temp-control-wrapper {
@@ -1664,29 +1558,25 @@ html[dir="ltr"] .modal-uses-ul {
     flex: 1;
   }
 
-  .phase-filters-group,
-  .view-mode-group {
+  .phase-filters-group {
     width: 100%;
   }
 
-  .phase-filter-btn,
-  .view-mode-btn {
+  .phase-filter-btn {
     flex: 1;
     text-align: center;
-    justify-content: center;
   }
 
-  /* Lab Single Column Layout */
+  /* Lab Vertical Flow */
   .lab-grid-container {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.85rem;
   }
 
   .lab-result-column {
     grid-column: span 1;
   }
 
-  /* Order elements for mobile: Beaker first, shelf second, results third */
   .beaker-workbench {
     order: 1;
   }
@@ -1698,8 +1588,8 @@ html[dir="ltr"] .modal-uses-ul {
   }
 
   .beaker-dropzone {
-    min-height: 280px;
-    padding: 1rem;
+    min-height: 260px;
+    padding: 0.85rem;
   }
 
   .beaker-actions {
@@ -1710,8 +1600,25 @@ html[dir="ltr"] .modal-uses-ul {
     order: 2;
   }
 
+  /* Modal Bottom Sheet on Mobile */
+  .modal-card {
+    grid-template-columns: 1fr;
+    max-height: 94vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .modal-visual-side {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+  }
+
+  .atom-canvas {
+    height: 220px;
+  }
+
   .modal-info-side {
-    padding: 1.25rem;
+    padding: 1rem;
   }
 
   .modal-props-grid {
@@ -1719,24 +1626,41 @@ html[dir="ltr"] .modal-uses-ul {
   }
 }
 
-/* Small Phones (<= 480px) */
 @media (max-width: 480px) {
   .brand-icon {
-    width: 34px;
-    height: 34px;
-    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
   }
 
   .brand-title {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
-  .nav-tab-btn span:last-child {
-    font-size: 0.78rem;
+  .elements-cards-container {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
   }
 
-  .periodic-table-grid.cards-view {
-    grid-template-columns: repeat(2, 1fr);
+  .element-cell {
+    min-height: 100px;
+    padding: 6px;
+  }
+
+  .element-symbol {
+    font-size: 1.3rem;
+  }
+
+  .element-number {
+    font-size: 0.65rem;
+  }
+
+  .element-mass {
+    display: none;
+  }
+
+  .element-name-secondary {
+    display: none;
   }
 
   .element-shelf-grid {
@@ -1744,15 +1668,7 @@ html[dir="ltr"] .modal-uses-ul {
   }
 
   .molecule-canvas {
-    height: 200px;
-  }
-
-  .res-formula {
-    font-size: 1.8rem;
-  }
-
-  .res-name-ar {
-    font-size: 1.15rem;
+    height: 190px;
   }
 }
 
@@ -1761,246 +1677,234 @@ html[dir="ltr"] .modal-uses-ul {
 </head>
 <body>
 
-  <!-- رأس الصفحة وشريط التنقل -->
+  <!-- App Header & Navigation Bar -->
   <header class="app-header">
     <div class="header-container">
       <div class="brand-logo">
         <div class="brand-icon">⚗️</div>
         <div>
-          <h1 class="brand-title">مختبر الكيمياء التفاعلي</h1>
-          <p class="brand-subtitle">ChemLab & Interactive Periodic Table</p>
+          <h1 class="brand-title">ChemLab</h1>
         </div>
       </div>
 
       <nav class="nav-tabs">
         <button class="nav-tab-btn active" data-tab="table">
           <span>🔬</span>
-          <span>الجدول الدوري</span>
+          <span>Elements</span>
         </button>
         <button class="nav-tab-btn" data-tab="lab">
           <span>🧪</span>
-          <span>معمل دمج العناصر</span>
+          <span>Reaction Lab</span>
         </button>
       </nav>
 
       <div class="header-actions">
-        <!-- زر تبديل اللغة (أيقونة فقط) -->
-        <button class="action-btn icon-only" id="lang-toggle-btn" title="English / العربية" aria-label="Toggle Language">
+        <!-- Language Switcher (Icon Only) -->
+        <button class="action-btn icon-only" id="lang-toggle-btn" title="العربية / English" aria-label="Toggle Language">
           <span class="icon">🌐</span>
         </button>
 
-        <!-- زر تبديل الوضع الليلي / المضيء (أيقونة فقط) -->
-        <button class="action-btn icon-only" id="theme-toggle-btn" title="الوضع الليلي / المضيء" aria-label="Toggle Dark/Light Mode">
+        <!-- Dark/Light Theme (Icon Only) -->
+        <button class="action-btn icon-only" id="theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Dark/Light Mode">
           <span class="icon">🌙</span>
         </button>
 
-        <!-- زر كتم / تفعيل الصوت (أيقونة فقط) -->
-        <button class="action-btn icon-only" id="sound-toggle-btn" title="المؤثرات الصوتية" aria-label="Toggle Sound Effects">
+        <!-- Sound FX (Icon Only) -->
+        <button class="action-btn icon-only" id="sound-toggle-btn" title="Sound Effects" aria-label="Toggle Sound Effects">
           <span class="icon">🔊</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- محتوى التطبيق الرئيسي -->
+  <!-- Main Content Wrapper -->
   <main class="main-wrapper">
 
     <!-- ==========================================
-         القسم الأول: الجدول الدوري التفاعلي
+         Section 1: Interactive Elements Cards Explorer
          ========================================== -->
     <section class="tab-content-section" data-section="table" id="section-periodic-table">
       
-      <!-- شريط أدوات البحث والحرارة والفلاتر -->
+      <!-- Toolbar: Search, Temperature & Filters -->
       <div class="pt-toolbar">
         <div class="pt-toolbar-row">
-          <!-- البحث الفوري -->
+          <!-- Search Input -->
           <div class="search-box-wrapper">
-            <input type="text" id="element-search" class="search-input" placeholder="ابحث باسم العنصر (عربي/إنجليزي)، الرمز، أو العدد الذري...">
+            <input type="text" id="element-search" class="search-input" placeholder="Search by name, symbol, or atomic number...">
             <span class="search-icon">🔍</span>
           </div>
 
-          <!-- شريط محاكاة درجات الحرارة لحالات المادة -->
+          <!-- Temperature Simulator Slider -->
           <div class="temp-control-wrapper">
-            <span class="temp-label">🌡️ درجة الحرارة:</span>
+            <span class="temp-label">🌡️ Temp:</span>
             <input type="range" id="temp-slider" class="temp-slider" min="0" max="6000" step="50" value="298">
             <span class="temp-value-badge" id="temp-display">298 K (25 °C)</span>
           </div>
 
-          <!-- فلاتر حالات المادة السريعة -->
+          <!-- Phase Filters Group -->
           <div class="phase-filters-group">
-            <button class="phase-filter-btn active" data-phase="all">الكل</button>
-            <button class="phase-filter-btn" data-phase="solid">صلب</button>
-            <button class="phase-filter-btn" data-phase="liquid">سائل</button>
-            <button class="phase-filter-btn" data-phase="gas">غاز</button>
-          </div>
-
-          <!-- مبدل طريقة العرض (شبكي / بطاقات للموبايل) -->
-          <div class="view-mode-group">
-            <button class="view-mode-btn active" id="view-grid-btn" title="الجدول الشبكي">
-              <span>📊</span> <span class="view-btn-text" id="lbl-view-grid">الجدول الشبكي</span>
-            </button>
-            <button class="view-mode-btn" id="view-cards-btn" title="بطاقات العناصر">
-              <span>📱</span> <span class="view-btn-text" id="lbl-view-cards">بطاقات العناصر</span>
-            </button>
+            <button class="phase-filter-btn active" data-phase="all">All</button>
+            <button class="phase-filter-btn" data-phase="solid">Solid</button>
+            <button class="phase-filter-btn" data-phase="liquid">Liquid</button>
+            <button class="phase-filter-btn" data-phase="gas">Gas</button>
           </div>
         </div>
 
-        <!-- فلاتر الفئات الكيميائية بالألوان -->
+        <!-- Category Filters Bar -->
         <div class="category-filters-container" id="category-filters">
-          <!-- يتم ملؤها ديناميكياً -->
+          <!-- Categories rendered dynamically via JS -->
         </div>
       </div>
 
-      <!-- شريط إرشادي للتمرير الأفقي على الموبايل -->
-      <div class="mobile-scroll-hint" id="mobile-scroll-hint">
-        <span id="mobile-swipe-text">👈 اسحب أفقياً لتصفح الجدول أو بدّل لبطاقات العناصر 👆</span>
-      </div>
-
-      <!-- شبكة الجدول الدوري (118 عنصراً بتنسيق IUPAC) -->
-      <div class="pt-grid-scroll-wrapper" id="pt-grid-scroll-wrapper">
-        <div class="periodic-table-grid" id="periodic-table-grid">
-          <!-- يتم رسم الخلايا الـ 118 ديناميكياً عبر JavaScript -->
-        </div>
+      <!-- Elements Responsive Modern Cards Grid -->
+      <div class="elements-cards-container" id="periodic-table-grid">
+        <!-- 118 Elements rendered dynamically via JS -->
       </div>
 
     </section>
 
     <!-- ==========================================
-         القسم الثاني: معمل دمج العناصر الافتراضي
+         Section 2: Virtual Chemical Reaction Lab
          ========================================== -->
     <section class="tab-content-section hidden" data-section="lab" id="section-virtual-lab">
       
       <div class="lab-grid-container">
 
-        <!-- العمود الأيسر: رف العناصر والوصفات -->
+        <!-- Column 1: Reactive Elements Shelf & Recipes -->
         <div class="lab-panel">
           <div class="panel-header">
-            <h3 class="panel-title"><span>🧰</span> <span id="lab-shelf-title-text">رف العناصر التفاعلية</span></h3>
-            <span class="panel-badge" id="lab-shelf-badge">اسحب أو انقر</span>
+            <h3 class="panel-title"><span>🧰</span> <span id="lab-shelf-title-text">Reactive Elements Shelf</span></h3>
+            <span class="panel-badge" id="lab-shelf-badge">Tap to Add</span>
           </div>
           
           <p id="lab-shelf-desc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-            انقر على أي عنصر لإضافته لأنبوب التفاعل، أو اسحبه مباشرة إلى المعمل:
+            Tap any element below to drop it into the reaction beaker:
           </p>
 
-          <!-- شيبس العناصر الشائعة -->
+          <!-- Fast Quick-Tap Chips -->
           <div class="element-shelf-grid" id="lab-element-shelf">
-            <!-- يتم تعبئتها ديناميكياً -->
+            <!-- Rendered dynamically -->
           </div>
 
-          <!-- قائمة لاختيار أي عنصر من الـ 118 -->
+          <!-- Full 118 Elements Dropdown -->
           <div class="lab-select-wrapper">
-            <select id="lab-all-elements-select">
-              <option value="">+ أضف عنصراً آخر من الجدول (118)...</option>
+            <select id="all-elements-select">
+              <option value="" id="opt-select-placeholder">+ Add another element from table (118)...</option>
             </select>
           </div>
 
-          <div class="panel-header" style="margin-top: 1.5rem;">
-            <h3 class="panel-title"><span>📖</span> <span id="lab-recipes-title-text">كتالوج المركبات المكتشفة</span></h3>
-            <span class="panel-badge" id="discovered-recipes-count">0 / 14</span>
-          </div>
-
-          <!-- قائمة الوصفات الكيميائية -->
-          <div class="recipe-book-list" id="recipe-book-list">
-            <!-- يتم تعبئتها ديناميكياً -->
+          <!-- Recipe Book -->
+          <div style="margin-top: 1.25rem;">
+            <div class="panel-header" style="margin-bottom: 0.5rem; padding-bottom: 0.4rem;">
+              <h4 class="panel-title" style="font-size: 0.92rem;">
+                <span>📖</span> <span id="lab-recipes-title-text">Discovered Compounds</span>
+              </h4>
+              <span class="panel-badge" id="discovered-count-badge">0 / 14</span>
+            </div>
+            
+            <div class="recipe-book-list" id="recipes-list">
+              <!-- Recipes rendered dynamically -->
+            </div>
           </div>
         </div>
 
-        <!-- العمود الأوسط: منصة أنبوب التفاعل والمعمل -->
-        <div class="lab-panel beaker-workbench">
-          <div class="panel-header" style="width: 100%;">
-            <h3 class="panel-title"><span>⚗️</span> <span id="lab-wb-title-text">منصة التفاعل الكيميائي</span></h3>
-            <span class="panel-badge" id="lab-wb-badge">المفاعل الذكي</span>
-          </div>
-
-          <!-- منطقة الخلط والإسقاط -->
-          <div class="beaker-dropzone" id="beaker-dropzone">
-            <!-- كانفاس المؤثرات والشرر والدخان -->
-            <canvas id="reactor-fx-canvas" class="reactor-canvas"></canvas>
-
-            <!-- الحالة الفارغة -->
-            <div class="beaker-empty-state" id="beaker-empty-state">
-              <span class="empty-icon">🧪</span>
-              <h4 id="beaker-empty-title" style="font-weight: 700; color: var(--text-primary);">أنبوب التفاعل فارغ</h4>
-              <p id="beaker-empty-desc" style="font-size: 0.85rem; max-width: 260px;">
-                اسحب أو أضف العناصر من الرف الجانبي لتجربة دمجها وصنع مركبات جديدة!
-              </p>
+        <!-- Column 2: Reactor Workbench Beaker -->
+        <div class="beaker-workbench">
+          <div class="lab-panel" style="width: 100%;">
+            <div class="panel-header">
+              <h3 class="panel-title"><span>⚗️</span> <span id="lab-wb-title-text">Reaction Workbench</span></h3>
+              <span class="panel-badge" id="lab-wb-badge">Smart Reactor</span>
             </div>
 
-            <!-- قائمة العناصر المضافة للمفاعل مع عدادات التحكم بالكمية -->
-            <div class="beaker-elements-list" id="beaker-elements-list">
-              <!-- يتم توليد عناصر الذرات المضافة هنا -->
-            </div>
-          </div>
+            <!-- Reaction Beaker Dropzone -->
+            <div class="beaker-dropzone" id="beaker-dropzone">
+              <!-- Particle FX Canvas -->
+              <canvas class="reactor-canvas" id="reactor-particle-canvas"></canvas>
 
-          <!-- أزرار التحكم بالمعمل -->
-          <div class="beaker-actions">
-            <button class="react-btn" id="lab-react-btn" disabled>
-              <span>💥</span>
-              <span id="lab-react-btn-text">دمج / بدء التفاعل الكيميائي</span>
-            </button>
-            <button class="clear-btn" id="lab-clear-btn" title="تفريغ كل العناصر من المعمل">
-              <span>🗑️</span> <span id="lab-clear-btn-text">تفريغ</span>
-            </button>
+              <!-- Empty State -->
+              <div class="beaker-empty-state" id="beaker-empty-state">
+                <div class="empty-icon">🧪</div>
+                <h4 id="beaker-empty-title" style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary);">Reaction Beaker is Empty</h4>
+                <p id="beaker-empty-desc" style="font-size: 0.85rem; max-width: 280px; line-height: 1.5;">
+                  Tap elements from the shelf to synthesize compounds!
+                </p>
+              </div>
+
+              <!-- Elements in beaker -->
+              <div class="beaker-elements-list" id="beaker-elements-list"></div>
+
+              <!-- Reaction Action Controls -->
+              <div class="beaker-actions">
+                <button class="react-btn" id="lab-react-btn" disabled>
+                  <span>💥</span>
+                  <span id="lab-react-btn-text">Synthesize / React</span>
+                </button>
+                <button class="clear-btn" id="lab-clear-btn">
+                  <span>🗑️</span>
+                  <span id="lab-clear-btn-text">Clear</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- العمود الأيمن: بطاقات نتائج التفاعل والشروحات والمجسم 3D -->
+        <!-- Column 3: Reaction Results & 3D Molecule Visualizer -->
         <div class="lab-result-column">
-
-          <!-- بطاقة نجاح التفاعل -->
+          
+          <!-- Success Result Card -->
           <div class="lab-result-card result-success hidden" id="lab-result-success">
-            <span class="result-badge badge-success" id="res-success-badge">✓ تم التفاعل بنجاح وتكون مركب جديد!</span>
+            <span class="result-badge badge-success" id="res-success-badge">✓ Reaction Successful!</span>
             
             <div class="res-title-group">
               <div class="res-formula" id="res-formula">H₂O</div>
-              <div class="res-name-ar" id="res-name-ar">الماء (أكسيد الهيدروجين)</div>
-              <div class="res-name-en" id="res-name-en">Water</div>
+              <div class="res-name-ar" id="res-name-ar">Water</div>
+              <div class="res-name-en" id="res-name-en">Dihydrogen Monoxide</div>
             </div>
 
             <div class="res-equation-box" id="res-equation">2H + O ➔ H₂O</div>
 
             <div class="res-meta-grid">
               <div class="res-meta-item">
-                <span class="res-meta-label" id="res-nat-label">طبيعة التفاعل:</span>
-                <span class="res-meta-value" id="res-type">تفاعل طارد للحرارة</span>
+                <span class="res-meta-label" id="lbl-res-type">Reaction Type:</span>
+                <span class="res-meta-value" id="res-type">Exothermic Formation</span>
               </div>
               <div class="res-meta-item">
-                <span class="res-meta-label" id="res-state-label">حالة المادة الناتجة:</span>
-                <span class="res-meta-value" id="res-state">سائل</span>
+                <span class="res-meta-label" id="lbl-res-state">Physical State:</span>
+                <span class="res-meta-value" id="res-state">Liquid</span>
               </div>
             </div>
 
-            <!-- مجسم الجزيء ثلاثي الأبعاد التفاعلي -->
-            <div class="res-section-title"><span>🌐</span> <span id="res-3d-title">المجسم الجزيئي التفاعلي (3D Molecule):</span></div>
+            <!-- 3D Molecular Model Visualizer -->
             <div class="molecule-viewer-wrapper">
-              <canvas id="molecule-canvas" class="molecule-canvas"></canvas>
-              <span class="molecule-hint" id="lab-3d-hint">🔄 اسحب بالماوس لتدوير الجزيء 3D</span>
+              <canvas class="molecule-canvas" id="molecule-3d-canvas"></canvas>
+              <div class="molecule-hint" id="lbl-3d-hint">🔄 Drag to rotate 3D</div>
             </div>
 
-            <div class="res-meta-item" style="margin-bottom: 1rem;">
-              <span class="res-meta-label" id="res-energy-label">الطاقة والتغير الحراري:</span>
-              <span class="res-meta-value" id="res-temp">-</span>
+            <!-- Reaction Description & Uses -->
+            <div class="res-description-box">
+              <h4 class="res-section-title" id="lbl-res-summary-title">
+                <span>🔬</span> <span id="res-summary-heading">Scientific Overview:</span>
+              </h4>
+              <p class="res-summary-text" id="res-summary"></p>
+
+              <h4 class="res-section-title" style="margin-top: 0.75rem;" id="lbl-res-uses-title">
+                <span>🚀</span> <span id="res-uses-heading">Applications:</span>
+              </h4>
+              <ul class="res-apps-list" id="res-applications"></ul>
             </div>
-
-            <div class="res-section-title"><span>📘</span> <span id="res-exp-title">الشرح العلمي والروابط الكيميائية:</span></div>
-            <p class="res-summary-text" id="res-summary"></p>
-
-            <div class="res-section-title"><span>🏭</span> <span id="res-uses-title">أهم الاستخدامات والتطبيقات:</span></div>
-            <ul class="res-apps-list" id="res-applications"></ul>
           </div>
 
-          <!-- بطاقة فشل التفاعل مع التفسير العلمي الذكي -->
+          <!-- Failure Result Card with Educational Feedback -->
           <div class="lab-result-card result-fail hidden" id="lab-result-fail">
-            <span class="result-badge badge-fail" id="res-fail-badge">⚠️ لم يحدث تفاعل كيميائي</span>
+            <span class="result-badge badge-fail" id="res-fail-badge">⚠️ No Reaction Occurred</span>
             
             <div class="fail-reason-box">
-              <h4 class="fail-reason-title" id="fail-title">لا يحدث تفاعل مباشر</h4>
+              <h4 class="fail-reason-title" id="fail-title">No Direct Reaction</h4>
               <p class="fail-reason-desc" id="fail-message"></p>
             </div>
 
-            <div id="lab-fail-tip-text" style="margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
-              💡 <strong>نصيحة تعليمية:</strong> جرب التحقق من أعداد التكافؤ للعناصر أو استعرض "كتالوج الوصفات" في القائمة الجانبية لمعرفة النسب الذرية المتوازنة بدقة.
+            <div id="lab-fail-tip-text" style="margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+              💡 <strong>Educational Tip:</strong> Check valence electron counts or check the Recipe Book in the sidebar.
             </div>
           </div>
 
@@ -2013,88 +1917,86 @@ html[dir="ltr"] .modal-uses-ul {
   </main>
 
   <!-- ==========================================
-       النافذة المنبثقة لتفاصيل العنصر ونموذج بور
+       Element Details & Animated Bohr Model Modal
        ========================================== -->
   <div class="modal-overlay hidden" id="element-modal">
     <div class="modal-card">
-      <button class="modal-close-btn" id="modal-close-btn" title="إغلاق">×</button>
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Close">✕</button>
 
-      <!-- الجانب البصري: محاكي نموذج بور الذري بالـ Canvas -->
+      <!-- Visual Side: Bohr Atom Simulation -->
       <div class="modal-visual-side">
-        <canvas id="atom-bohr-canvas" class="atom-canvas"></canvas>
-        <p class="atom-canvas-hint" id="modal-bohr-hint">
-          ⚛️ محاكاة متحركة لنموذج بور: النواة المركزية ومدارات الإلكترونات
-        </p>
+        <canvas class="atom-canvas" id="atom-bohr-canvas"></canvas>
+        <div class="atom-canvas-hint" id="modal-bohr-hint">
+          ⚛️ Bohr Model: Central nucleus and revolving electron orbits
+        </div>
       </div>
 
-      <!-- جانب المعلومات العلمية التفصيلية -->
+      <!-- Info Side: Scientific Details -->
       <div class="modal-info-side">
         <div>
           <div class="modal-title-row">
-            <div class="modal-names">
-              <span class="modal-name-ar" id="modal-el-name-ar">هيدروجين</span>
-              <span class="modal-name-en" id="modal-el-name-en">Hydrogen</span>
-              <div>
-                <span class="modal-category-badge" id="modal-el-category">لافلز</span>
-              </div>
-            </div>
             <div class="modal-symbol-huge" id="modal-el-symbol">H</div>
+            <div class="modal-names">
+              <h2 class="modal-name-ar" id="modal-el-name-ar">Hydrogen</h2>
+              <p class="modal-name-en" id="modal-el-name-en">Hydrogen</p>
+              <span class="modal-category-badge" id="modal-el-category">Reactive Nonmetal</span>
+            </div>
           </div>
 
-          <!-- شبكة الخصائص الفيزيائية والكيميائية -->
+          <!-- Physical & Chemical Properties Grid -->
           <div class="modal-props-grid">
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-num">العدد الذري (Z):</span>
+              <span class="prop-label" id="lbl-modal-num">Atomic Number:</span>
               <span class="prop-value" id="modal-el-number">1</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-mass">الكتلة الذرية:</span>
+              <span class="prop-label" id="lbl-modal-mass">Atomic Mass:</span>
               <span class="prop-value" id="modal-el-mass">1.008</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-config">التوزيع الإلكتروني:</span>
+              <span class="prop-label" id="lbl-modal-config">Electron Config:</span>
               <span class="prop-value" id="modal-el-config">1s¹</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-period">الدورة / المجموعة:</span>
-              <span class="prop-value"><span id="modal-el-period">1</span> / <span id="modal-el-group">1</span></span>
+              <span class="prop-label" id="lbl-modal-period">Period / Group:</span>
+              <span class="prop-value">P<span id="modal-el-period">1</span> / G<span id="modal-el-group">1</span></span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-val">التكافؤ:</span>
+              <span class="prop-label" id="lbl-modal-val">Valence:</span>
               <span class="prop-value" id="modal-el-valence">1</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-electroneg">الكهروسالبية:</span>
+              <span class="prop-label" id="lbl-modal-electroneg">Electronegativity:</span>
               <span class="prop-value" id="modal-el-electroneg">2.20</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-melt">درجة الانصهار:</span>
-              <span class="prop-value" id="modal-el-melt">-</span>
+              <span class="prop-label" id="lbl-modal-melt">Melting Point:</span>
+              <span class="prop-value" id="modal-el-melt">14.01 K</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-boil">درجة الغليان:</span>
-              <span class="prop-value" id="modal-el-boil">-</span>
+              <span class="prop-label" id="lbl-modal-boil">Boiling Point:</span>
+              <span class="prop-value" id="modal-el-boil">20.28 K</span>
             </div>
             <div class="prop-box">
-              <span class="prop-label" id="lbl-modal-disc">سنة الاكتشاف:</span>
-              <span class="prop-value" id="modal-el-discovery">-</span>
+              <span class="prop-label" id="lbl-modal-disc">Discovery:</span>
+              <span class="prop-value" id="modal-el-discovery">1766</span>
             </div>
           </div>
 
           <div class="modal-text-section">
-            <h4 class="modal-sec-title" id="modal-sec-sum-title">نبذة وتعريف علمي:</h4>
+            <h4 class="modal-sec-title" id="modal-sec-sum-title">Scientific Summary:</h4>
             <p class="modal-summary-p" id="modal-el-summary"></p>
           </div>
 
           <div class="modal-text-section">
-            <h4 class="modal-sec-title" id="modal-sec-uses-title">أبرز الاستخدامات في الحياة اليومية:</h4>
+            <h4 class="modal-sec-title" id="modal-sec-uses-title">Common Real-World Uses:</h4>
             <ul class="modal-uses-ul" id="modal-el-uses"></ul>
           </div>
         </div>
 
         <button class="modal-add-lab-btn" id="modal-add-to-lab">
           <span>🧪</span>
-          <span id="modal-add-lab-text">أضف هذا العنصر إلى المعمل الافتراضي</span>
+          <span id="modal-add-lab-text">Add This Element to Reaction Lab</span>
         </button>
       </div>
     </div>
@@ -4383,15 +4285,14 @@ class ReactorFX {
 
 // --- MODULE SEPARATOR ---
 
-// وحدة التحكم بالجدول الدوري التفاعلي (دعم الموبايل والشاشات الصغيرة واللغات)
-// Interactive Periodic Table Controller (Mobile Responsive & Multilingual)
+// وحدة التحكم بعناصر الكيمياء والبطاقات التفاعلية (تصميم عصري متجاوب بنسبة 100% للموبايل)
+// Interactive Elements Explorer & Modern Card Grid Controller
 
 class PeriodicTable {
   constructor() {
     this.elements = ALL_ELEMENTS;
     this.currentFilter = 'all';
     this.currentPhaseFilter = 'all';
-    this.currentViewMode = 'grid'; // 'grid' or 'cards'
     this.searchQuery = '';
     this.temperatureK = 298.15;
     this.selectedElement = null;
@@ -4404,11 +4305,10 @@ class PeriodicTable {
     this.renderGrid();
     this.renderCategoryFilters();
     this.bindEvents();
-    this.bindViewSwitcher();
   }
 
   getLang() {
-    return window.app ? window.app.currentLang : 'ar';
+    return window.app ? window.app.currentLang : 'en';
   }
 
   t(key) {
@@ -4422,49 +4322,31 @@ class PeriodicTable {
 
     gridContainer.innerHTML = '';
     const lang = this.getLang();
-    const isCards = this.currentViewMode === 'cards';
-
-    gridContainer.classList.toggle('cards-view', isCards);
 
     this.elements.forEach(el => {
       const cell = document.createElement('div');
-      cell.className = `element-cell category-${el.category} phase-${this.getElementPhaseAtTemp(el, this.temperatureK)}`;
+      const phase = this.getElementPhaseAtTemp(el, this.temperatureK);
+      cell.className = `element-cell category-${el.category} phase-${phase}`;
       cell.setAttribute('data-number', el.number);
       cell.setAttribute('data-symbol', el.symbol);
       cell.setAttribute('data-category', el.category);
 
-      if (!isCards) {
-        let col = el.group;
-        let row = el.period;
-
-        if (el.number >= 57 && el.number <= 71) {
-          row = 9;
-          col = el.number - 57 + 4;
-        } else if (el.number >= 89 && el.number <= 103) {
-          row = 10;
-          col = el.number - 89 + 4;
-        }
-
-        if (col && row) {
-          cell.style.gridColumn = col;
-          cell.style.gridRow = row;
-        }
-      } else {
-        cell.style.gridColumn = '';
-        cell.style.gridRow = '';
-      }
-
       const catInfo = CATEGORY_INFO[el.category] || { color: '#38BDF8', nameAr: 'عنصر', nameEn: 'Element' };
-      const elementName = lang === 'ar' ? el.nameAr : el.nameEn;
+      const primaryName = lang === 'en' ? el.nameEn : el.nameAr;
+      const secondaryName = lang === 'en' ? el.nameAr : el.nameEn;
 
       cell.innerHTML = `
         <div class="element-header">
-          <span class="element-number">${el.number}</span>
+          <span class="element-number">#${el.number}</span>
           <span class="element-mass">${typeof el.mass === 'number' ? el.mass.toFixed(1) : el.mass}</span>
         </div>
         <div class="element-symbol" style="color: ${catInfo.color}">${el.symbol}</div>
-        <div class="element-name-ar">${elementName}</div>
-        <div class="element-phase-badge">${this.getPhaseLabel(this.getElementPhaseAtTemp(el, this.temperatureK))}</div>
+        <div class="element-name-primary">${primaryName}</div>
+        <div class="element-name-secondary">${secondaryName}</div>
+        <div class="element-footer">
+          <span class="element-phase-tag">${this.getPhaseLabel(phase)}</span>
+          <span class="element-group-tag">${el.period ? `P${el.period}` : ''} ${el.group ? `G${el.group}` : ''}</span>
+        </div>
       `;
 
       cell.addEventListener('click', () => {
@@ -4479,40 +4361,6 @@ class PeriodicTable {
 
       gridContainer.appendChild(cell);
     });
-
-    if (!isCards) {
-      this.renderSpecialPlaceholders(gridContainer);
-    }
-  }
-
-  renderSpecialPlaceholders(container) {
-    const lang = this.getLang();
-    const lanthName = lang === 'ar' ? 'لانثانيدات' : 'Lanthanides';
-    const actName = lang === 'ar' ? 'أكتينيدات' : 'Actinides';
-
-    const lanthHolder = document.createElement('div');
-    lanthHolder.className = 'element-cell placeholder-cell category-lanthanide';
-    lanthHolder.style.gridColumn = 3;
-    lanthHolder.style.gridRow = 6;
-    lanthHolder.innerHTML = `
-      <div class="element-number">57-71</div>
-      <div class="element-symbol">La-Lu</div>
-      <div class="element-name-ar">${lanthName}</div>
-    `;
-    lanthHolder.addEventListener('click', () => this.filterByCategory('lanthanide'));
-    container.appendChild(lanthHolder);
-
-    const actHolder = document.createElement('div');
-    actHolder.className = 'element-cell placeholder-cell category-actinide';
-    actHolder.style.gridColumn = 3;
-    actHolder.style.gridRow = 7;
-    actHolder.innerHTML = `
-      <div class="element-number">89-103</div>
-      <div class="element-symbol">Ac-Lr</div>
-      <div class="element-name-ar">${actName}</div>
-    `;
-    actHolder.addEventListener('click', () => this.filterByCategory('actinide'));
-    container.appendChild(actHolder);
   }
 
   renderCategoryFilters() {
@@ -4520,7 +4368,7 @@ class PeriodicTable {
     if (!container) return;
 
     const lang = this.getLang();
-    const allLabel = lang === 'ar' ? 'الكل (118)' : 'All (118)';
+    const allLabel = lang === 'en' ? 'All (118)' : 'الكل (118)';
 
     container.innerHTML = `
       <button class="filter-btn ${this.currentFilter === 'all' ? 'active' : ''}" data-category="all">
@@ -4532,7 +4380,7 @@ class PeriodicTable {
     Object.keys(CATEGORY_INFO).forEach(catKey => {
       const cat = CATEGORY_INFO[catKey];
       const count = this.elements.filter(e => e.category === catKey).length;
-      const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[catKey]) || cat.nameAr;
+      const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[catKey]) || (lang === 'en' ? cat.nameEn : cat.nameAr);
 
       const btn = document.createElement('button');
       btn.className = `filter-btn ${this.currentFilter === catKey ? 'active' : ''}`;
@@ -4566,7 +4414,7 @@ class PeriodicTable {
   }
 
   applyFilters() {
-    const cells = document.querySelectorAll('.element-cell:not(.placeholder-cell)');
+    const cells = document.querySelectorAll('.element-cell');
     const query = this.searchQuery.trim().toLowerCase();
 
     cells.forEach(cell => {
@@ -4587,14 +4435,20 @@ class PeriodicTable {
       if (matchesCat && matchesPhase && matchesSearch) {
         cell.classList.remove('dimmed');
         cell.classList.add('highlighted');
+        cell.style.display = 'flex';
       } else {
         cell.classList.add('dimmed');
         cell.classList.remove('highlighted');
+        if (query || this.currentFilter !== 'all' || this.currentPhaseFilter !== 'all') {
+          cell.style.display = 'none';
+        } else {
+          cell.style.display = 'flex';
+        }
       }
 
-      const badge = cell.querySelector('.element-phase-badge');
-      if (badge) {
-        badge.textContent = this.getPhaseLabel(currentPhase);
+      const phaseTag = cell.querySelector('.element-phase-tag');
+      if (phaseTag) {
+        phaseTag.textContent = this.getPhaseLabel(currentPhase);
       }
       cell.className = `element-cell category-${el.category} phase-${currentPhase} ${cell.classList.contains('dimmed') ? 'dimmed' : ''}`;
     });
@@ -4628,31 +4482,6 @@ class PeriodicTable {
       case 'liquid': return 'سائل';
       case 'gas': return 'غاز';
       default: return 'صلب';
-    }
-  }
-
-  bindViewSwitcher() {
-    const viewGridBtn = document.getElementById('view-grid-btn');
-    const viewCardsBtn = document.getElementById('view-cards-btn');
-
-    if (viewGridBtn && viewCardsBtn) {
-      viewGridBtn.addEventListener('click', () => {
-        soundManager.playClick();
-        this.currentViewMode = 'grid';
-        viewGridBtn.classList.add('active');
-        viewCardsBtn.classList.remove('active');
-        this.renderGrid();
-        this.applyFilters();
-      });
-
-      viewCardsBtn.addEventListener('click', () => {
-        soundManager.playClick();
-        this.currentViewMode = 'cards';
-        viewCardsBtn.classList.add('active');
-        viewGridBtn.classList.remove('active');
-        this.renderGrid();
-        this.applyFilters();
-      });
     }
   }
 
@@ -4715,7 +4544,7 @@ class PeriodicTable {
 
     const lang = this.getLang();
     const catInfo = CATEGORY_INFO[element.category] || { nameAr: 'عنصر', nameEn: 'Element', color: '#38BDF8' };
-    const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[element.category]) || catInfo.nameAr;
+    const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[element.category]) || (lang === 'en' ? catInfo.nameEn : catInfo.nameAr);
 
     document.getElementById('modal-el-number').textContent = element.number;
     document.getElementById('modal-el-symbol').textContent = element.symbol;
@@ -4739,10 +4568,11 @@ class PeriodicTable {
     if (meltEl) meltEl.textContent = element.melt ? `${element.melt} K (${(element.melt - 273.15).toFixed(1)} °C)` : (lang === 'en' ? 'N/A' : 'غير محدد');
     if (boilEl) boilEl.textContent = element.boil ? `${element.boil} K (${(element.boil - 273.15).toFixed(1)} °C)` : (lang === 'en' ? 'N/A' : 'غير محدد');
 
-    document.getElementById('modal-el-summary').textContent = element.summaryAr || 'عنصر كيميائي هام في الطبيعة والصناعة.';
+    document.getElementById('modal-el-summary').textContent = lang === 'en' ? (element.summaryEn || element.summaryAr) : element.summaryAr;
     const usesList = document.getElementById('modal-el-uses');
     if (usesList) {
-      usesList.innerHTML = (element.usesAr || ['تطبيقات علمية وصناعية متطورة']).map(u => `<li>${u}</li>`).join('');
+      const uses = lang === 'en' ? (element.usesEn || element.usesAr) : element.usesAr;
+      usesList.innerHTML = (uses || ['Scientific and industrial applications']).map(u => `<li>${u}</li>`).join('');
     }
 
     const addToLabBtn = document.getElementById('modal-add-to-lab');
