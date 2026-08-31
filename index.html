@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الجدول الدوري التفاعلي ومعمل الكيمياء الافتراضي | ChemLab</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚗️</text></svg>">
+</head>
+<body>
+
+  <!-- رأس الصفحة وشريط التنقل -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo">
+        <div class="brand-icon">⚗️</div>
+        <div>
+          <h1 class="brand-title">مختبر الكيمياء التفاعلي</h1>
+          <p class="brand-subtitle">ChemLab & Interactive Periodic Table</p>
+        </div>
+      </div>
+
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-tab="table">
+          <span>🔬</span>
+          <span>الجدول الدوري</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="lab">
+          <span>🧪</span>
+          <span>معمل دمج العناصر</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <!-- زر تبديل اللغة (أيقونة فقط) -->
+        <button class="action-btn icon-only" id="lang-toggle-btn" title="English / العربية" aria-label="Toggle Language">
+          <span class="icon">🌐</span>
+        </button>
+
+        <!-- زر تبديل الوضع الليلي / المضيء (أيقونة فقط) -->
+        <button class="action-btn icon-only" id="theme-toggle-btn" title="الوضع الليلي / المضيء" aria-label="Toggle Dark/Light Mode">
+          <span class="icon">🌙</span>
+        </button>
+
+        <!-- زر كتم / تفعيل الصوت (أيقونة فقط) -->
+        <button class="action-btn icon-only" id="sound-toggle-btn" title="المؤثرات الصوتية" aria-label="Toggle Sound Effects">
+          <span class="icon">🔊</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- محتوى التطبيق الرئيسي -->
+  <main class="main-wrapper">
+
+    <!-- ==========================================
+         القسم الأول: الجدول الدوري التفاعلي
+         ========================================== -->
+    <section class="tab-content-section" data-section="table" id="section-periodic-table">
+      
+      <!-- شريط أدوات البحث والحرارة والفلاتر -->
+      <div class="pt-toolbar">
+        <div class="pt-toolbar-row">
+          <!-- البحث الفوري -->
+          <div class="search-box-wrapper">
+            <input type="text" id="element-search" class="search-input" placeholder="ابحث باسم العنصر (عربي/إنجليزي)، الرمز، أو العدد الذري...">
+            <span class="search-icon">🔍</span>
+          </div>
+
+          <!-- شريط محاكاة درجات الحرارة لحالات المادة -->
+          <div class="temp-control-wrapper">
+            <span class="temp-label">🌡️ درجة الحرارة:</span>
+            <input type="range" id="temp-slider" class="temp-slider" min="0" max="6000" step="50" value="298">
+            <span class="temp-value-badge" id="temp-display">298 K (25 °C)</span>
+          </div>
+
+          <!-- فلاتر حالات المادة السريعة -->
+          <div class="phase-filters-group">
+            <button class="phase-filter-btn active" data-phase="all">الكل</button>
+            <button class="phase-filter-btn" data-phase="solid">صلب</button>
+            <button class="phase-filter-btn" data-phase="liquid">سائل</button>
+            <button class="phase-filter-btn" data-phase="gas">غاز</button>
+          </div>
+
+          <!-- مبدل طريقة العرض (شبكي / بطاقات للموبايل) -->
+          <div class="view-mode-group">
+            <button class="view-mode-btn active" id="view-grid-btn" title="الجدول الشبكي">
+              <span>📊</span> <span class="view-btn-text" id="lbl-view-grid">الجدول الشبكي</span>
+            </button>
+            <button class="view-mode-btn" id="view-cards-btn" title="بطاقات العناصر">
+              <span>📱</span> <span class="view-btn-text" id="lbl-view-cards">بطاقات العناصر</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- فلاتر الفئات الكيميائية بالألوان -->
+        <div class="category-filters-container" id="category-filters">
+          <!-- يتم ملؤها ديناميكياً -->
+        </div>
+      </div>
+
+      <!-- شريط إرشادي للتمرير الأفقي على الموبايل -->
+      <div class="mobile-scroll-hint" id="mobile-scroll-hint">
+        <span id="mobile-swipe-text">👈 اسحب أفقياً لتصفح الجدول أو بدّل لبطاقات العناصر 👆</span>
+      </div>
+
+      <!-- شبكة الجدول الدوري (118 عنصراً بتنسيق IUPAC) -->
+      <div class="pt-grid-scroll-wrapper" id="pt-grid-scroll-wrapper">
+        <div class="periodic-table-grid" id="periodic-table-grid">
+          <!-- يتم رسم الخلايا الـ 118 ديناميكياً عبر JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         القسم الثاني: معمل دمج العناصر الافتراضي
+         ========================================== -->
+    <section class="tab-content-section hidden" data-section="lab" id="section-virtual-lab">
+      
+      <div class="lab-grid-container">
+
+        <!-- العمود الأيسر: رف العناصر والوصفات -->
+        <div class="lab-panel">
+          <div class="panel-header">
+            <h3 class="panel-title"><span>🧰</span> <span id="lab-shelf-title-text">رف العناصر التفاعلية</span></h3>
+            <span class="panel-badge" id="lab-shelf-badge">اسحب أو انقر</span>
+          </div>
+          
+          <p id="lab-shelf-desc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            انقر على أي عنصر لإضافته لأنبوب التفاعل، أو اسحبه مباشرة إلى المعمل:
+          </p>
+
+          <!-- شيبس العناصر الشائعة -->
+          <div class="element-shelf-grid" id="lab-element-shelf">
+            <!-- يتم تعبئتها ديناميكياً -->
+          </div>
+
+          <!-- قائمة لاختيار أي عنصر من الـ 118 -->
+          <div class="lab-select-wrapper">
+            <select id="lab-all-elements-select">
+              <option value="">+ أضف عنصراً آخر من الجدول (118)...</option>
+            </select>
+          </div>
+
+          <div class="panel-header" style="margin-top: 1.5rem;">
+            <h3 class="panel-title"><span>📖</span> <span id="lab-recipes-title-text">كتالوج المركبات المكتشفة</span></h3>
+            <span class="panel-badge" id="discovered-recipes-count">0 / 14</span>
+          </div>
+
+          <!-- قائمة الوصفات الكيميائية -->
+          <div class="recipe-book-list" id="recipe-book-list">
+            <!-- يتم تعبئتها ديناميكياً -->
+          </div>
+        </div>
+
+        <!-- العمود الأوسط: منصة أنبوب التفاعل والمعمل -->
+        <div class="lab-panel beaker-workbench">
+          <div class="panel-header" style="width: 100%;">
+            <h3 class="panel-title"><span>⚗️</span> <span id="lab-wb-title-text">منصة التفاعل الكيميائي</span></h3>
+            <span class="panel-badge" id="lab-wb-badge">المفاعل الذكي</span>
+          </div>
+
+          <!-- منطقة الخلط والإسقاط -->
+          <div class="beaker-dropzone" id="beaker-dropzone">
+            <!-- كانفاس المؤثرات والشرر والدخان -->
+            <canvas id="reactor-fx-canvas" class="reactor-canvas"></canvas>
+
+            <!-- الحالة الفارغة -->
+            <div class="beaker-empty-state" id="beaker-empty-state">
+              <span class="empty-icon">🧪</span>
+              <h4 id="beaker-empty-title" style="font-weight: 700; color: var(--text-primary);">أنبوب التفاعل فارغ</h4>
+              <p id="beaker-empty-desc" style="font-size: 0.85rem; max-width: 260px;">
+                اسحب أو أضف العناصر من الرف الجانبي لتجربة دمجها وصنع مركبات جديدة!
+              </p>
+            </div>
+
+            <!-- قائمة العناصر المضافة للمفاعل مع عدادات التحكم بالكمية -->
+            <div class="beaker-elements-list" id="beaker-elements-list">
+              <!-- يتم توليد عناصر الذرات المضافة هنا -->
+            </div>
+          </div>
+
+          <!-- أزرار التحكم بالمعمل -->
+          <div class="beaker-actions">
+            <button class="react-btn" id="lab-react-btn" disabled>
+              <span>💥</span>
+              <span id="lab-react-btn-text">دمج / بدء التفاعل الكيميائي</span>
+            </button>
+            <button class="clear-btn" id="lab-clear-btn" title="تفريغ كل العناصر من المعمل">
+              <span>🗑️</span> <span id="lab-clear-btn-text">تفريغ</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- العمود الأيمن: بطاقات نتائج التفاعل والشروحات والمجسم 3D -->
+        <div class="lab-result-column">
+
+          <!-- بطاقة نجاح التفاعل -->
+          <div class="lab-result-card result-success hidden" id="lab-result-success">
+            <span class="result-badge badge-success" id="res-success-badge">✓ تم التفاعل بنجاح وتكون مركب جديد!</span>
+            
+            <div class="res-title-group">
+              <div class="res-formula" id="res-formula">H₂O</div>
+              <div class="res-name-ar" id="res-name-ar">الماء (أكسيد الهيدروجين)</div>
+              <div class="res-name-en" id="res-name-en">Water</div>
+            </div>
+
+            <div class="res-equation-box" id="res-equation">2H + O ➔ H₂O</div>
+
+            <div class="res-meta-grid">
+              <div class="res-meta-item">
+                <span class="res-meta-label" id="res-nat-label">طبيعة التفاعل:</span>
+                <span class="res-meta-value" id="res-type">تفاعل طارد للحرارة</span>
+              </div>
+              <div class="res-meta-item">
+                <span class="res-meta-label" id="res-state-label">حالة المادة الناتجة:</span>
+                <span class="res-meta-value" id="res-state">سائل</span>
+              </div>
+            </div>
+
+            <!-- مجسم الجزيء ثلاثي الأبعاد التفاعلي -->
+            <div class="res-section-title"><span>🌐</span> <span id="res-3d-title">المجسم الجزيئي التفاعلي (3D Molecule):</span></div>
+            <div class="molecule-viewer-wrapper">
+              <canvas id="molecule-canvas" class="molecule-canvas"></canvas>
+              <span class="molecule-hint" id="lab-3d-hint">🔄 اسحب بالماوس لتدوير الجزيء 3D</span>
+            </div>
+
+            <div class="res-meta-item" style="margin-bottom: 1rem;">
+              <span class="res-meta-label" id="res-energy-label">الطاقة والتغير الحراري:</span>
+              <span class="res-meta-value" id="res-temp">-</span>
+            </div>
+
+            <div class="res-section-title"><span>📘</span> <span id="res-exp-title">الشرح العلمي والروابط الكيميائية:</span></div>
+            <p class="res-summary-text" id="res-summary"></p>
+
+            <div class="res-section-title"><span>🏭</span> <span id="res-uses-title">أهم الاستخدامات والتطبيقات:</span></div>
+            <ul class="res-apps-list" id="res-applications"></ul>
+          </div>
+
+          <!-- بطاقة فشل التفاعل مع التفسير العلمي الذكي -->
+          <div class="lab-result-card result-fail hidden" id="lab-result-fail">
+            <span class="result-badge badge-fail" id="res-fail-badge">⚠️ لم يحدث تفاعل كيميائي</span>
+            
+            <div class="fail-reason-box">
+              <h4 class="fail-reason-title" id="fail-title">لا يحدث تفاعل مباشر</h4>
+              <p class="fail-reason-desc" id="fail-message"></p>
+            </div>
+
+            <div id="lab-fail-tip-text" style="margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+              💡 <strong>نصيحة تعليمية:</strong> جرب التحقق من أعداد التكافؤ للعناصر أو استعرض "كتالوج الوصفات" في القائمة الجانبية لمعرفة النسب الذرية المتوازنة بدقة.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+       النافذة المنبثقة لتفاصيل العنصر ونموذج بور
+       ========================================== -->
+  <div class="modal-overlay hidden" id="element-modal">
+    <div class="modal-card">
+      <button class="modal-close-btn" id="modal-close-btn" title="إغلاق">×</button>
+
+      <!-- الجانب البصري: محاكي نموذج بور الذري بالـ Canvas -->
+      <div class="modal-visual-side">
+        <canvas id="atom-bohr-canvas" class="atom-canvas"></canvas>
+        <p class="atom-canvas-hint" id="modal-bohr-hint">
+          ⚛️ محاكاة متحركة لنموذج بور: النواة المركزية ومدارات الإلكترونات
+        </p>
+      </div>
+
+      <!-- جانب المعلومات العلمية التفصيلية -->
+      <div class="modal-info-side">
+        <div>
+          <div class="modal-title-row">
+            <div class="modal-names">
+              <span class="modal-name-ar" id="modal-el-name-ar">هيدروجين</span>
+              <span class="modal-name-en" id="modal-el-name-en">Hydrogen</span>
+              <div>
+                <span class="modal-category-badge" id="modal-el-category">لافلز</span>
+              </div>
+            </div>
+            <div class="modal-symbol-huge" id="modal-el-symbol">H</div>
+          </div>
+
+          <!-- شبكة الخصائص الفيزيائية والكيميائية -->
+          <div class="modal-props-grid">
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-num">العدد الذري (Z):</span>
+              <span class="prop-value" id="modal-el-number">1</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-mass">الكتلة الذرية:</span>
+              <span class="prop-value" id="modal-el-mass">1.008</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-config">التوزيع الإلكتروني:</span>
+              <span class="prop-value" id="modal-el-config">1s¹</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-period">الدورة / المجموعة:</span>
+              <span class="prop-value"><span id="modal-el-period">1</span> / <span id="modal-el-group">1</span></span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-val">التكافؤ:</span>
+              <span class="prop-value" id="modal-el-valence">1</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-electroneg">الكهروسالبية:</span>
+              <span class="prop-value" id="modal-el-electroneg">2.20</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-melt">درجة الانصهار:</span>
+              <span class="prop-value" id="modal-el-melt">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-boil">درجة الغليان:</span>
+              <span class="prop-value" id="modal-el-boil">-</span>
+            </div>
+            <div class="prop-box">
+              <span class="prop-label" id="lbl-modal-disc">سنة الاكتشاف:</span>
+              <span class="prop-value" id="modal-el-discovery">-</span>
+            </div>
+          </div>
+
+          <div class="modal-text-section">
+            <h4 class="modal-sec-title" id="modal-sec-sum-title">نبذة وتعريف علمي:</h4>
+            <p class="modal-summary-p" id="modal-el-summary"></p>
+          </div>
+
+          <div class="modal-text-section">
+            <h4 class="modal-sec-title" id="modal-sec-uses-title">أبرز الاستخدامات في الحياة اليومية:</h4>
+            <ul class="modal-uses-ul" id="modal-el-uses"></ul>
+          </div>
+        </div>
+
+        <button class="modal-add-lab-btn" id="modal-add-to-lab">
+          <span>🧪</span>
+          <span id="modal-add-lab-text">أضف هذا العنصر إلى المعمل الافتراضي</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- سكربتات التطبيق المتتابعة -->
+  <script src="js/data/i18n.js"></script>
+  <script src="js/data/elements.js"></script>
+  <script src="js/data/reactions.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/visualizer.js"></script>
+  <script src="js/periodic-table.js"></script>
+  <script src="js/lab.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
