@@ -4,7 +4,1759 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Interactive Periodic Table & Virtual Chemistry Lab | ChemLab</title>
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+/* =========================================================
+   مختبر الكيمياء التفاعلي والجدول الدوري (ChemLab Stylesheet)
+   Modern Responsive Cyber-Lab, Mobile Optimization & Touch Gestures
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+  /* Dark Theme (Default) */
+  --bg-primary: #090D16;
+  --bg-secondary: #0F172A;
+  --bg-card: rgba(15, 23, 42, 0.85);
+  --bg-card-hover: rgba(30, 41, 59, 0.9);
+  --border-color: rgba(51, 65, 85, 0.6);
+  --border-glow: rgba(56, 189, 248, 0.3);
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+
+  --accent-cyan: #06B6D4;
+  --accent-blue: #3B82F6;
+  --accent-indigo: #6366F1;
+  --accent-purple: #8B5CF6;
+  --accent-pink: #EC4899;
+  --accent-emerald: #10B981;
+  --accent-amber: #F59E0B;
+  --accent-rose: #F43F5E;
+
+  --font-arabic: 'Cairo', system-ui, -apple-system, sans-serif;
+  --font-english: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+
+  --shadow-glow: 0 0 20px rgba(6, 182, 212, 0.25);
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+
+  --bg-gradient: radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+                 radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                 linear-gradient(to bottom, #090D16, #020617);
+}
+
+/* =========================================================
+   Light Theme Settings
+   ========================================================= */
+[data-theme="light"] {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: rgba(241, 245, 249, 0.98);
+  --border-color: rgba(203, 213, 225, 0.85);
+  --border-glow: rgba(6, 182, 212, 0.25);
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+
+  --shadow-card: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+  
+  --bg-gradient: radial-gradient(circle at 20% 15%, rgba(14, 165, 233, 0.05) 0%, transparent 40%),
+                 radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+                 linear-gradient(to bottom, #F8FAFC, #EDF2F7);
+}
+
+[data-theme="light"] .element-cell {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] .search-input,
+[data-theme="light"] .temp-control-wrapper,
+[data-theme="light"] .phase-filters-group,
+[data-theme="light"] .view-mode-group,
+[data-theme="light"] .lab-select-wrapper select,
+[data-theme="light"] .recipe-item,
+[data-theme="light"] .res-equation-box,
+[data-theme="light"] .modal-props-grid {
+  background: rgba(241, 245, 249, 0.85);
+  border-color: rgba(203, 213, 225, 0.85);
+}
+
+[data-theme="light"] .beaker-dropzone {
+  background: radial-gradient(circle at 50% 60%, #FFFFFF, #F1F5F9);
+}
+
+[data-theme="light"] .beaker-element-item {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .modal-visual-side {
+  background: radial-gradient(circle at 50% 50%, #F8FAFC, #E2E8F0);
+}
+
+/* Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-arabic);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  direction: rtl;
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  background-image: var(--bg-gradient);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  touch-action: manipulation;
+}
+
+/* LTR Support for English Mode */
+html[dir="ltr"] body {
+  font-family: var(--font-english);
+  direction: ltr;
+}
+
+html[dir="ltr"] .search-input {
+  padding: 0.65rem 2.5rem 0.65rem 1rem;
+}
+
+html[dir="ltr"] .search-icon {
+  left: auto;
+  right: 0.85rem;
+}
+
+html[dir="ltr"] .modal-close-btn {
+  left: auto;
+  right: 1rem;
+}
+
+html[dir="ltr"] .modal-visual-side {
+  border-left: none;
+  border-right: 1px solid var(--border-color);
+}
+
+html[dir="ltr"] .modal-names {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
+html[dir="ltr"] .res-apps-list,
+html[dir="ltr"] .modal-uses-ul {
+  padding-right: 0;
+  padding-left: 1.2rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Header & Navigation */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.65rem 1.25rem;
+  transition: background 0.3s ease;
+}
+
+.header-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+}
+
+.brand-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  background: linear-gradient(to left, #38BDF8, #818CF8, #C084FC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--bg-secondary);
+  padding: 0.3rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+}
+
+.nav-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.nav-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.nav-tab-btn.active {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(99, 102, 241, 0.3));
+  color: #0284C7;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
+}
+
+[data-theme="dark"] .nav-tab-btn.active {
+  color: #38BDF8;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.action-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn.icon-only {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  justify-content: center;
+  font-size: 1.15rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+}
+
+/* Main Layout */
+.main-wrapper {
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: 1.25rem;
+}
+
+.tab-content-section {
+  display: block;
+}
+
+.tab-content-section.hidden {
+  display: none;
+}
+
+/* =========================================================
+   1. Interactive Periodic Table Styling
+   ========================================================= */
+
+.pt-toolbar {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.pt-toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-box-wrapper {
+  flex: 1;
+  min-width: 260px;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1rem 0.65rem 2.5rem;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.temp-control-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--bg-secondary);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.temp-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.temp-slider {
+  width: 140px;
+  accent-color: var(--accent-cyan);
+  cursor: pointer;
+}
+
+.temp-value-badge {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0284C7;
+  min-width: 120px;
+  text-align: left;
+}
+
+[data-theme="dark"] .temp-value-badge {
+  color: #38BDF8;
+}
+
+.phase-filters-group {
+  display: flex;
+  gap: 0.3rem;
+  background: var(--bg-secondary);
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.phase-filter-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.phase-filter-btn:hover {
+  color: var(--text-primary);
+}
+
+.phase-filter-btn.active {
+  background: rgba(56, 189, 248, 0.2);
+  color: #0284C7;
+}
+
+[data-theme="dark"] .phase-filter-btn.active {
+  color: #38BDF8;
+}
+
+/* View Mode Switcher (Grid vs Cards) */
+.view-mode-group {
+  display: flex;
+  gap: 0.3rem;
+  background: var(--bg-secondary);
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.view-mode-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.view-mode-btn:hover {
+  color: var(--text-primary);
+}
+
+.view-mode-btn.active {
+  background: rgba(6, 182, 212, 0.2);
+  color: #0284C7;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+}
+
+[data-theme="dark"] .view-mode-btn.active {
+  color: #38BDF8;
+}
+
+/* Category Filters Bar */
+.category-filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.filter-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+.filter-btn.active {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: #38BDF8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.filter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Mobile Scroll Hint */
+.mobile-scroll-hint {
+  display: none;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #0284C7;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  animation: pulse-hint 2s infinite;
+}
+
+[data-theme="dark"] .mobile-scroll-hint {
+  color: #38BDF8;
+}
+
+@keyframes pulse-hint {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; transform: scale(1.01); }
+}
+
+/* Periodic Table Grid Layout */
+.pt-grid-scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.periodic-table-grid {
+  display: grid;
+  grid-template-columns: repeat(18, minmax(70px, 1fr));
+  grid-template-rows: repeat(10, minmax(80px, 1fr));
+  gap: 6px;
+  min-width: 1300px;
+  position: relative;
+}
+
+/* Cards View for Mobile Responsive Layout */
+.periodic-table-grid.cards-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-rows: auto;
+  min-width: unset;
+  gap: 10px;
+}
+
+.periodic-table-grid.cards-view .element-cell {
+  min-height: 95px;
+}
+
+/* Element Cell */
+.element-cell {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+}
+
+.element-cell::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.element-cell:hover {
+  transform: translateY(-3px) scale(1.03);
+  z-index: 20;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 15px var(--border-glow);
+  border-color: rgba(56, 189, 248, 0.8);
+}
+
+.element-cell:active {
+  transform: scale(0.98);
+}
+
+.element-cell.dimmed {
+  opacity: 0.2;
+  filter: grayscale(0.8);
+  transform: scale(0.96);
+}
+
+.element-cell.highlighted {
+  opacity: 1;
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--border-color); }
+  50% { border-color: #38BDF8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+}
+
+.element-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.element-number {
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.element-mass {
+  font-size: 0.62rem;
+  font-family: var(--font-mono);
+}
+
+.element-symbol {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  text-align: center;
+  line-height: 1.1;
+  margin: 1px 0;
+}
+
+.element-name-ar {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.element-phase-badge {
+  font-size: 0.58rem;
+  text-align: center;
+  color: var(--text-muted);
+  border-top: 1px dashed var(--border-color);
+  padding-top: 2px;
+}
+
+/* Category Borders & Colors */
+.category-alkali-metal { border-color: rgba(239, 68, 68, 0.4); color: #EF4444; }
+.category-alkaline-earth { border-color: rgba(249, 115, 22, 0.4); color: #F97316; }
+.category-transition-metal { border-color: rgba(234, 179, 8, 0.4); color: #EAB308; }
+.category-post-transition-metal { border-color: rgba(16, 185, 129, 0.4); color: #10B981; }
+.category-metalloid { border-color: rgba(6, 182, 212, 0.4); color: #06B6D4; }
+.category-nonmetal { border-color: rgba(59, 130, 246, 0.4); color: #3B82F6; }
+.category-halogen { border-color: rgba(139, 92, 246, 0.4); color: #8B5CF6; }
+.category-noble-gas { border-color: rgba(236, 72, 153, 0.4); color: #EC4899; }
+.category-lanthanide { border-color: rgba(20, 184, 166, 0.4); color: #14B8A6; }
+.category-actinide { border-color: rgba(244, 63, 94, 0.4); color: #F43F5E; }
+
+.placeholder-cell {
+  border-style: dashed;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--bg-card);
+}
+
+/* =========================================================
+   2. Virtual Element Mixing Lab Styling
+   ========================================================= */
+
+.lab-grid-container {
+  display: grid;
+  grid-template-columns: 340px 1fr 420px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.lab-panel {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.panel-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-primary);
+}
+
+.panel-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(56, 189, 248, 0.15);
+  color: #0284C7;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+[data-theme="dark"] .panel-badge {
+  color: #38BDF8;
+}
+
+/* Shelf & Chips */
+.element-shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding-left: 4px;
+  margin-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lab-element-chip {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.lab-element-chip:hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+}
+
+.lab-element-chip:active {
+  transform: scale(0.95);
+}
+
+.chip-number {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.chip-symbol {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.chip-name {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.lab-select-wrapper select {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--radius-md);
+  outline: none;
+}
+
+/* Recipe Book List */
+.recipe-book-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 0.75rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.recipe-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.recipe-item:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.recipe-item.discovered {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(6, 78, 59, 0.15);
+}
+
+.recipe-formula {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0284C7;
+}
+
+[data-theme="dark"] .recipe-formula {
+  color: #38BDF8;
+}
+
+.recipe-info {
+  flex: 1;
+}
+
+.recipe-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.recipe-eq {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.recipe-try-btn {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #0284C7;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .recipe-try-btn {
+  color: #38BDF8;
+}
+
+.recipe-try-btn:hover {
+  background: #38BDF8;
+  color: #FFFFFF;
+}
+
+/* Center Reactor / Beaker */
+.beaker-workbench {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.beaker-dropzone {
+  width: 100%;
+  min-height: 380px;
+  background: radial-gradient(circle at 50% 60%, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.beaker-dropzone.drag-active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);
+  background: radial-gradient(circle at 50% 60%, rgba(6, 182, 212, 0.1), rgba(2, 6, 23, 0.98));
+}
+
+.beaker-dropzone.fx-shake {
+  animation: beaker-shake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes beaker-shake {
+  10%, 90% { transform: translate3d(-2px, -1px, 0); }
+  20%, 80% { transform: translate3d(3px, 2px, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, -2px, 0); }
+  40%, 60% { transform: translate3d(4px, 2px, 0); }
+}
+
+.reactor-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.beaker-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  color: var(--text-muted);
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  opacity: 0.6;
+  animation: float-flask 3s ease-in-out infinite;
+}
+
+@keyframes float-flask {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.beaker-elements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  z-index: 5;
+}
+
+.beaker-element-item {
+  background: var(--bg-card-hover);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slide-in 0.25s ease;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.beaker-item-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.beaker-item-symbol {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.beaker-item-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.beaker-item-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.beaker-item-cat {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.beaker-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.qty-btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38BDF8;
+}
+
+.btn-remove {
+  color: #F43F5E;
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.btn-remove:hover {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: #F43F5E;
+}
+
+.qty-count {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0284C7;
+  min-width: 24px;
+  text-align: center;
+}
+
+[data-theme="dark"] .qty-count {
+  color: #38BDF8;
+}
+
+.beaker-actions {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: 1.25rem;
+}
+
+.react-btn {
+  flex: 2;
+  background: linear-gradient(135deg, #06B6D4, #3B82F6, #6366F1);
+  border: none;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+  transition: all 0.25s ease;
+}
+
+.react-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.6);
+}
+
+.react-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+.clear-btn {
+  flex: 1;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.85rem 0.9rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: rgba(244, 63, 94, 0.15);
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #F43F5E;
+}
+
+/* =========================================================
+   3. Result Cards (Success & Failed Educational Feedback)
+   ========================================================= */
+
+.lab-result-card {
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(16px);
+  animation: card-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes card-appear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.lab-result-card.hidden {
+  display: none;
+}
+
+.result-success {
+  background: var(--bg-card);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.result-fail {
+  background: var(--bg-card);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+}
+
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge-fail {
+  background: rgba(244, 63, 94, 0.2);
+  color: #F43F5E;
+  border: 1px solid rgba(244, 63, 94, 0.4);
+}
+
+.res-title-group {
+  margin-bottom: 1rem;
+}
+
+.res-formula {
+  font-family: var(--font-mono);
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #0284C7;
+  line-height: 1.1;
+}
+
+[data-theme="dark"] .res-formula {
+  color: #38BDF8;
+}
+
+.res-name-ar {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.res-name-en {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.res-equation-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #D97706;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+[data-theme="dark"] .res-equation-box {
+  color: #FBBF24;
+}
+
+.res-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.res-meta-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+}
+
+.res-meta-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.res-meta-value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* 3D Molecule Container */
+.molecule-viewer-wrapper {
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  position: relative;
+}
+
+.molecule-canvas {
+  width: 100%;
+  height: 240px;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.molecule-canvas:active {
+  cursor: grabbing;
+}
+
+.molecule-hint {
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+}
+
+.res-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.res-summary-text {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.res-apps-list {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.res-apps-list li {
+  margin-bottom: 0.35rem;
+}
+
+.fail-reason-box {
+  background: var(--bg-secondary);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.fail-reason-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #E11D48;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .fail-reason-title {
+  color: #FB7185;
+}
+
+.fail-reason-desc {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* =========================================================
+   4. Element Details Modal (Bohr Atom Simulator)
+   ========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: modal-fade 0.25s ease;
+}
+
+.modal-overlay.hidden {
+  display: none;
+}
+
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  max-width: 960px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(6, 182, 212, 0.2);
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: #F43F5E;
+  color: #FFFFFF;
+}
+
+.modal-visual-side {
+  background: radial-gradient(circle at 50% 50%, #0F172A, #020617);
+  border-left: 1px solid var(--border-color);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.atom-canvas {
+  width: 100%;
+  height: 320px;
+  display: block;
+}
+
+.atom-canvas-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.modal-info-side {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.modal-symbol-huge {
+  font-family: var(--font-mono);
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.modal-names {
+  margin-right: 1rem;
+}
+
+.modal-name-ar {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.modal-name-en {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.modal-category-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid;
+  margin-top: 0.4rem;
+}
+
+.modal-props-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.prop-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.prop-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.prop-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.modal-text-section {
+  margin-bottom: 1rem;
+}
+
+.modal-sec-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0284C7;
+  margin-bottom: 0.3rem;
+}
+
+[data-theme="dark"] .modal-sec-title {
+  color: #38BDF8;
+}
+
+.modal-summary-p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.modal-uses-ul {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.modal-uses-ul li {
+  margin-bottom: 0.3rem;
+}
+
+.modal-add-lab-btn {
+  background: linear-gradient(135deg, #06B6D4, #3B82F6);
+  border: none;
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+}
+
+.modal-add-lab-btn:hover {
+  box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+  transform: translateY(-2px);
+}
+
+/* =========================================================
+   5. Mobile & Tablet Responsive Media Queries
+   ========================================================= */
+
+/* Tablets (<= 1024px) */
+@media (max-width: 1024px) {
+  .lab-grid-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  .lab-result-column {
+    grid-column: span 2;
+  }
+}
+
+/* Tablets & Mobile (<= 860px) */
+@media (max-width: 860px) {
+  .mobile-scroll-hint {
+    display: block;
+  }
+
+  .modal-card {
+    grid-template-columns: 1fr;
+    max-height: 94vh;
+  }
+
+  .modal-visual-side {
+    border-left: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+  }
+
+  .atom-canvas {
+    height: 240px;
+  }
+}
+
+/* Mobile Screens (<= 768px) */
+@media (max-width: 768px) {
+  .main-wrapper {
+    padding: 0.75rem;
+  }
+
+  .app-header {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .header-container {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .brand-title {
+    font-size: 1rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .nav-tab-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.82rem;
+  }
+
+  .action-btn.icon-only {
+    width: 35px;
+    height: 35px;
+    font-size: 1.05rem;
+  }
+
+  /* Toolbar */
+  .pt-toolbar {
+    padding: 0.9rem;
+    gap: 0.75rem;
+  }
+
+  .pt-toolbar-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+
+  .search-box-wrapper {
+    min-width: 100%;
+  }
+
+  .temp-control-wrapper {
+    justify-content: space-between;
+  }
+
+  .temp-slider {
+    flex: 1;
+  }
+
+  .phase-filters-group,
+  .view-mode-group {
+    width: 100%;
+  }
+
+  .phase-filter-btn,
+  .view-mode-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Lab Single Column Layout */
+  .lab-grid-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .lab-result-column {
+    grid-column: span 1;
+  }
+
+  /* Order elements for mobile: Beaker first, shelf second, results third */
+  .beaker-workbench {
+    order: 1;
+  }
+  .lab-panel:first-child {
+    order: 2;
+  }
+  .lab-result-column {
+    order: 3;
+  }
+
+  .beaker-dropzone {
+    min-height: 280px;
+    padding: 1rem;
+  }
+
+  .beaker-actions {
+    flex-direction: column;
+  }
+
+  .clear-btn {
+    order: 2;
+  }
+
+  .modal-info-side {
+    padding: 1.25rem;
+  }
+
+  .modal-props-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Small Phones (<= 480px) */
+@media (max-width: 480px) {
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 1.2rem;
+  }
+
+  .brand-title {
+    font-size: 0.9rem;
+  }
+
+  .nav-tab-btn span:last-child {
+    font-size: 0.78rem;
+  }
+
+  .periodic-table-grid.cards-view {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .element-shelf-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .molecule-canvas {
+    height: 200px;
+  }
+
+  .res-formula {
+    font-size: 1.8rem;
+  }
+
+  .res-name-ar {
+    font-size: 1.15rem;
+  }
+}
+
+</style>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚗️</text></svg>">
 </head>
 <body>
@@ -348,14 +2100,3327 @@
     </div>
   </div>
 
-  <!-- سكربتات التطبيق المتتابعة -->
-  <script src="js/data/i18n.js"></script>
-  <script src="js/data/elements.js"></script>
-  <script src="js/data/reactions.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/visualizer.js"></script>
-  <script src="js/periodic-table.js"></script>
-  <script src="js/lab.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+// قاموس الترجمة ثنائي اللغة (العربية والإنجليزية)
+// Bilingual Internationalization (i18n) Dictionary
+
+const TRANSLATIONS = {
+  ar: {
+    appTitle: 'مختبر الكيمياء التفاعلي',
+    appSubtitle: 'ChemLab & Interactive Periodic Table',
+    tabTable: 'الجدول الدوري',
+    tabLab: 'معمل دمج العناصر',
+    soundBtn: 'المؤثرات',
+    soundMuted: 'صامت',
+    themeDark: 'داكن',
+    themeLight: 'مضيء',
+    langToggle: 'English',
+
+    // شريط أدوات الجدول
+    searchPlaceholder: 'ابحث باسم العنصر (عربي/إنجليزي)، الرمز، أو العدد الذري...',
+    tempLabel: '🌡️ درجة الحرارة:',
+    phaseAll: 'الكل',
+    phaseSolid: 'صلب',
+    phaseLiquid: 'سائل',
+    phaseGas: 'غاز',
+    catAll: 'الكل',
+    viewGrid: 'الجدول الشبكي',
+    viewCards: 'بطاقات العناصر',
+    mobileSwipeHint: '👈 اسحب أفقياً لتصفح الجدول أو بدّل لبطاقات العناصر 👆',
+
+    // فئات العناصر
+    categories: {
+      'alkali-metal': 'فلزات قلوية',
+      'alkaline-earth': 'فلزات قلوية ترابية',
+      'transition-metal': 'فلزات انتقالية',
+      'post-transition-metal': 'فلزات بعد الانتقالية',
+      'metalloid': 'أشباه الفلزات',
+      'nonmetal': 'لافلزات تفاعلية',
+      'halogen': 'هالوجينات',
+      'noble-gas': 'غازات نبيلة (خاملة)',
+      'lanthanide': 'لانثانيدات',
+      'actinide': 'أكتينيدات'
+    },
+
+    // المعمل
+    labShelfTitle: 'رف العناصر التفاعلية',
+    labShelfBadge: 'انقر للإضافة السريعة',
+    labShelfDesc: 'انقر على أي عنصر لإضافته مباشرة إلى أنبوب التفاعل:',
+    labSelectOption: '+ أضف عنصراً آخر من الجدول (118)...',
+    labRecipesTitle: 'كتالوج المركبات المكتشفة',
+    labWorkbenchTitle: 'منصة التفاعل الكيميائي',
+    labWorkbenchBadge: 'المفاعل الذكي',
+    labBeakerEmptyTitle: 'أنبوب التفاعل فارغ',
+    labBeakerEmptyDesc: 'انقر على العناصر من الرف الجانبي لتجربة دمجها وصنع مركبات جديدة!',
+    labReactBtn: 'دمج / بدء التفاعل الكيميائي',
+    labClearBtn: 'تفريغ',
+    labTryBtn: 'جرب الآن',
+    lab3dHint: '🔄 اسحب باللمس لتدوير الجزيء 3D',
+    labSuccessBadge: '✓ تم التفاعل بنجاح وتكون مركب جديد!',
+    labFailBadge: '⚠️ لم يحدث تفاعل كيميائي',
+    labNatureLabel: 'طبيعة التفاعل:',
+    labStateLabel: 'حالة المادة الناتجة:',
+    lab3dTitle: 'المجسم الجزيئي التفاعلي (3D Molecule):',
+    labEnergyLabel: 'الطاقة والتغير الحراري:',
+    labExplanationTitle: 'الشرح العلمي والروابط الكيميائية:',
+    labUsesTitle: 'أهم الاستخدامات والتطبيقات:',
+    labFailTip: '💡 نصيحة تعليمية: جرب التحقق من أعداد التكافؤ للعناصر أو استعرض "كتالوج الوصفات" في القائمة الجانبية لمعرفة النسب الذرية المتوازنة بدقة.',
+
+    // نافذة تفاصيل العنصر
+    modalBohrHint: '⚛️ محاكاة متحركة لنموذج بور: النواة المركزية ومدارات الإلكترونات',
+    modalLabelNumber: 'العدد الذري (Z):',
+    modalLabelMass: 'الكتلة الذرية:',
+    modalLabelConfig: 'التوزيع الإلكتروني:',
+    modalLabelPeriodGroup: 'الدورة / المجموعة:',
+    modalLabelValence: 'التكافؤ:',
+    modalLabelElectroneg: 'الكهروسالبية:',
+    modalLabelMelt: 'درجة الانصهار:',
+    modalLabelBoil: 'درجة الغليان:',
+    modalLabelDiscovery: 'سنة الاكتشاف:',
+    modalSecSummary: 'نبذة وتعريف علمي:',
+    modalSecUses: 'أبرز الاستخدامات في الحياة اليومية:',
+    modalAddToLab: 'أضف هذا العنصر إلى المعمل الافتراضي'
+  },
+
+  en: {
+    appTitle: 'Interactive Chemistry Lab',
+    appSubtitle: 'ChemLab & Interactive Periodic Table',
+    tabTable: 'Periodic Table',
+    tabLab: 'Reaction Lab',
+    soundBtn: 'Sound FX',
+    soundMuted: 'Muted',
+    themeDark: 'Dark',
+    themeLight: 'Light',
+    langToggle: 'العربية',
+
+    // Periodic table toolbar
+    searchPlaceholder: 'Search by element name, symbol, or atomic number...',
+    tempLabel: '🌡️ Temperature:',
+    phaseAll: 'All',
+    phaseSolid: 'Solid',
+    phaseLiquid: 'Liquid',
+    phaseGas: 'Gas',
+    catAll: 'All',
+    viewGrid: 'Grid Table',
+    viewCards: 'Cards List',
+    mobileSwipeHint: '👈 Swipe horizontally or toggle to Cards View 👆',
+
+    // Element categories
+    categories: {
+      'alkali-metal': 'Alkali Metals',
+      'alkaline-earth': 'Alkaline Earth',
+      'transition-metal': 'Transition Metals',
+      'post-transition-metal': 'Post-transition',
+      'metalloid': 'Metalloids',
+      'nonmetal': 'Reactive Nonmetals',
+      'halogen': 'Halogens',
+      'noble-gas': 'Noble Gases',
+      'lanthanide': 'Lanthanides',
+      'actinide': 'Actinides'
+    },
+
+    // Lab
+    labShelfTitle: 'Reactive Elements Shelf',
+    labShelfBadge: 'Tap to Add',
+    labShelfDesc: 'Tap any element to add it directly to the reactor beaker:',
+    labSelectOption: '+ Add another element from table (118)...',
+    labRecipesTitle: 'Discovered Compounds Catalog',
+    labWorkbenchTitle: 'Chemical Reaction Workbench',
+    labWorkbenchBadge: 'Smart Reactor',
+    labBeakerEmptyTitle: 'Reaction Beaker is Empty',
+    labBeakerEmptyDesc: 'Tap or drag elements from the shelf to synthesize new compounds!',
+    labReactBtn: 'React / Synthesize Compound',
+    labClearBtn: 'Clear',
+    labTryBtn: 'Try Now',
+    lab3dHint: '🔄 Drag with touch to rotate 3D molecule',
+    labSuccessBadge: '✓ Reaction successful! New compound synthesized.',
+    labFailBadge: '⚠️ No chemical reaction occurred',
+    labNatureLabel: 'Reaction Type:',
+    labStateLabel: 'Physical State:',
+    lab3dTitle: '3D Interactive Molecular Model:',
+    labEnergyLabel: 'Thermodynamics & Energy:',
+    labExplanationTitle: 'Scientific Overview & Bonding:',
+    labUsesTitle: 'Real-World Applications:',
+    labFailTip: '💡 Educational Tip: Check the valence electron counts or explore the Recipe Book in the sidebar for balanced stoichiometry.',
+
+    // Modal
+    modalBohrHint: '⚛️ Animated Bohr Model: Central nucleus and revolving electron orbits',
+    modalLabelNumber: 'Atomic Number (Z):',
+    modalLabelMass: 'Atomic Mass:',
+    modalLabelConfig: 'Electron Config:',
+    modalLabelPeriodGroup: 'Period / Group:',
+    modalLabelValence: 'Valence:',
+    modalLabelElectroneg: 'Electronegativity:',
+    modalLabelMelt: 'Melting Point:',
+    modalLabelBoil: 'Boiling Point:',
+    modalLabelDiscovery: 'Discovered By:',
+    modalSecSummary: 'Scientific Summary:',
+    modalSecUses: 'Common Real-World Uses:',
+    modalAddToLab: 'Add This Element to Reaction Lab'
+  }
+};
+
+
+// --- MODULE SEPARATOR ---
+
+// بيانات عناصر الجدول الدوري الـ 118 بالكامل
+// Comprehensive Periodic Table Dataset (118 Elements)
+
+const CATEGORY_INFO = {
+  'alkali-metal': { nameAr: 'فلزات قلوية', nameEn: 'Alkali Metals', color: '#EF4444', glow: 'rgba(239, 68, 68, 0.4)' },
+  'alkaline-earth': { nameAr: 'فلزات قلوية ترابية', nameEn: 'Alkaline Earth', color: '#F97316', glow: 'rgba(249, 115, 22, 0.4)' },
+  'transition-metal': { nameAr: 'فلزات انتقالية', nameEn: 'Transition Metals', color: '#EAB308', glow: 'rgba(234, 179, 8, 0.4)' },
+  'post-transition-metal': { nameAr: 'فلزات بعد الانتقالية', nameEn: 'Post-transition Metals', color: '#10B981', glow: 'rgba(16, 185, 129, 0.4)' },
+  'metalloid': { nameAr: 'أشباه الفلزات', nameEn: 'Metalloids', color: '#06B6D4', glow: 'rgba(6, 182, 212, 0.4)' },
+  'nonmetal': { nameAr: 'لافلزات تفاعلية', nameEn: 'Reactive Nonmetals', color: '#3B82F6', glow: 'rgba(59, 130, 246, 0.4)' },
+  'halogen': { nameAr: 'هالوجينات', nameEn: 'Halogens', color: '#8B5CF6', glow: 'rgba(139, 92, 246, 0.4)' },
+  'noble-gas': { nameAr: 'غازات نبيلة (خاملة)', nameEn: 'Noble Gases', color: '#EC4899', glow: 'rgba(236, 72, 153, 0.4)' },
+  'lanthanide': { nameAr: 'لانثانيدات', nameEn: 'Lanthanides', color: '#14B8A6', glow: 'rgba(20, 184, 166, 0.4)' },
+  'actinide': { nameAr: 'أكتينيدات', nameEn: 'Actinides', color: '#F43F5E', glow: 'rgba(244, 63, 94, 0.4)' }
+};
+
+const ELEMENTS = [
+  {
+    number: 1, symbol: 'H', nameAr: 'هيدروجين', nameEn: 'Hydrogen',
+    mass: 1.008, category: 'nonmetal', period: 1, group: 1,
+    phase: 'gas', melt: 13.99, boil: 20.271,
+    shells: [1], electronConfig: '1s¹', valence: 1, electronegativity: 2.20,
+    discovery: 'هنري كافنديش (1766)',
+    summaryAr: 'أخف العناصر الكيميائية وأكثرها وفرة في الكون (يشكل نحو 75% من المادة الكونية). يدخل في تركيب الماء وجميع المركبات العضوية.',
+    usesAr: ['إنتاج وقود الصواريخ وخلايا الوقود النظيفة', 'صناعة الأمونيا والأسمدة الزراعية', 'هدرجة الزيوت النباتية']
+  },
+  {
+    number: 2, symbol: 'He', nameAr: 'هيليوم', nameEn: 'Helium',
+    mass: 4.0026, category: 'noble-gas', period: 1, group: 18,
+    phase: 'gas', melt: 0.95, boil: 4.222,
+    shells: [2], electronConfig: '1s²', valence: 0, electronegativity: null,
+    discovery: 'بيير يانسن ونورمان لوكير (1868)',
+    summaryAr: 'غاز خامل عديم اللون والرائحة، وهو ثاني أخف عنصر وثاني أكثر العناصر وفرة في الكون. مداره الخارجي ممتلئ تماماً لذلك لا يتفاعل بسهولة.',
+    usesAr: ['ملء مناطيد وبالونات المراقبة والحفلات', 'تبريد أجهزة الرنين المغناطيسي الفائقة التوصيل (MRI)', 'خلطات غازات تنفس الغواصين في الأعماق']
+  },
+  {
+    number: 3, symbol: 'Li', nameAr: 'ليثيوم', nameEn: 'Lithium',
+    mass: 6.94, category: 'alkali-metal', period: 2, group: 1,
+    phase: 'solid', melt: 453.65, boil: 1603,
+    shells: [2, 1], electronConfig: '[He] 2s¹', valence: 1, electronegativity: 0.98,
+    discovery: 'يوهان أوغست أرفيدسون (1817)',
+    summaryAr: 'أخف الفلزات الصلبة وأقلها كثافة. يتفاعل بنشاط مع الماء ويحفظ تحت الزيوت المعدنية لمنع تأكسده.',
+    usesAr: ['بطاريات الليثيوم أيون للهواتف والسيارات الكهربائية', 'صناعة الزجاج والسيراميك المقاوم للحرارة', 'أدوية علاج الاضطرابات النفسية وتعديل المزاج']
+  },
+  {
+    number: 4, symbol: 'Be', nameAr: 'بيريليوم', nameEn: 'Beryllium',
+    mass: 9.0122, category: 'alkaline-earth', period: 2, group: 2,
+    phase: 'solid', melt: 1560, boil: 2742,
+    shells: [2, 2], electronConfig: '[He] 2s²', valence: 2, electronegativity: 1.57,
+    discovery: 'نيكولا لويس فوكلين (1798)',
+    summaryAr: 'فلز صلب رمادي اللون وخفيف الوزن، يتميز بصلابة فائقة ودرجة انصهار عالية، ويدخل في تركيب أحجار الزمرد الكريمة.',
+    usesAr: ['صناعة مرايا التلسكوبات الفضائية كمرصد جيمس ويب', 'مكونات الطائرات النفاثة والصواريخ', 'سبائك النحاس-بيريليوم للأدوات غير المولدة للشرر']
+  },
+  {
+    number: 5, symbol: 'B', nameAr: 'بورون', nameEn: 'Boron',
+    mass: 10.81, category: 'metalloid', period: 2, group: 13,
+    phase: 'solid', melt: 2349, boil: 4200,
+    shells: [2, 3], electronConfig: '[He] 2s² 2p¹', valence: 3, electronegativity: 2.04,
+    discovery: 'جوزيف لوي غاي-لوساك وتينار (1808)',
+    summaryAr: 'شبه فلز صلب ذو لون بني داكن، يوجد في مركبات البوراكس، ويستخدم لتعزيز قوة المواد ومقاومة الحرارة.',
+    usesAr: ['صناعة زجاج البايركس المقاوم للحرارة', 'صناعة الألياف الزجاجية العازلة', 'قضبان التحكم في المفاعلات النووية لامتصاص النيوترونات']
+  },
+  {
+    number: 6, symbol: 'C', nameAr: 'كربون', nameEn: 'Carbon',
+    mass: 12.011, category: 'nonmetal', period: 2, group: 14,
+    phase: 'solid', melt: 3823, boil: 4300,
+    shells: [2, 4], electronConfig: '[He] 2s² 2p²', valence: 4, electronegativity: 2.55,
+    discovery: 'معروف منذ العصور القديمة',
+    summaryAr: 'عماد الكيمياء العضوية وأساس الحياة على الأرض. يتمتع بقدرة فريدة على تكوين ملايين المركبات وسلاسل كيميائية معقدة (من الجرافيت حتى الألماس).',
+    usesAr: ['صناعة ألياف الكربون فائقة القوة وخفيفة الوزن', 'أقطاب البطاريات وأقلام الرصاص (جرافيت)', 'المجوهرات وأدوات القطع الصناعية (الألماس)']
+  },
+  {
+    number: 7, symbol: 'N', nameAr: 'نيتروجين', nameEn: 'Nitrogen',
+    mass: 14.007, category: 'nonmetal', period: 2, group: 15,
+    phase: 'gas', melt: 63.15, boil: 77.36,
+    shells: [2, 5], electronConfig: '[He] 2s² 2p³', valence: 3, electronegativity: 3.04,
+    discovery: 'دانيال رذرفورد (1772)',
+    summaryAr: 'يشكل نحو 78% من الغلاف الجوي للأرض. غاز عديم اللون والرائحة وهو مكون أساسي للبروتينات والحمض النووي (DNA).',
+    usesAr: ['صناعة الأسمدة الزراعية (الأمونيا واليوريا)', 'النيتروجين السائل للتبريد الفائق وحفظ العينات الحيوية', 'ملء إطارات الطائرات والسيارات لحمايتها من التلف']
+  },
+  {
+    number: 8, symbol: 'O', nameAr: 'أكسجين', nameEn: 'Oxygen',
+    mass: 15.999, category: 'nonmetal', period: 2, group: 16,
+    phase: 'gas', melt: 54.36, boil: 90.20,
+    shells: [2, 6], electronConfig: '[He] 2s² 2p⁴', valence: 2, electronegativity: 3.44,
+    discovery: 'كارل فلهلم شيله وجوزيف بريستلي (1774)',
+    summaryAr: 'عنصر الحياة والتنفس والاحتراق. يمثل 21% من الهواء الجوي ونصف قشرة الأرض تقريباً ويدخل في تركيب الماء والخلايا الحية.',
+    usesAr: ['التنفس الاصطناعي في المستشفيات وأجهزة الغوص', 'عمليات صهر ولحام المعادن (شعلة الأوكسي-أسيتيلين)', 'مؤكسد رئيسي في وقود الصواريخ الفضائية']
+  },
+  {
+    number: 9, symbol: 'F', nameAr: 'فلور', nameEn: 'Fluorine',
+    mass: 18.998, category: 'halogen', period: 2, group: 17,
+    phase: 'gas', melt: 53.53, boil: 85.03,
+    shells: [2, 7], electronConfig: '[He] 2s² 2p⁵', valence: 1, electronegativity: 3.98,
+    discovery: 'هنري مويسان (1886)',
+    summaryAr: 'أعلى العناصر كهروسالبية وأكثرها نشاطاً كيميائياً على الإطلاق. غاز سام أصفر-مخضر يتفاعل بعنف مع معظم العناصر حتى الزجاج.',
+    usesAr: ['معاجين الأسنان ومياه الشرب لمقاومة التسوس (الفلورايد)', 'صناعة بوليمر التيفلون المقاوم للالتصاق والحرارة', 'صناعة غازات التبريد ومكيفات الهواء']
+  },
+  {
+    number: 10, symbol: 'Ne', nameAr: 'نيون', nameEn: 'Neon',
+    mass: 20.180, category: 'noble-gas', period: 2, group: 18,
+    phase: 'gas', melt: 24.56, boil: 27.07,
+    shells: [2, 8], electronConfig: '[He] 2s² 2p⁶', valence: 0, electronegativity: null,
+    discovery: 'ويليام رامزي وموريس ترافرز (1898)',
+    summaryAr: 'غاز نبيل خامل يتوهج بضوء أحمر برتقالي ساطع عند مرور تيار كهربائي فيه في أنابيب التفريغ الكهربائي.',
+    usesAr: ['لوحات ولافتات الإعلانات المضيئة الشهيرة', 'مؤشرات الليزر والأجهزة الكهروضوئية', 'سوائل التبريد المبردة ذات الكفاءة العالية']
+  },
+  {
+    number: 11, symbol: 'Na', nameAr: 'صوديوم', nameEn: 'Sodium',
+    mass: 22.990, category: 'alkali-metal', period: 3, group: 1,
+    phase: 'solid', melt: 370.87, boil: 1156,
+    shells: [2, 8, 1], electronConfig: '[Ne] 3s¹', valence: 1, electronegativity: 0.93,
+    discovery: 'همفري ديفي (1807)',
+    summaryAr: 'فلز قلوي ناعم فضي يمكن قطعه بالسكين. يتفاعل بشدة مع الماء مطلقاً غاز الهيدروجين مع لهب أصفر ساطع، ويكون ملح الطعام عند اتحاده مع الكلور.',
+    usesAr: ['ملح الطعام (كلوريد الصوديوم) الضروري للحياة والغذاء', 'مصابيح شوارع بخار الصوديوم الصفراء الموفرة', 'تبريد المفاعلات النووية المتقدمة (صوديوم سائل)']
+  },
+  {
+    number: 12, symbol: 'Mg', nameAr: 'مغنيسيوم', nameEn: 'Magnesium',
+    mass: 24.305, category: 'alkaline-earth', period: 3, group: 2,
+    phase: 'solid', melt: 923, boil: 1363,
+    shells: [2, 8, 2], electronConfig: '[Ne] 3s²', valence: 2, electronegativity: 1.31,
+    discovery: 'جوزيف بلاك (1755)',
+    summaryAr: 'فلز لامع وخفيف الوزن يشتعل بضوء أبيض ساطع ومبهر. يوجد في مركز جزيء الكلوروفيل المسؤول عن البناء الضوئي في النباتات.',
+    usesAr: ['صناعة هياكل السيارات وقطع الطائرات الخفيفة والقوية', 'الألعاب النارية والمشاعل الضوئية العسكرية', 'مكملات غذائية وأدوية مضادة لحموضة المعدة']
+  },
+  {
+    number: 13, symbol: 'Al', nameAr: 'ألومنيوم', nameEn: 'Aluminium',
+    mass: 26.982, category: 'post-transition-metal', period: 3, group: 13,
+    phase: 'solid', melt: 933.47, boil: 2792,
+    shells: [2, 8, 3], electronConfig: '[Ne] 3s² 3p¹', valence: 3, electronegativity: 1.61,
+    discovery: 'هانز كريستيان أورستد (1825)',
+    summaryAr: 'أكثر الفلزات وفرة في القشرة الأرضية (نحو 8%). يتميز بوزنه الخفيف ومقاومته الممتازة للصدأ بفضل طبقة الأكسيد الواقية.',
+    usesAr: ['صناعة هياكل الطائرات والقطارات والسيارات', 'علب المشروبات وورق الألومنيوم لحفظ الأطعمة', 'خطوط نقل الكهرباء ذات الجهد العالي لمسافات طويلة']
+  },
+  {
+    number: 14, symbol: 'Si', nameAr: 'سيليكون', nameEn: 'Silicon',
+    mass: 28.085, category: 'metalloid', period: 3, group: 14,
+    phase: 'solid', melt: 1687, boil: 3538,
+    shells: [2, 8, 4], electronConfig: '[Ne] 3s² 3p²', valence: 4, electronegativity: 1.90,
+    discovery: 'يونس ياكوب بيرسيليوس (1824)',
+    summaryAr: 'القلب النابض لثورة التكنولوجيا وعصر الحواسيب. ثاني أكثر العناصر وفرة في قشرة الأرض ويوجد في الرمل والكوارتز.',
+    usesAr: ['صناعة الرقاقات الدقيقة والمعالجات الإلكترونية (Microchips)', 'صناعة الخلايا الشمسية لتوليد الطاقة النظيفة', 'مركبات السيليكون الطبية والمطاط العازل']
+  },
+  {
+    number: 15, symbol: 'P', nameAr: 'فوسفور', nameEn: 'Phosphorus',
+    mass: 30.974, category: 'nonmetal', period: 3, group: 15,
+    phase: 'solid', melt: 317.30, boil: 550,
+    shells: [2, 8, 5], electronConfig: '[Ne] 3s² 3p³', valence: 3, electronegativity: 2.19,
+    discovery: 'هينيغ براند (1669)',
+    summaryAr: 'عنصر حيوي يدخل في بناء العظام والأسنان وجزيئات الطاقة الخلوية (ATP) وسلاسل الحمض النووي (DNA). يتواجد بصور متعددة (أبيض، أحمر، أسود).',
+    usesAr: ['الأسمدة الزراعية الفوسفاتية لنمو النباتات', 'صناعة رؤوس أعواد الثقاب والألعاب النارية', 'صناعة المنظفات ومعالجة المياه الصناعية']
+  },
+  {
+    number: 16, symbol: 'S', nameAr: 'كبريت', nameEn: 'Sulfur',
+    mass: 32.06, category: 'nonmetal', period: 3, group: 16,
+    phase: 'solid', melt: 388.36, boil: 717.8,
+    shells: [2, 8, 6], electronConfig: '[Ne] 3s² 3p⁴', valence: 2, electronegativity: 2.58,
+    discovery: 'معروف منذ القدم',
+    summaryAr: 'مادة صلبة صفراء هشة توجد قرب البراكين ورواسب الملح. له رائحة مميزة عند حرقه ويدخل في تصنيع حمض الكبريتيك وهو أهم المواد الكيميائية عالمياً.',
+    usesAr: ['إنتاج حمض الكبريتيك المستخدم في مئات الصناعات', 'فلكنة المطاط لزيادة صلابة إطارات السيارات', 'المبيدات الفطرية والعلاجات الجلدية الطبية']
+  },
+  {
+    number: 17, symbol: 'Cl', nameAr: 'كلور', nameEn: 'Chlorine',
+    mass: 35.45, category: 'halogen', period: 3, group: 17,
+    phase: 'gas', melt: 171.6, boil: 239.11,
+    shells: [2, 8, 7], electronConfig: '[Ne] 3s² 3p⁵', valence: 1, electronegativity: 3.16,
+    discovery: 'كارل فلهلم شيله (1774)',
+    summaryAr: 'غاز هالوجيني أصفر-مخضر ذو رائحة نفاذة ومعقم قوي. يتحد مع الصوديوم ليعطي ملح الطعام ويدخل في تطهير مياه الشرب.',
+    usesAr: ['تعقيم وتطهير مياه الشرب ومسابح السباحة', 'صناعة بلاستيك البولي فينيل كلورايد (PVC) للأنابيب', 'صناعة المبيضات المنزلية والمطهرات الصناعية']
+  },
+  {
+    number: 18, symbol: 'Ar', nameAr: 'أرجون', nameEn: 'Argon',
+    mass: 39.948, category: 'noble-gas', period: 3, group: 18,
+    phase: 'gas', melt: 83.80, boil: 87.30,
+    shells: [2, 8, 8], electronConfig: '[Ne] 3s² 3p⁶', valence: 0, electronegativity: null,
+    discovery: 'لورد رايلي وويليام رامزي (1894)',
+    summaryAr: 'الغاز النبيل الأكثر وفرة في الغلاف الجوي للأرض (يشكل حوالي 0.93%). لا يتفاعل مع أي مادة تقريباً في الظروف المعتادة.',
+    usesAr: ['ملء المصابيح الكهربائية المتوهجة لحماية الفتيل من الاحتراق', 'جو خامل لحماية المعادن أثناء اللحام المتخصص (TIG)', 'العزل الحراري بين طبقات النوافذ المزدوجة الحديثة']
+  },
+  {
+    number: 19, symbol: 'K', nameAr: 'بوتاسيوم', nameEn: 'Potassium',
+    mass: 39.098, category: 'alkali-metal', period: 4, group: 1,
+    phase: 'solid', melt: 336.53, boil: 1032,
+    shells: [2, 8, 8, 1], electronConfig: '[Ar] 4s¹', valence: 1, electronegativity: 0.82,
+    discovery: 'همفري ديفي (1807)',
+    summaryAr: 'فلز قلوي ناعم نشط جداً، يتفاعل بفرقعة ولهب بنفسجي مع الماء. عنصر أساسي لنقل الإشارات العصبية وانقباض العضلات في الجسم.',
+    usesAr: ['الأسمدة الزراعية البوتاسية الغنية لتقوية المحاصيل', 'صناعة الصابون السائل والمنظفات المتطورة', 'الحفاظ على توازن السوائل وضغط الدم في الجسم']
+  },
+  {
+    number: 20, symbol: 'Ca', nameAr: 'كالسيوم', nameEn: 'Calcium',
+    mass: 40.078, category: 'alkaline-earth', period: 4, group: 2,
+    phase: 'solid', melt: 1115, boil: 1757,
+    shells: [2, 8, 8, 2], electronConfig: '[Ar] 4s²', valence: 2, electronegativity: 1.00,
+    discovery: 'همفري ديفي (1808)',
+    summaryAr: 'خامس العناصر وفرة في القشرة الأرضية، والمعدن الأكثر تواجداً في جسم الإنسان حيث يشكل الهيكل العظمي والأسنان والأصداف البحرية.',
+    usesAr: ['بناء العظام والأسنان والحفاظ على قوتها', 'صناعة الأسمنت والجبس ومواد البناء والخرسانة', 'إزالة الشوائب أثناء صهر وتنقية المعادن والصلب']
+  },
+  {
+    number: 21, symbol: 'Sc', nameAr: 'سكانديوم', nameEn: 'Scandium',
+    mass: 44.956, category: 'transition-metal', period: 4, group: 3,
+    phase: 'solid', melt: 1814, boil: 3109,
+    shells: [2, 8, 9, 2], electronConfig: '[Ar] 3d¹ 4s²', valence: 3, electronegativity: 1.36,
+    discovery: 'لارس فريدريك نيلسون (1879)',
+    summaryAr: 'فلز انتقالي نادر وخفيف يضاف لسبائك الألومنيوم ليمنحها قوة وصلابة استثنائية مع الحفاظ على خفة الوزن.',
+    usesAr: ['سبائك هياكل الطائرات الحربية والمقاتلات النفاثة', 'مضارب البيسبول وهياكل الدراجات الرياضية الاحترافية', 'مصابيح الإنارة الرياضية عالية الكثافة لمحاكاة ضوء الشمس']
+  },
+  {
+    number: 22, symbol: 'Ti', nameAr: 'تيتانيوم', nameEn: 'Titanium',
+    mass: 47.867, category: 'transition-metal', period: 4, group: 4,
+    phase: 'solid', melt: 1941, boil: 3560,
+    shells: [2, 8, 10, 2], electronConfig: '[Ar] 3d² 4s²', valence: 4, electronegativity: 1.54,
+    discovery: 'وليم غريغور (1791)',
+    summaryAr: 'معدن المستقبل ذو قوة تفوق الصلب بوزن يقل عنه بنسبة 45%. متوافق حيوياً مع جسم الإنسان ومقاوم بشدة للتآكل ومياه البحر.',
+    usesAr: ['المفاصل الصناعية وزراعة الأسنان والصفائح الطبية', 'هياكل ومحركات الطائرات وسفن الفضاء', 'الصبغة البيضاء (ثاني أكسيد التيتانيوم) للدهانات وواقيات الشمس']
+  },
+  {
+    number: 23, symbol: 'V', nameAr: 'فاناديوم', nameEn: 'Vanadium',
+    mass: 50.942, category: 'transition-metal', period: 4, group: 5,
+    phase: 'solid', melt: 2183, boil: 3680,
+    shells: [2, 8, 11, 2], electronConfig: '[Ar] 3d³ 4s²', valence: 5, electronegativity: 1.63,
+    discovery: 'أندريس مانويل ديل ريو (1801)',
+    summaryAr: 'فلز رمادي ناصع يضاف إلى الفولاذ لمنحه متانة خارقة ومقاومة فائقة للصدمات والإجهاد الميكانيكي.',
+    usesAr: ['فولاذ الفاناديوم لأدوات الصيانة ومفاتيح الشد والمسامير', 'نوابض السيارات ومحاور التروس الثقيلة', 'بطاريات تدفق الفاناديوم لتخزين الطاقة المتجددة في الشبكات']
+  },
+  {
+    number: 24, symbol: 'Cr', nameAr: 'كروم', nameEn: 'Chromium',
+    mass: 51.996, category: 'transition-metal', period: 4, group: 6,
+    phase: 'solid', melt: 2180, boil: 2944,
+    shells: [2, 8, 13, 1], electronConfig: '[Ar] 3d⁵ 4s¹', valence: 6, electronegativity: 1.66,
+    discovery: 'لويس نيكولا فوكلين (1797)',
+    summaryAr: 'فلز لامع عالي الصلابة، يعطي الفولاذ المقاوم للصدأ (ستانلس ستيل) لمعانه ومقاومته للتآكل بفضل تشكيل طبقة أكسيد حامية.',
+    usesAr: ['صناعة الفولاذ المقاوم للصدأ (Stainless Steel)', 'الطلاء بالكروم اللامع للسيارات والأدوات الصحية', 'دباغة الجلود وصناعة الأصباغ الملونة الخضراء والصفراء']
+  },
+  {
+    number: 25, symbol: 'Mn', nameAr: 'منغنيز', nameEn: 'Manganese',
+    mass: 54.938, category: 'transition-metal', period: 4, group: 7,
+    phase: 'solid', melt: 1519, boil: 2334,
+    shells: [2, 8, 13, 2], electronConfig: '[Ar] 3d⁵ 4s²', valence: 7, electronegativity: 1.55,
+    discovery: 'يوهان غوتليب غان (1774)',
+    summaryAr: 'معدن رمادي هام جداً في صناعة الفولاذ، حيث يزيد من صلابته ومقاومته للتآكل، ويدخل في تركيب بطاريات الخلايا الجافة.',
+    usesAr: ['صناعة قضبان السكك الحديدية والخوذ العسكرية المقاومة للصدمات', 'بطاريات ثاني أكسيد المنغنيز الجافة والقلوية', 'عنصر غذائي دقيق ضروري للإنزيمات في الكائنات الحية']
+  },
+  {
+    number: 26, symbol: 'Fe', nameAr: 'حديد', nameEn: 'Iron',
+    mass: 55.845, category: 'transition-metal', period: 4, group: 8,
+    phase: 'solid', melt: 1811, boil: 3134,
+    shells: [2, 8, 14, 2], electronConfig: '[Ar] 3d⁶ 4s²', valence: 3, electronegativity: 1.83,
+    discovery: 'معروف منذ فجر التاريخ (العصر الحديدي)',
+    summaryAr: 'ملك المعادن وركيزة الحضارة والصناعات الإنسانية. يوجد في نواة الأرض ويشكل بروتين الهيموجلوبين الحامل للأكسجين في دم الإنسان.',
+    usesAr: ['صناعة حديد التسليح والجسور وناطحات السحاب', 'صناعة السيارات والسفن والآلات الثقيلة', 'نقل الأكسجين في الدم عبر بروتين الهيموغلوبين']
+  },
+  {
+    number: 27, symbol: 'Co', nameAr: 'كوبالت', nameEn: 'Cobalt',
+    mass: 58.933, category: 'transition-metal', period: 4, group: 9,
+    phase: 'solid', melt: 1768, boil: 3200,
+    shells: [2, 8, 15, 2], electronConfig: '[Ar] 3d⁷ 4s²', valence: 3, electronegativity: 1.88,
+    discovery: 'جورج براندت (1735)',
+    summaryAr: 'فلز مغناطيسي صلب يتميز بلونه الأزرق الزاهي في مركباته، وهو عنصر حيوي في بطاريات الليثيوم وفيتامين B12 الضروري للجسم.',
+    usesAr: ['كاثود بطاريات السيارات الكهربائية والهواتف الذكية', 'صناعة المغناطيسات القوية (سبائك ألنيكو Alnico)', 'فيتامين B12 لعلاج فقر الدم ودعم الجهاز العصبي']
+  },
+  {
+    number: 28, symbol: 'Ni', nameAr: 'نيكل', nameEn: 'Nickel',
+    mass: 58.693, category: 'transition-metal', period: 4, group: 10,
+    phase: 'solid', melt: 1728, boil: 3186,
+    shells: [2, 8, 16, 2], electronConfig: '[Ar] 3d⁸ 4s²', valence: 2, electronegativity: 1.91,
+    discovery: 'أكسل فريدريك كرونستيدت (1751)',
+    summaryAr: 'فلز فضي متين ومقاوم للأكسدة والتآكل، يدخل في صناعة العملات المعدنية والسبائك الفائقة لمحركات الطائرات.',
+    usesAr: ['صناعة العملات النقدية المعدنية', 'بطاريات النيكل-كادميوم والنيكل-هيدريد القابلة لإعادة الشحن', 'السبائك المقاومة للحرارة الفائقة في التوربينات']
+  },
+  {
+    number: 29, symbol: 'Cu', nameAr: 'نحاس', nameEn: 'Copper',
+    mass: 63.546, category: 'transition-metal', period: 4, group: 11,
+    phase: 'solid', melt: 1357.77, boil: 2835,
+    shells: [2, 8, 18, 1], electronConfig: '[Ar] 3d¹⁰ 4s¹', valence: 2, electronegativity: 1.90,
+    discovery: 'معروف منذ عصور ما قبل التاريخ (العصر النحاسي)',
+    summaryAr: 'أول معدن استخرجه واستخدمه الإنسان، ممتاز في التوصيل الكهربائي والحراري ومضاد للبكتيريا والجراثيم بطبيعته.',
+    usesAr: ['الأسلاك والكابلات الكهربائية ولوحات الدوائر الإلكترونية', 'أنابيب السباكة وأنظمة التبريد والتكييف', 'سبائك البرونز والنحاس الأصفر (البرونز والزنك)']
+  },
+  {
+    number: 30, symbol: 'Zn', nameAr: 'زنك (خارصين)', nameEn: 'Zinc',
+    mass: 65.38, category: 'transition-metal', period: 4, group: 12,
+    phase: 'solid', melt: 692.68, boil: 1180,
+    shells: [2, 8, 18, 2], electronConfig: '[Ar] 3d¹⁰ 4s²', valence: 2, electronegativity: 1.65,
+    discovery: 'معروف منذ القدم، واستخلصه أندرياس مارغراف (1746)',
+    summaryAr: 'معدن مقاوم للتآكل يستخدم لجلفنة الحديد وحمايته من الصدأ، ويدخل كعنصر أساسي في تعزيز مناعة الإنسان والتئام الجروح.',
+    usesAr: ['جلفنة الحديد والصلب لمنع تكون الصدأ', 'حبوب مكملات المناعة وأقراص نزلات البرد', 'صناعة البطاريات الجافة وسبائك النحاس الأصفر']
+  },
+  {
+    number: 31, symbol: 'Ga', nameAr: 'غاليوم', nameEn: 'Gallium',
+    mass: 69.723, category: 'post-transition-metal', period: 4, group: 13,
+    phase: 'solid', melt: 302.91, boil: 2673,
+    shells: [2, 8, 18, 3], electronConfig: '[Ar] 3d¹⁰ 4s² 4p¹', valence: 3, electronegativity: 1.81,
+    discovery: 'بول إميل ليكوك دو بوابودران (1875)',
+    summaryAr: 'معدن مدهش ينصهر في راحة اليد عند درجة حرارة 29.7°C. ركيزة أساسية لأشباه الموصلات المتقدمة وإضاءة LED.',
+    usesAr: ['صناعة رقائق زرنيخيد الغاليوم للاتصالات والـ 5G', 'صمامات الثنائي الباعث للضوء (LED) الزرقاء والبنفسجية', 'موازين الحرارة الطبية عالية الدقة الخالية من الزئبق']
+  },
+  {
+    number: 32, symbol: 'Ge', nameAr: 'جرمانيوم', nameEn: 'Germanium',
+    mass: 72.630, category: 'metalloid', period: 4, group: 14,
+    phase: 'solid', melt: 1211.40, boil: 3106,
+    shells: [2, 8, 18, 4], electronConfig: '[Ar] 3d¹⁰ 4s² 4p²', valence: 4, electronegativity: 2.01,
+    discovery: 'كليمنس وينكلر (1886)',
+    summaryAr: 'شبه فلز رمادي لماع كان المادة الأساسية لأول ترانزستور تم اختراعه في العالم، شفاف للأشعة تحت الحمراء.',
+    usesAr: ['عدسات وأنظمة الرؤية الليلية والتصوير الحراري', 'كابلات الألياف الضوئية فائقة السرعة للإنترنت', 'الخلايا الشمسية عالية الكفاءة للمركبات الفضائية']
+  },
+  {
+    number: 33, symbol: 'As', nameAr: 'زرنيخ', nameEn: 'Arsenic',
+    mass: 74.922, category: 'metalloid', period: 4, group: 15,
+    phase: 'solid', melt: 1090, boil: 887,
+    shells: [2, 8, 18, 5], electronConfig: '[Ar] 3d¹⁰ 4s² 4p³', valence: 3, electronegativity: 2.18,
+    discovery: 'جابر بن حيان / ألبرتوس ماغنوس (1250)',
+    summaryAr: 'شبه فلز شهير بسُميته التاريخية. يدخل في صناعة أشباه الموصلات وسبائك تقوية الرصاص ومعالجة بعض أنواع اللوكيميا.',
+    usesAr: ['صناعة أشباه موصلات زرنيخيد الغاليوم للإلكترونيات', 'حفظ الأخشاب من الحشرات والفطريات في البناء', 'أدوية متخصصة لعلاج بعض سرطانات الدم النادرة']
+  },
+  {
+    number: 34, symbol: 'Se', nameAr: 'سيلينيوم', nameEn: 'Selenium',
+    mass: 78.971, category: 'nonmetal', period: 4, group: 16,
+    phase: 'solid', melt: 494, boil: 958,
+    shells: [2, 8, 18, 6], electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁴', valence: 2, electronegativity: 2.55,
+    discovery: 'يونس ياكوب بيرسيليوس (1817)',
+    summaryAr: 'لافلز حساس للضوء، تزداد موصليته الكهربائية بزيادة الضوء الساقط عليه، ومضاد أكسدة حيوي لصحة الغدة الدرقية.',
+    usesAr: ['الخلايا الكهروضوئية وأجهزة القياس الضوئي', 'مضاد أكسدة ومكمل غذائي لدعم وظائف الغدة الدرقية', 'صناعة الزجاج الأحمر اللامع في إشارات المرور']
+  },
+  {
+    number: 35, symbol: 'Br', nameAr: 'بروم', nameEn: 'Bromine',
+    mass: 79.904, category: 'halogen', period: 4, group: 17,
+    phase: 'liquid', melt: 265.8, boil: 332.0,
+    shells: [2, 8, 18, 7], electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁵', valence: 1, electronegativity: 2.96,
+    discovery: 'أنطوان جيروم بالارد (1826)',
+    summaryAr: 'اللافلز الوحيد الذي يكون سائلاً عند درجة حرارة الغرفة. سائل بني-محمر يتبخر بسهولة مطلقا أبخرة خانقة وكاوية.',
+    usesAr: ['مثبطات اللهب للملابس والإلكترونيات لمنع اشتعالها', 'صناعة الأدوية والمهدئات ومطهرات أحواض المياه الساخنة', 'أفلام التصوير الفوتوغرافي التقليدي (بروميد الفضة)']
+  },
+  {
+    number: 36, symbol: 'Kr', nameAr: 'كريبتون', nameEn: 'Krypton',
+    mass: 83.798, category: 'noble-gas', period: 4, group: 18,
+    phase: 'gas', melt: 115.79, boil: 119.93,
+    shells: [2, 8, 18, 8], electronConfig: '[Ar] 3d¹⁰ 4s² 4p⁶', valence: 0, electronegativity: 3.00,
+    discovery: 'ويليام رامزي وموريس ترافرز (1898)',
+    summaryAr: 'غاز نبيل خامل ينبعث منه ضوء أبيض مائل للبياض والأخضر عند التفريغ الكهربائي. استخدم خط طيفه سابقاً لتعريف المتر المعياري.',
+    usesAr: ['إضاءة مدارج هبوط الطائرات في المطارات كثيفة الضباب', 'ليزر الكريبتون لجراحة العيون الدقيقة', 'العزل الحراري المتطور للنوافذ الموفرة للطاقة']
+  },
+  {
+    number: 37, symbol: 'Rb', nameAr: 'روبيديوم', nameEn: 'Rubidium',
+    mass: 85.468, category: 'alkali-metal', period: 5, group: 1,
+    phase: 'solid', melt: 312.46, boil: 961,
+    shells: [2, 8, 18, 8, 1], electronConfig: '[Kr] 5s¹', valence: 1, electronegativity: 0.82,
+    discovery: 'روبرت بنسن وغوستاف كيرشوف (1861)',
+    summaryAr: 'فلز قلوي ناعم يتفاعل بعنف وانفجار مع الماء ويشتعل تلقائياً في الهواء برائحة مميزة ولهب بنفسجي محمر.',
+    usesAr: ['الساعات الذرية المدمجة لأنظمة الملاحة والأقمار الصناعية', 'تجارب التبريد بالليزر ومكثفات بوز-أينشتاين', 'صناعة الخلايا الكهروضوئية والأنابيب المفرغة']
+  },
+  {
+    number: 38, symbol: 'Sr', nameAr: 'سترونشيوم', nameEn: 'Strontium',
+    mass: 87.62, category: 'alkaline-earth', period: 5, group: 2,
+    phase: 'solid', melt: 1050, boil: 1655,
+    shells: [2, 8, 18, 8, 2], electronConfig: '[Kr] 5s²', valence: 2, electronegativity: 0.95,
+    discovery: 'أدير كروفورد (1790)',
+    summaryAr: 'فلز قلوي ترابي فضي يتأكسد بسرعة ليصبح أصفر اللون. يشتهر بإعطائه لوناً أحمر قرمزي ساطع عند حرقه في الألعاب النارية.',
+    usesAr: ['اللون الأحمر الساحر في الألعاب النارية ومشاعل الطوارئ', 'الساعات الذرية البصرية بالغة الدقة (دقة أجزاء من الثانية)', 'معاجين الأسنان للأسنان الحساسة']
+  },
+  {
+    number: 39, symbol: 'Y', nameAr: 'إتريوم', nameEn: 'Yttrium',
+    mass: 88.906, category: 'transition-metal', period: 5, group: 3,
+    phase: 'solid', melt: 1799, boil: 3609,
+    shells: [2, 8, 18, 9, 2], electronConfig: '[Kr] 4d¹ 5s²', valence: 3, electronegativity: 1.22,
+    discovery: 'يوهان غادولين (1794)',
+    summaryAr: 'فلز انتقالي نادر، سمي نسبة لقرية إتربي بالسويد. يدخل في الموصلات فائقة التوصيل عند درجات حرارة مرتفعة وليزر YAG الطبي.',
+    usesAr: ['بلورات ليزر Nd:YAG المستخدم في الجراحة الدقيقة والصناعة', 'الموصلات الفائقة (YBCO) لنقل الكهرباء دون مقاومة', 'سيراميك الأسنان عالي الصلابة المقاوم للكسر (الزركونيا المعالجة بالإتريوم)']
+  },
+  {
+    number: 40, symbol: 'Zr', nameAr: 'زركونيوم', nameEn: 'Zirconium',
+    mass: 91.224, category: 'transition-metal', period: 5, group: 4,
+    phase: 'solid', melt: 2128, boil: 4682,
+    shells: [2, 8, 18, 10, 2], electronConfig: '[Kr] 4d² 5s²', valence: 4, electronegativity: 1.33,
+    discovery: 'مارتن كلابروث (1789)',
+    summaryAr: 'فلز متين شديد المقاومة للتآكل والحرارة، لا يمتص النيوترونات بسهولة مما يجعله المادة المثالية لتبطين الوقود في المفاعلات النووية.',
+    usesAr: ['أنابيب تكسية قضبان الوقود في المفاعلات النووية', 'حجر الزركونيا المكعبة الشبيه بالألماس للمجوهرات', 'تيجان وتلبيسات الأسنان التجميلية فائقة المتانة']
+  },
+  {
+    number: 41, symbol: 'Nb', nameAr: 'نيوبيوم', nameEn: 'Niobium',
+    mass: 92.906, category: 'transition-metal', period: 5, group: 5,
+    phase: 'solid', melt: 2750, boil: 5017,
+    shells: [2, 8, 18, 12, 1], electronConfig: '[Kr] 4d⁴ 5s¹', valence: 5, electronegativity: 1.6,
+    discovery: 'تشارلز هاتشيت (1801)',
+    summaryAr: 'فلز رمادي ناعم يصبح فائق التوصيل عند درجات الحرارة المنخفضة، ويستخدم لتعزيز متانة خطوط أنابيب النفط والغاز.',
+    usesAr: ['مغانط أجهزة الرنين المغناطيسي الفائقة التوصيل (MRI)', 'سبائك أنابيب نقل النفط والغاز والجسور العملاقة', 'محركات الصواريخ الفضائية النفاثة']
+  },
+  {
+    number: 42, symbol: 'Mo', nameAr: 'موليبدنوم', nameEn: 'Molybdenum',
+    mass: 95.95, category: 'transition-metal', period: 5, group: 6,
+    phase: 'solid', melt: 2896, boil: 4912,
+    shells: [2, 8, 18, 13, 1], electronConfig: '[Kr] 4d⁵ 5s¹', valence: 6, electronegativity: 2.16,
+    discovery: 'كارل فلهلم شيله (1778)',
+    summaryAr: 'فلز صلب يتميز بدرجة انصهار فائقة الارتفاع (سادس أعلى درجة انصهار بين العناصر)، يحافظ على متانته تحت أقصى درجات الحرارة.',
+    usesAr: ['صناعة الدروع الحربية وسبائك الصلب فائق الصلابة', 'أقطاب أفران صهر الزجاج الكهربائية', 'عنصر حيوي في إنزيمات تثبيت النيتروجين في النباتات']
+  },
+  {
+    number: 43, symbol: 'Tc', nameAr: 'تكنيشيوم', nameEn: 'Technetium',
+    mass: 98, category: 'transition-metal', period: 5, group: 7,
+    phase: 'solid', melt: 2430, boil: 4538,
+    shells: [2, 8, 18, 13, 2], electronConfig: '[Kr] 4d⁵ 5s²', valence: 7, electronegativity: 1.9,
+    discovery: 'كارلو بيرير وإميليو سيغري (1937)',
+    summaryAr: 'أول عنصر يتم إنتاجه صناعياً في التاريخ (ومن هنا جاء اسمه "تكنيشيوم" أي الاصطناعي). عنصر مشع لا يوجد له نظير مستقر.',
+    usesAr: ['النظير تكنيشيوم-99m في التشخيص والتصوير الطبي النووي لملايين المرضى سنوياً', 'أبحاث امتصاص النظائر المشعة', 'دراسة التآكل الكيميائي للمواد']
+  },
+  {
+    number: 44, symbol: 'Ru', nameAr: 'روثينيوم', nameEn: 'Ruthenium',
+    mass: 101.07, category: 'transition-metal', period: 5, group: 8,
+    phase: 'solid', melt: 2607, boil: 4423,
+    shells: [2, 8, 18, 15, 1], electronConfig: '[Kr] 4d⁷ 5s¹', valence: 8, electronegativity: 2.2,
+    discovery: 'كارل إرنست كلاوس (1844)',
+    summaryAr: 'فلز نادر من مجموعة البلاتين، صلب ومقاوم جداً للتآكل والأحماض، ممتاز كعامل حفاز في الكيمياء الصناعية.',
+    usesAr: ['أقراص التخزين الصلبة (HDD) لمضاعفة سعة التخزين', 'محفزات كيميائية لإنتاج المواد الصيدلانية', 'الوصلات الكهربائية المقاومة للاهتراء والشرر']
+  },
+  {
+    number: 45, symbol: 'Rh', nameAr: 'روديوم', nameEn: 'Rhodium',
+    mass: 102.91, category: 'transition-metal', period: 5, group: 9,
+    phase: 'solid', melt: 2237, boil: 3968,
+    shells: [2, 8, 18, 16, 1], electronConfig: '[Kr] 4d⁸ 5s¹', valence: 6, electronegativity: 2.28,
+    discovery: 'وليم هايد ولاستون (1804)',
+    summaryAr: 'أحد أندر المعادن الثمينة في العالم وأعلاها سعراً. يتميز بلمعان فضي عاكس ومقاومة كيميائية هائلة.',
+    usesAr: ['المحولات الحفازة في عوادم السيارات لتقليل الانبعاثات السامة', 'طلاء المجوهرات والذهب الأبيض لمنحه بريقاً ناصعاً ومقاوماً للخدش', 'المرايا العاكسة للأجهزة البصرية الفلكية']
+  },
+  {
+    number: 46, symbol: 'Pd', nameAr: 'بلاديوم', nameEn: 'Palladium',
+    mass: 106.42, category: 'transition-metal', period: 5, group: 10,
+    phase: 'solid', melt: 1828.05, boil: 3236,
+    shells: [2, 8, 18, 18], electronConfig: '[Kr] 4d¹⁰', valence: 4, electronegativity: 2.20,
+    discovery: 'وليم هايد ولاستون (1802)',
+    summaryAr: 'معدن نبيل ثمين يمتلك قدرة فريدة على امتصاص غاز الهيدروجين بما يصل إلى 900 ضعف حجمه، مما يجعله إسفنجة هيدروجينية مثالية.',
+    usesAr: ['المحولات الحفازة للسيارات الهجينة والحديثة', 'المكثفات الخزفية متعددة الطبقات في الإلكترونيات', 'مجوهرات البلاتين والذهب الأبيض الفاخرة']
+  },
+  {
+    number: 47, symbol: 'Ag', nameAr: 'فضة', nameEn: 'Silver',
+    mass: 107.87, category: 'transition-metal', period: 5, group: 11,
+    phase: 'solid', melt: 1234.93, boil: 2435,
+    shells: [2, 8, 18, 18, 1], electronConfig: '[Kr] 4d¹⁰ 5s¹', valence: 1, electronegativity: 1.93,
+    discovery: 'معروف منذ فجر التاريخ القديم',
+    summaryAr: 'أعلى العناصر توصيلاً للكهرباء والحرارة وأكثرها قدرة على عكس الضوء المرئي على الإطلاق. مضاد طبيعي قوي للجراثيم والميكروبات.',
+    usesAr: ['المجوهرات والحلي والسبائك النقدية', 'الخلايا الشمسية والوصلات الإلكترونية الحساسة', 'الضمادات الطبية والمراهم المضادة للحروق والجراثيم']
+  },
+  {
+    number: 48, symbol: 'Cd', nameAr: 'كادميوم', nameEn: 'Cadmium',
+    mass: 112.41, category: 'transition-metal', period: 5, group: 12,
+    phase: 'solid', melt: 594.22, boil: 1040,
+    shells: [2, 8, 18, 18, 2], electronConfig: '[Kr] 4d¹⁰ 5s²', valence: 2, electronegativity: 1.69,
+    discovery: 'كارل هيرمان وفريدريش ستروماير (1817)',
+    summaryAr: 'فلز لين سام يمتص النيوترونات بكفاءة عالية، ويدخل في تركيب بعض أنواع البطاريات القابلة للشحن والأصباغ الصفراء والحمراء.',
+    usesAr: ['بطاريات النيكل-كادميوم (Ni-Cd)', 'قضبان التحكم لامتصاص النيوترونات في المفاعلات النووية', 'طلاء الحماية المقاوم للتآكل في البيئات البحرية']
+  },
+  {
+    number: 49, symbol: 'In', nameAr: 'إنديوم', nameEn: 'Indium',
+    mass: 114.82, category: 'post-transition-metal', period: 5, group: 13,
+    phase: 'solid', melt: 429.75, boil: 2345,
+    shells: [2, 8, 18, 18, 3], electronConfig: '[Kr] 4d¹⁰ 5s² 5p¹', valence: 3, electronegativity: 1.78,
+    discovery: 'فيرديناند ريتش وثيودور ريختر (1863)',
+    summaryAr: 'فلز شديد الليونة (يصدر صوتاً مثل الصراخ عند ثنيه). مركب أكسيد الإنديوم والقصدير (ITO) شفاف وموصل للكهرباء وهو سر شاشات اللمس.',
+    usesAr: ['شاشات اللمس وشاشات LCD وOLED للهواتف الذكية (ITO)', 'سبائك اللحام منخفضة درجات الانصهار', 'مواد الواجهة الحرارية لتبريد المعالجات المركزية']
+  },
+  {
+    number: 50, symbol: 'Sn', nameAr: 'قصدير', nameEn: 'Tin',
+    mass: 118.71, category: 'post-transition-metal', period: 5, group: 14,
+    phase: 'solid', melt: 505.08, boil: 2875,
+    shells: [2, 8, 18, 18, 4], electronConfig: '[Kr] 4d¹⁰ 5s² 5p²', valence: 4, electronegativity: 1.96,
+    discovery: 'معروف منذ القدم (عصر البرونز)',
+    summaryAr: 'فلز فضي يخلط مع النحاس لتكوين البرونز. لا يصدأ بسهولة فيستخدم لتغليف علب الأغذية المعدنية وحمايتها من التآكل.',
+    usesAr: ['لحام الدوائر الإلكترونية واللوحات الإلكترونية (PCB)', 'طلاء وتغليف علب الأطعمة والمشروبات المحفوظة', 'صناعة سبائك البرونز والأواني المنزلية']
+  },
+  {
+    number: 51, symbol: 'Sb', nameAr: 'أنتيمون (إثمد)', nameEn: 'Antimony',
+    mass: 121.76, category: 'metalloid', period: 5, group: 15,
+    phase: 'solid', melt: 903.78, boil: 1860,
+    shells: [2, 8, 18, 18, 5], electronConfig: '[Kr] 4d¹⁰ 5s² 5p³', valence: 5, electronegativity: 2.05,
+    discovery: 'معروف منذ القدم (كحل الإثمد العربي)',
+    summaryAr: 'شبه فلز لامع وهش عرفه العرب قديماً باسم الإثمد واستخدم في الكحل والطب، ويدخل في تقوية سبائك الرصاص ومثبطات الحرائق.',
+    usesAr: ['مثبطات الحرائق للأقمشة والبلاستيك في مقاعد الطائرات', 'ألواح بطاريات الرصاص الحمضية للسيارات', 'أجهزة الكشف بالأشعة تحت الحمراء']
+  },
+  {
+    number: 52, symbol: 'Te', nameAr: 'تيلوريوم', nameEn: 'Tellurium',
+    mass: 127.60, category: 'metalloid', period: 5, group: 16,
+    phase: 'solid', melt: 722.66, boil: 1261,
+    shells: [2, 8, 18, 18, 6], electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁴', valence: 6, electronegativity: 2.1,
+    discovery: 'فرانز جوزيف مولر فون ريتشنشتاين (1782)',
+    summaryAr: 'شبه فلز نادر ذو بريق فضي يسمى تيمناً بكوكب الأرض (Tellus). مركب تيلوريد الكادميوم يعد من أكفأ المواد للخلايا الشمسية ذات الأغشية الرقيقة.',
+    usesAr: ['الخلايا الشمسية الكهروضوئية من الجيل الثاني', 'المولدات الكهروحرارية لتوليد الكهرباء من الفاقد الحراري', 'أقراص DVD وBlu-ray القابلة لإعادة الكتابة']
+  },
+  {
+    number: 53, symbol: 'I', nameAr: 'يود', nameEn: 'Iodine',
+    mass: 126.90, category: 'halogen', period: 5, group: 17,
+    phase: 'solid', melt: 386.85, boil: 457.4,
+    shells: [2, 8, 18, 18, 7], electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁵', valence: 1, electronegativity: 2.66,
+    discovery: 'برنار كورتوا (1811)',
+    summaryAr: 'مادة صلبة بلورية بنفسجية داكنة تتسامى مباشرة إلى غاز بنفسجي مذهل دون المرور بالحالة السائلة. عنصر ضروري لإفراز هرمونات الغدة الدرقية.',
+    usesAr: ['يود ملح الطعام للوقاية من تضخم الغدة الدرقية', 'المطهرات الطبية ومحاليل تعقيم الجروح والعمليات', 'صبغات التباين في الأشعة المقطعية الطبية (CT scans)']
+  },
+  {
+    number: 54, symbol: 'Xe', nameAr: 'زينون', nameEn: 'Xenon',
+    mass: 131.29, category: 'noble-gas', period: 5, group: 18,
+    phase: 'gas', melt: 161.4, boil: 165.03,
+    shells: [2, 8, 18, 18, 8], electronConfig: '[Kr] 4d¹⁰ 5s² 5p⁶', valence: 0, electronegativity: 2.6,
+    discovery: 'ويليام رامزي وموريس ترافرز (1898)',
+    summaryAr: 'غاز نبيل ثقيل ونادر ينبعث منه ضوء أزرق ساطع، يستخدم في محركات الدفع الأيوني للمركبات الفضائية لرحلات الفضاء السحيق.',
+    usesAr: ['وقود محركات الدفع الأيوني للأقمار الصناعية ومسابير الفضاء', 'مصابيح الزينون الأمامية فائقة السطوع للسيارات', 'أجهزة التخدير العام المتقدمة في الجراحة']
+  },
+  {
+    number: 55, symbol: 'Cs', nameAr: 'سيزيوم', nameEn: 'Caesium',
+    mass: 132.91, category: 'alkali-metal', period: 6, group: 1,
+    phase: 'solid', melt: 301.59, boil: 944,
+    shells: [2, 8, 18, 18, 8, 1], electronConfig: '[Xe] 6s¹', valence: 1, electronegativity: 0.79,
+    discovery: 'روبرت بنسن وغوستاف كيرشوف (1860)',
+    summaryAr: 'أكثر الفلزات استقراراً في النشاط الكيميائي وينصهر عند 28°C. تردد اهتزاز ذرة السيزيوم هو الأساس الدقيق لتعريف "الثانية" في النظام الدولي.',
+    usesAr: ['الساعات الذرية المعيارية التي تضبط توقيت الإنترنت والـ GPS', 'سوائل حفر آبار النفط والغاز عالية الكثافة', 'الخلايا الكهروضوئية وأجهزة الرؤية الليلية']
+  },
+  {
+    number: 56, symbol: 'Ba', nameAr: 'باريوم', nameEn: 'Barium',
+    mass: 137.33, category: 'alkaline-earth', period: 6, group: 2,
+    phase: 'solid', melt: 1000, boil: 2170,
+    shells: [2, 8, 18, 18, 8, 2], electronConfig: '[Xe] 6s²', valence: 2, electronegativity: 0.89,
+    discovery: 'كارل فلهلم شيله (1772)',
+    summaryAr: 'فلز قلوي ترابي ناعم يتأكسد بسرعة فائقة في الهواء، ويعطي لوناً أخضر تفاحياً مبهراً في الألعاب النارية، ومركباته تحجب الأشعة السينية.',
+    usesAr: ['مشروب الباريوم كصبغة تباين للأشعة السينية للجهاز الهضمي', 'اللون الأخضر اللامع في الألعاب النارية الاحتفالية', 'طين حفر آبار النفط لتثبيت ضغط قاع البئر']
+  },
+  {
+    number: 57, symbol: 'La', nameAr: 'لانثانوم', nameEn: 'Lanthanum',
+    mass: 138.91, category: 'lanthanide', period: 6, group: 3,
+    phase: 'solid', melt: 1193, boil: 3737,
+    shells: [2, 8, 18, 18, 9, 2], electronConfig: '[Xe] 5d¹ 6s²', valence: 3, electronegativity: 1.10,
+    discovery: 'كارل غوستاف موساندر (1839)',
+    summaryAr: 'رأس فئة اللانثانيدات (العناصر الأرضية النادرة). فلز فضي ناعم يضاف للزجاج لزيادة معامل الانكسار وتحسين جودة العدسات.',
+    usesAr: ['عدسات الكاميرات الاحترافية والتلسكوبات الفلكية', 'بطاريات سيارات الهايبرد (النيكل-ميتال هيدريد)', 'أقطاب الإضاءة القوسية الكربونية في السينما']
+  },
+  {
+    number: 58, symbol: 'Ce', nameAr: 'سيريوم', nameEn: 'Cerium',
+    mass: 140.12, category: 'lanthanide', period: 6, group: null,
+    phase: 'solid', melt: 1068, boil: 3716,
+    shells: [2, 8, 18, 19, 9, 2], electronConfig: '[Xe] 4f¹ 5d¹ 6s²', valence: 4, electronegativity: 1.12,
+    discovery: 'مارتن كلابروث ويونس ياكوب بيرسيليوس (1803)',
+    summaryAr: 'أكثر العناصر الأرضية النادرة وفرة. يشتعل بسهولة عند احتكاكه بالحديد لإنتاج شرارات متوهجة (حجر الولاعات).',
+    usesAr: ['حجر القدح والشرر في الولاعات والمشاعل', 'تلميع شاشات الهواتف والزجاج البصري الدقيق', 'المحولات الحفازة لتنقية عوادم محركات الديزل']
+  },
+  {
+    number: 59, symbol: 'Pr', nameAr: 'براسيوديميوم', nameEn: 'Praseodymium',
+    mass: 140.91, category: 'lanthanide', period: 6, group: null,
+    phase: 'solid', melt: 1208, boil: 3793,
+    shells: [2, 8, 18, 21, 8, 2], electronConfig: '[Xe] 4f³ 6s²', valence: 3, electronegativity: 1.13,
+    discovery: 'كارل أوير فون فنسباخ (1885)',
+    summaryAr: 'فلز ناعم فضي يمنح الزجاج لوناً أصفر مخضراً مميزاً، ويستخدم في نظارات حماية عيون اللحامين من الوهج الضار.',
+    usesAr: ['نظارات حماية اللحامين وعمال صهر المعادن', 'صناعة مغناطيسات النيوديميوم القوية المقاومة للحرارة', 'أصباغ السيراميك والمينا الصفراء الفاخرة']
+  },
+  {
+    number: 60, symbol: 'Nd', nameAr: 'نيوديميوم', nameEn: 'Neodymium',
+    mass: 144.24, category: 'lanthanide', period: 6, group: null,
+    phase: 'solid', melt: 1297, boil: 3347,
+    shells: [2, 8, 18, 22, 8, 2], electronConfig: '[Xe] 4f⁴ 6s²', valence: 3, electronegativity: 1.14,
+    discovery: 'كارل أوير فون فنسباخ (1885)',
+    summaryAr: 'سر أقوى المغانط الدائمة المعروفة للبشرية (مغانط النيوديميوم NdFeB)، والتي غيرت وجه صناعة الإلكترونيات ومحركات السيارات الكهربائية.',
+    usesAr: ['مغانط محركات السيارات الكهربائية وتوربينات الرياح', 'سماعات الرأس والهواتف الذكية ومكبرات الصوت عالية النقاء', 'ليزر Nd:YAG المستخدم في جراحات العيون وتجميل الجلد']
+  },
+  {
+    number: 74, symbol: 'W', nameAr: 'تنجستن (فولفرام)', nameEn: 'Tungsten',
+    mass: 183.84, category: 'transition-metal', period: 6, group: 6,
+    phase: 'solid', melt: 3695, boil: 5828,
+    shells: [2, 8, 18, 32, 12, 2], electronConfig: '[Xe] 4f¹⁴ 5d⁴ 6s²', valence: 6, electronegativity: 2.36,
+    discovery: 'خوان وفاستو إلهويار (1783)',
+    summaryAr: 'أعلى العناصر الكيميائية درجة انصهار على الإطلاق (3422°C) وكثافة تضاهي الذهب. يتحمل درجات حرارة أسطورية دون أن ينصهر.',
+    usesAr: ['فتائل المصابيح الكهربائية المتوهجة التقليدية', 'رؤوس أدوات الحفر وقطع المعادن فائقة الصلابة (كربيد التنجستن)', 'فوهات محركات الصواريخ والدروع الواقية من الإشعاع']
+  },
+  {
+    number: 78, symbol: 'Pt', nameAr: 'بلاتين (ذهب أبيض)', nameEn: 'Platinum',
+    mass: 195.08, category: 'transition-metal', period: 6, group: 10,
+    phase: 'solid', melt: 2041.4, boil: 4098,
+    shells: [2, 8, 18, 32, 17, 1], electronConfig: '[Xe] 4f¹⁴ 5d⁹ 6s¹', valence: 4, electronegativity: 2.28,
+    discovery: 'أنطونيو دي أولوا (1735)',
+    summaryAr: 'أثمن المعادن النبيلة، كثيف جداً ومقاوم للتآكل ولا يتأثر بأشد الأحماض قوة. أساسي لصناعة الأدوية المضادة للأورام.',
+    usesAr: ['عقاقير علاج السرطان والأورام (مثل السيسبلاتين Cisplatin)', 'المحولات الحفازة للسيارات لتقليل التلوث البيئي', 'المجوهرات الراقية وأقطاب قياس المختبرات الدقيقة']
+  },
+  {
+    number: 79, symbol: 'Au', nameAr: 'ذهب', nameEn: 'Gold',
+    mass: 196.97, category: 'transition-metal', period: 6, group: 11,
+    phase: 'solid', melt: 1337.33, boil: 3129,
+    shells: [2, 8, 18, 32, 18, 1], electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s¹', valence: 3, electronegativity: 2.54,
+    discovery: 'معروف ومقدس منذ آلاف السنين في كل الحضارات',
+    summaryAr: 'ملك المعادن النفيسة عبر التاريخ. لا يصدأ ولا يتأكسد أبدًا، وأعلى العناصر قابلية للسحب والطرق (يمكن صنع ورقة بسماكة ذرة واحدة).',
+    usesAr: ['العملات النقدية والمجوهرات والاحتياطي المالي الدولي', 'الوصلات الدقيقة في الرقاقات الإلكترونية لمنع الصدأ', 'طلاء واقي لخوذ رواد الفضاء ونوافذ المحطات لحجب الأشعة']
+  },
+  {
+    number: 80, symbol: 'Hg', nameAr: 'زئبق', nameEn: 'Mercury',
+    mass: 200.59, category: 'transition-metal', period: 6, group: 12,
+    phase: 'liquid', melt: 234.32, boil: 629.88,
+    shells: [2, 8, 18, 32, 18, 2], electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s²', valence: 2, electronegativity: 2.00,
+    discovery: 'معروف منذ القدم',
+    summaryAr: 'الفلز الوحيد الذي يوجد في الحالة السائلة عند درجة حرارة الغرفة وضغطها. فضي براق كثيف جداً وسام.',
+    usesAr: ['موازين الحرارة والضغط الجوي (البارومتر) التقليدية', 'مصابيح الفلورسنت الموفرة للطاقة (أبخرة الزئبق)', 'حشوات الأسنان المعدنية التقليدية (الملغم الملحي)']
+  },
+  {
+    number: 82, symbol: 'Pb', nameAr: 'رصاص', nameEn: 'Lead',
+    mass: 207.2, category: 'post-transition-metal', period: 6, group: 14,
+    phase: 'solid', melt: 600.61, boil: 2022,
+    shells: [2, 8, 18, 32, 18, 4], electronConfig: '[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²', valence: 4, electronegativity: 2.33,
+    discovery: 'معروف منذ العصور القديمة',
+    summaryAr: 'فلز كثيف لين وثقيل جداً، ممتاز في امتصاص الإشعاعات الضارة كالأشعة السينية وأشعة غاما، ولكنه سام للجسم.',
+    usesAr: ['سترات ودروع الحماية من الأشعة السينية في المستشفيات', 'بطاريات الرصاص الحمضية لبدء تشغيل السيارات', 'أوزان الغوص وتثبيت السفن البحرية']
+  },
+  {
+    number: 92, symbol: 'U', nameAr: 'يورانيوم', nameEn: 'Uranium',
+    mass: 238.03, category: 'actinide', period: 7, group: null,
+    phase: 'solid', melt: 1405.3, boil: 4404,
+    shells: [2, 8, 18, 32, 21, 9, 2], electronConfig: '[Rn] 5f³ 6d¹ 7s²', valence: 6, electronegativity: 1.38,
+    discovery: 'مارتن كلابروث (1789)',
+    summaryAr: 'أثقل العناصر الطبيعية وفرة في القشرة الأرضية. نظيره يورانيوم-235 هو الوقود الرئيسي المستخدم في المفاعلات النووية لتوليد الكهرباء.',
+    usesAr: ['توليد الكهرباء النظيفة في محطات الطاقة النووية', 'دروع الدبابات والذخائر الخارقة للدروع (اليورانيوم المنضب)', 'تقدير عمر الصخور الجيولوجية والأرض بالتحلل الإشعاعي']
+  },
+  {
+    number: 94, symbol: 'Pu', nameAr: 'بلوتونيوم', nameEn: 'Plutonium',
+    mass: 244, category: 'actinide', period: 7, group: null,
+    phase: 'solid', melt: 912.5, boil: 3505,
+    shells: [2, 8, 18, 32, 24, 8, 2], electronConfig: '[Rn] 5f⁶ 7s²', valence: 6, electronegativity: 1.28,
+    discovery: 'غلين سيبورغ وزملاؤه (1940)',
+    summaryAr: 'عنصر اصطناعي مشع قوي ينبعث منه حرارة ذاتية تكفي لغلي الماء، وهو مصدر الطاقة لمركبات الفضاء السحيق التي تسافر خارج المجموعة الشمسية.',
+    usesAr: ['مولدات الطاقة الكهروحرارية للنظائر المشعة (RTG) لمسبار فوياجر وكيوريوسيتي', 'وقود للمفاعلات النووية المتقدمة سريعة النيوترونات', 'أبحاث الفيزياء النووية المتقدمة']
+  }
+];
+
+// باقي العناصر الاصطناعية والنادرة لإكمال الـ 118 عنصراً
+const FULL_ELEMENT_MAP = {
+  61: { s: 'Pm', nAr: 'بروميثيوم', nEn: 'Promethium', m: 145, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  62: { s: 'Sm', nAr: 'ساماريوم', nEn: 'Samarium', m: 150.36, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  63: { s: 'Eu', nAr: 'يوروبيوم', nEn: 'Europium', m: 151.96, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  64: { s: 'Gd', nAr: 'جادولينيوم', nEn: 'Gadolinium', m: 157.25, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  65: { s: 'Tb', nAr: 'تيربيوم', nEn: 'Terbium', m: 158.93, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  66: { s: 'Dy', nAr: 'ديسبروسيوم', nEn: 'Dysprosium', m: 162.50, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  67: { s: 'Ho', nAr: 'هولميوم', nEn: 'Holmium', m: 164.93, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  68: { s: 'Er', nAr: 'إربيوم', nEn: 'Erbium', m: 167.26, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  69: { s: 'Tm', nAr: 'ثوليوم', nEn: 'Thulium', m: 168.93, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  70: { s: 'Yb', nAr: 'إتربيوم', nEn: 'Ytterbium', m: 173.05, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  71: { s: 'Lu', nAr: 'لوتيتيوم', nEn: 'Lutetium', m: 174.97, c: 'lanthanide', p: 6, g: null, ph: 'solid' },
+  72: { s: 'Hf', nAr: 'هافنيوم', nEn: 'Hafnium', m: 178.49, c: 'transition-metal', p: 6, g: 4, ph: 'solid' },
+  73: { s: 'Ta', nAr: 'تانتالوم', nEn: 'Tantalum', m: 180.95, c: 'transition-metal', p: 6, g: 5, ph: 'solid' },
+  75: { s: 'Re', nAr: 'رينيوم', nEn: 'Rhenium', m: 186.21, c: 'transition-metal', p: 6, g: 7, ph: 'solid' },
+  76: { s: 'Os', nAr: 'أوزميوم', nEn: 'Osmium', m: 190.23, c: 'transition-metal', p: 6, g: 8, ph: 'solid' },
+  77: { s: 'Ir', nAr: 'إيريديوم', nEn: 'Iridium', m: 192.22, c: 'transition-metal', p: 6, g: 9, ph: 'solid' },
+  81: { s: 'Tl', nAr: 'ثاليوم', nEn: 'Thallium', m: 204.38, c: 'post-transition-metal', p: 6, g: 13, ph: 'solid' },
+  83: { s: 'Bi', nAr: 'بزموت', nEn: 'Bismuth', m: 208.98, c: 'post-transition-metal', p: 6, g: 15, ph: 'solid' },
+  84: { s: 'Po', nAr: 'بولونيوم', nEn: 'Polonium', m: 209, c: 'post-transition-metal', p: 6, g: 16, ph: 'solid' },
+  85: { s: 'At', nAr: 'أستاتين', nEn: 'Astatine', m: 210, c: 'halogen', p: 6, g: 17, ph: 'solid' },
+  86: { s: 'Rn', nAr: 'رادون', nEn: 'Radon', m: 222, c: 'noble-gas', p: 6, g: 18, ph: 'gas' },
+  87: { s: 'Fr', nAr: 'فرانسيوم', nEn: 'Francium', m: 223, c: 'alkali-metal', p: 7, g: 1, ph: 'solid' },
+  88: { s: 'Ra', nAr: 'راديوم', nEn: 'Radium', m: 226, c: 'alkaline-earth', p: 7, g: 2, ph: 'solid' },
+  89: { s: 'Ac', nAr: 'أكتينيوم', nEn: 'Actinium', m: 227, c: 'actinide', p: 7, g: 3, ph: 'solid' },
+  90: { s: 'Th', nAr: 'ثوريوم', nEn: 'Thorium', m: 232.04, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  91: { s: 'Pa', nAr: 'بروتكتينيوم', nEn: 'Protactinium', m: 231.04, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  93: { s: 'Np', nAr: 'نبتونيوم', nEn: 'Neptunium', m: 237, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  95: { s: 'Am', nAr: 'أمريسيوم', nEn: 'Americium', m: 243, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  96: { s: 'Cm', nAr: 'كوريوم', nEn: 'Curium', m: 247, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  97: { s: 'Bk', nAr: 'بركليوم', nEn: 'Berkelium', m: 247, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  98: { s: 'Cf', nAr: 'كاليفورنيوم', nEn: 'Californium', m: 251, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  99: { s: 'Es', nAr: 'أينشتاينيوم', nEn: 'Einsteinium', m: 252, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  100: { s: 'Fm', nAr: 'فيرميوم', nEn: 'Fermium', m: 257, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  101: { s: 'Md', nAr: 'مندليفيوم', nEn: 'Mendelevium', m: 258, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  102: { s: 'No', nAr: 'نوبليوم', nEn: 'Nobelium', m: 259, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  103: { s: 'Lr', nAr: 'لورنسيوم', nEn: 'Lawrencium', m: 266, c: 'actinide', p: 7, g: null, ph: 'solid' },
+  104: { s: 'Rf', nAr: 'رذرفورديوم', nEn: 'Rutherfordium', m: 267, c: 'transition-metal', p: 7, g: 4, ph: 'solid' },
+  105: { s: 'Db', nAr: 'دوبنيوم', nEn: 'Dubnium', m: 268, c: 'transition-metal', p: 7, g: 5, ph: 'solid' },
+  106: { s: 'Sg', nAr: 'سيبورغيوم', nEn: 'Seaborgium', m: 269, c: 'transition-metal', p: 7, g: 6, ph: 'solid' },
+  107: { s: 'Bh', nAr: 'بوريوم', nEn: 'Bohrium', m: 270, c: 'transition-metal', p: 7, g: 7, ph: 'solid' },
+  108: { s: 'Hs', nAr: 'هاسيوم', nEn: 'Hassium', m: 277, c: 'transition-metal', p: 7, g: 8, ph: 'solid' },
+  109: { s: 'Mt', nAr: 'مايتنريوم', nEn: 'Meitnerium', m: 278, c: 'transition-metal', p: 7, g: 9, ph: 'solid' },
+  110: { s: 'Ds', nAr: 'دارمشتاتيوم', nEn: 'Darmstadtium', m: 281, c: 'transition-metal', p: 7, g: 10, ph: 'solid' },
+  111: { s: 'Rg', nAr: 'رونتجينيوم', nEn: 'Roentgenium', m: 282, c: 'transition-metal', p: 7, g: 11, ph: 'solid' },
+  112: { s: 'Cn', nAr: 'كوبرنيسيوم', nEn: 'Copernicium', m: 285, c: 'transition-metal', p: 7, g: 12, ph: 'solid' },
+  113: { s: 'Nh', nAr: 'نيهونيوم', nEn: 'Nihonium', m: 286, c: 'post-transition-metal', p: 7, g: 13, ph: 'solid' },
+  114: { s: 'Fl', nAr: 'فليروفيوم', nEn: 'Flerovium', m: 289, c: 'post-transition-metal', p: 7, g: 14, ph: 'solid' },
+  115: { s: 'Mc', nAr: 'موسكوفيوم', nEn: 'Moscovium', m: 290, c: 'post-transition-metal', p: 7, g: 15, ph: 'solid' },
+  116: { s: 'Lv', nAr: 'ليفرموريوم', nEn: 'Livermorium', m: 293, c: 'post-transition-metal', p: 7, g: 16, ph: 'solid' },
+  117: { s: 'Ts', nAr: 'تينيسين', nEn: 'Tennessine', m: 294, c: 'halogen', p: 7, g: 17, ph: 'solid' },
+  118: { s: 'Og', nAr: 'أوغانيسون', nEn: 'Oganesson', m: 294, c: 'noble-gas', p: 7, g: 18, ph: 'gas' }
+};
+
+function generateElectronShells(num) {
+  const shellMax = [2, 8, 18, 32, 50, 72, 98];
+  let remaining = num;
+  const shells = [];
+  for (let max of shellMax) {
+    if (remaining <= 0) break;
+    let inShell = Math.min(remaining, max);
+    shells.push(inShell);
+    remaining -= inShell;
+  }
+  return shells;
+}
+
+const ALL_ELEMENTS = [];
+const existingNumbers = new Set(ELEMENTS.map(e => e.number));
+
+for (let i = 1; i <= 118; i++) {
+  if (existingNumbers.has(i)) {
+    ALL_ELEMENTS.push(ELEMENTS.find(e => e.number === i));
+  } else if (FULL_ELEMENT_MAP[i]) {
+    const raw = FULL_ELEMENT_MAP[i];
+    ALL_ELEMENTS.push({
+      number: i,
+      symbol: raw.s,
+      nameAr: raw.nAr,
+      nameEn: raw.nEn,
+      mass: raw.m,
+      category: raw.c,
+      period: raw.p,
+      group: raw.g,
+      phase: raw.ph,
+      melt: null,
+      boil: null,
+      shells: generateElectronShells(i),
+      electronConfig: `عنصر فائق الثقل (Z=${i})`,
+      valence: i > 18 ? ((i - 2) % 8 || 2) : 2,
+      electronegativity: null,
+      discovery: 'مختبرات الأبحاث النووية والفيزيائية المتقدمة',
+      summaryAr: `عنصر اصطناعي مشع فائق الثقل تم تخليقه في المختبرات النووية المتطورة. يتحلل بسرعة فائقة جداً.`,
+      usesAr: ['أبحاث فيزياء الجسيمات والنوى الذرية الفائقة', 'استكشاف جزيرة الاستقرار النووي النظرية']
+    });
+  }
+}
+
+
+// --- MODULE SEPARATOR ---
+
+// قاعدة بيانات التفاعلات الكيميائية والمركبات والشروحات العلمية
+// Chemical Reactions, Molecule Structures & Educational Feedback Dataset
+
+const REACTIONS = [
+  {
+    id: 'h2o',
+    reactants: { H: 2, O: 1 },
+    formula: 'H₂O',
+    nameAr: 'الماء (أكسيد الهيدروجين)',
+    nameEn: 'Water (Dihydrogen Monoxide)',
+    equation: '2H + O ➔ H₂O',
+    typeAr: 'تفاعل احتراق الهيدروجين وفرقعة غازية (Pop Test) وتكثف الماء',
+    energy: 'exothermic',
+    temperature: 'يطلق طاقة حرارية ولهب أزرق وفرقعة مميزة (Pop sound)',
+    state: 'سائل وبخار متكثف',
+    safety: 'آمن عند تكونه، التفاعل عنيف وقابل للاشتعال أثناء الخلط',
+    visualEffect: 'pop_explosion',
+    soundEffect: 'pop',
+    color: '#06B6D4',
+    summaryAr: 'المركب الأساسي لجميع أشكال الحياة وسر وجودها على كوكب الأرض. عند اشتعال الهيدروجين مع الأكسجين يحدث صوت فرقعة حادة وينتج بخار الماء الذي يتكثف لقطرات سائلة!',
+    applicationsAr: [
+      'شرب وإبقاء جميع الكائنات الحية على قيد الحياة',
+      'المذيب العام لآلاف المركبات في الكيمياء والأحياء',
+      'توليد الطاقة الكهرومائية وتبريد محطات الكهرباء والمفاعلات'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'O', x: 0, y: -20, z: 0, radius: 24, color: '#EF4444' },
+        { symbol: 'H', x: -45, y: 25, z: 0, radius: 14, color: '#FFFFFF' },
+        { symbol: 'H', x: 45, y: 25, z: 0, radius: 14, color: '#FFFFFF' }
+      ],
+      bonds: [
+        { from: 0, to: 1 },
+        { from: 0, to: 2 }
+      ]
+    }
+  },
+  {
+    id: 'nacl',
+    reactants: { Na: 1, Cl: 1 },
+    formula: 'NaCl',
+    nameAr: 'كلوريد الصوديوم (ملح الطعام)',
+    nameEn: 'Sodium Chloride (Table Salt)',
+    equation: 'Na + Cl ➔ NaCl',
+    typeAr: 'تفاعل أكسدة واختزال أيوني عنيف مصحوب بنار ولهب أصفر ساطع',
+    energy: 'exothermic',
+    temperature: 'طارد للحرارة بشدة مع وميض أصفر ساطع ودخان أبيض',
+    state: 'صلب بلوري أبيض',
+    safety: 'الناتج آمن للطعام، المتفاعلات شديدة الخطورة والسمية بانفرادها',
+    visualEffect: 'fire_flames',
+    soundEffect: 'fire',
+    color: '#F8FAFC',
+    summaryAr: 'تفاعل كلاسيكي ناري مبهر بين فلز قلوي متفجر (الصوديوم) وغاز هالوجيني سام وخانق (الكلور)، ليشتعلا بلهب أصفر ساطع وينتجا ملح الطعام الأبيض الضروري لصحة الإنسان!',
+    applicationsAr: [
+      'تتبيل وحفظ الأطعمة في جميع المطابخ العالمية',
+      'المحاليل الملحية الطبية (Saline Solution) لترطيب المرضى',
+      'إذابة الثلوج والجليد عن الطرق السريعة في الشتاء'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'Na', x: -35, y: 0, z: 0, radius: 22, color: '#9333EA' },
+        { symbol: 'Cl', x: 35, y: 0, z: 0, radius: 28, color: '#22C55E' }
+      ],
+      bonds: [
+        { from: 0, to: 1 }
+      ]
+    }
+  },
+  {
+    id: 'mgo',
+    reactants: { Mg: 1, O: 1 },
+    formula: 'MgO',
+    nameAr: 'أكسيد المغنيسيوم (المغنيسيا)',
+    nameEn: 'Magnesium Oxide',
+    equation: 'Mg + O ➔ MgO',
+    typeAr: 'تفاعل احتراق ناري شديد التوهج (لهب أبيض ساطع)',
+    energy: 'exothermic',
+    temperature: 'وميض ضوئي ناري أبيض شديد التوهج وحرارة هائلة (تتجاوز 2800°C)',
+    state: 'مسحوق صلب أبيض عالي النقاوة',
+    safety: 'تجنب النظر المباشر للهب لحماية شبكية العين من الأشعة فوق البنفسجية',
+    visualEffect: 'fire_flames',
+    soundEffect: 'fire',
+    color: '#F1F5F9',
+    summaryAr: 'عند اشتعال شريط المغنيسيوم في الهواء يتفاعل بشراهة مع الأكسجين منتجاً ضوءاً نارياً أبيض مبهراً ومسحوق أكسيد المغنيسيوم المقاوم للحرارة.',
+    applicationsAr: [
+      'تبطين أفران صهر الحديد والمعادن لمقاومة الحرارة الشديدة',
+      'بودرة مضادة للتعرق والانزلاق لرافعي الأثقال والجمباز',
+      'أدوية مضادات الحموضة وعلاج عسر الهضم'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'Mg', x: -30, y: 0, z: 0, radius: 24, color: '#F97316' },
+        { symbol: 'O', x: 30, y: 0, z: 0, radius: 22, color: '#EF4444' }
+      ],
+      bonds: [
+        { from: 0, to: 1 }
+      ]
+    }
+  },
+  {
+    id: 'co2',
+    reactants: { C: 1, O: 2 },
+    formula: 'CO₂',
+    nameAr: 'ثاني أكسيد الكربون',
+    nameEn: 'Carbon Dioxide',
+    equation: 'C + 2O ➔ CO₂',
+    typeAr: 'تفاعل احتراق ناري تام (طارد للحرارة)',
+    energy: 'exothermic',
+    temperature: 'احتراق مع انبعاث حرارة ولهب ودخان برتقالي',
+    state: 'غاز عديم اللون والرائحة',
+    safety: 'غير قابل للاشتعال، يسبب الاختناق بتركيزات مرتفعة',
+    visualEffect: 'fire_flames',
+    soundEffect: 'fire',
+    color: '#94A3B8',
+    summaryAr: 'غاز خطي التناظر ينتج عن احتراق الكربون في وفرة من الأكسجين مع انبعاث نار وحرارة، وتستهلكه النباتات في عملية البناء الضوئي لصنع الغذاء وإطلاق الأكسجين.',
+    applicationsAr: [
+      'غاز التمثيل الضوئي لنمو الأشجار والنباتات',
+      'إطفاء الحرائق في مطافئ الحريق الحديثة (خنق اللهب)',
+      'كربنة المشروبات الغازية وصناعة الثلج الجاف'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'C', x: 0, y: 0, z: 0, radius: 20, color: '#475569' },
+        { symbol: 'O', x: -60, y: 0, z: 0, radius: 22, color: '#EF4444' },
+        { symbol: 'O', x: 60, y: 0, z: 0, radius: 22, color: '#EF4444' }
+      ],
+      bonds: [
+        { from: 0, to: 1, order: 2 },
+        { from: 0, to: 2, order: 2 }
+      ]
+    }
+  },
+  {
+    id: 'ch4',
+    reactants: { C: 1, H: 4 },
+    formula: 'CH₄',
+    nameAr: 'غاز الميثان (الغاز الطبيعي)',
+    nameEn: 'Methane (Natural Gas)',
+    equation: 'C + 4H ➔ CH₄',
+    typeAr: 'تفاعل هدرجة وتكوين غاز هيدروكربوني سريع الاشتعال',
+    energy: 'exothermic',
+    temperature: 'طارد للحرارة وقابل للاشتعال بلهب أزرق',
+    state: 'غاز عديم اللون والرائحة شديد الاشتعال',
+    safety: 'قابل للاشتعال والانفجار عند خلطه بالهواء والشرر',
+    visualEffect: 'fire_flames',
+    soundEffect: 'fire',
+    color: '#38BDF8',
+    summaryAr: 'أبسط مركب هيدروكربوني على الإطلاق وأحد المكونات الرئيسية للغاز الطبيعي (أكثر من 90%). يحترق بلهب أزرق هادئ ونظيف.',
+    applicationsAr: [
+      'وقود التدفئة المركزية والطبخ في المنازل',
+      'توليد الكهرباء في محطات التوربينات الغازية النظيفة',
+      'المادة الخام لإنتاج غاز الهيدروجين والميثانول'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'C', x: 0, y: 0, z: 0, radius: 22, color: '#475569' },
+        { symbol: 'H', x: 0, y: -45, z: 0, radius: 12, color: '#FFFFFF' },
+        { symbol: 'H', x: -40, y: 25, z: 0, radius: 12, color: '#FFFFFF' },
+        { symbol: 'H', x: 40, y: 25, z: 0, radius: 12, color: '#FFFFFF' },
+        { symbol: 'H', x: 0, y: 10, z: 35, radius: 12, color: '#FFFFFF' }
+      ],
+      bonds: [
+        { from: 0, to: 1 },
+        { from: 0, to: 2 },
+        { from: 0, to: 3 },
+        { from: 0, to: 4 }
+      ]
+    }
+  },
+  {
+    id: 'hcl',
+    reactants: { H: 1, Cl: 1 },
+    formula: 'HCl',
+    nameAr: 'كلوريد الهيدروجين (حمض الهيدروكلوريك)',
+    nameEn: 'Hydrogen Chloride (Hydrochloric Acid)',
+    equation: 'H + Cl ➔ HCl',
+    typeAr: 'تفاعل فرقعة تساهمية حادة وانبعاث رذاذ حمضي',
+    energy: 'exothermic',
+    temperature: 'طارد للحرارة مع فرقعة وتصاعد أبخرة بيضاء',
+    state: 'غاز / محلول مائي حمضي كاوٍ',
+    safety: 'غاز حارق وكاوٍ للجهاز التنفسي، يذوب بشراهة في الماء',
+    visualEffect: 'pop_explosion',
+    soundEffect: 'pop',
+    color: '#F43F5E',
+    summaryAr: 'اتحاد غازي الهيدروجين والكلور ينتج فرقعة سريعة ويتكون غاز كلوريد الهيدروجين، الذي يذوب في الماء ليكون حمض المعدة الضروري لهضم الطعام!',
+    applicationsAr: [
+      'حمض المعدة البيولوجي لهضم البروتينات وقتل الجراثيم',
+      'تنظيف وتخليص المعادن والصلب من الصدأ (Pickling)',
+      'إنتاج مركبات الكلوريدات العضوية وغير العضوية'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'H', x: -30, y: 0, z: 0, radius: 14, color: '#FFFFFF' },
+        { symbol: 'Cl', x: 30, y: 0, z: 0, radius: 26, color: '#22C55E' }
+      ],
+      bonds: [
+        { from: 0, to: 1 }
+      ]
+    }
+  },
+  {
+    id: 'nh3',
+    reactants: { N: 1, H: 3 },
+    formula: 'NH₃',
+    nameAr: 'الأمونيا (غاز النشادر)',
+    nameEn: 'Ammonia',
+    equation: 'N + 3H ➔ NH₃',
+    typeAr: 'تفاعل تكوين هابر-بوش مصحوب ببخار وفوران غازي',
+    energy: 'exothermic',
+    temperature: 'إطلاق حرارة وبخار غازي متصاعد',
+    state: 'غاز نفاذ الرائحة يذوب بشدة في الماء',
+    safety: 'غاز كاوٍ للعيون والجهاز التنفسي',
+    visualEffect: 'water_steam',
+    soundEffect: 'water',
+    color: '#A855F7',
+    summaryAr: 'ركيزة الزراعة الحديثة التي أطعمت العالم. اختراع طريقة إنتاجها (طريقة هابر-بوش) غير مجرى التاريخ، حيث تصنع منها معظم الأسمدة النيتروجينية.',
+    applicationsAr: [
+      'صناعة الأسمدة الزراعية النيتروجينية لنمو المحاصيل',
+      'منظفات الزجاج والأرضيات المنزلية شديدة الفعالية',
+      'غاز تبريد في مصانع التجميد والمبردات الضخمة'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'N', x: 0, y: -15, z: 0, radius: 22, color: '#3B82F6' },
+        { symbol: 'H', x: -35, y: 20, z: -10, radius: 12, color: '#FFFFFF' },
+        { symbol: 'H', x: 35, y: 20, z: -10, radius: 12, color: '#FFFFFF' },
+        { symbol: 'H', x: 0, y: 25, z: 25, radius: 12, color: '#FFFFFF' }
+      ],
+      bonds: [
+        { from: 0, to: 1 },
+        { from: 0, to: 2 },
+        { from: 0, to: 3 }
+      ]
+    }
+  },
+  {
+    id: 'h2o2',
+    reactants: { H: 2, O: 2 },
+    formula: 'H₂O₂',
+    nameAr: 'فوق أكسيد الهيدروجين (ماء الأكسجين الفوار)',
+    nameEn: 'Hydrogen Peroxide',
+    equation: '2H + 2O ➔ H₂O₂',
+    typeAr: 'تفاعل أكسدة مائي فوار مصحوب بفقاعات ورذاذ',
+    energy: 'exothermic',
+    temperature: 'سائل فوار يطلق فقاعات غاز الأكسجين ورذاذ مائي',
+    state: 'سائل مائي شفاف فوار',
+    safety: 'مؤكسد قوي ومبيض، يجب التعامل معه بحذر بالتركيزات العالية',
+    visualEffect: 'water_steam',
+    soundEffect: 'water',
+    color: '#67E8F9',
+    summaryAr: 'سائل يشبه الماء ظاهرياً مع ذرة أكسجين إضافية، يفور ويطلق فقاعات أكسجين نشطة عند ملامسة الشوائب، مما يجعله مطهراً مائياً فعالاً.',
+    applicationsAr: [
+      'تطهير الجروح السطحية وتعقيم الأدوات الطبية',
+      'تبييض خصلات الشعر وتبييض الأسنان في العيادات',
+      'وقود دفع صواريخ توربينية في بعض التطبيقات الفضائية'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'O', x: -20, y: -10, z: 0, radius: 22, color: '#EF4444' },
+        { symbol: 'O', x: 20, y: 10, z: 0, radius: 22, color: '#EF4444' },
+        { symbol: 'H', x: -50, y: 15, z: 0, radius: 14, color: '#FFFFFF' },
+        { symbol: 'H', x: 50, y: -15, z: 0, radius: 14, color: '#FFFFFF' }
+      ],
+      bonds: [
+        { from: 0, to: 1 },
+        { from: 0, to: 2 },
+        { from: 1, to: 3 }
+      ]
+    }
+  },
+  {
+    id: 'cacl2',
+    reactants: { Ca: 1, Cl: 2 },
+    formula: 'CaCl₂',
+    nameAr: 'كلوريد الكالسيوم',
+    nameEn: 'Calcium Chloride',
+    equation: 'Ca + 2Cl ➔ CaCl₂',
+    typeAr: 'تفاعل تكوين أيوني طارد للحرارة مع بخار مائي',
+    energy: 'exothermic',
+    temperature: 'طارد للحرارة مع إطلاق بخار وطاقة عند تفاعله بالرطوبة',
+    state: 'بلورات بيضاء ماصة للرطوبة بشدة',
+    safety: 'مسبب لتهيج الجلد عند ملامسته بالرطوبة',
+    visualEffect: 'water_steam',
+    soundEffect: 'water',
+    color: '#E2E8F0',
+    summaryAr: 'ملح أيوني يتميز بشراهة عجيبة لامتصاص بخار الماء من الهواء مع إطلاق حرارة وبخار، مما يجعله مجففاً فائق الفعالية ومذيباً لجليد الطرق.',
+    applicationsAr: [
+      'إذابة الجليد على مدارج الطائرات عند درجات حرارة شديدة الانخفاض',
+      'أكياس امتصاص الرطوبة ومنع العفن في الخزائن والمستودعات',
+      'تسريع تصلب الخرسانة في مشاريع البناء والتشييد'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'Ca', x: 0, y: 0, z: 0, radius: 26, color: '#FBBF24' },
+        { symbol: 'Cl', x: -50, y: 0, z: 0, radius: 24, color: '#22C55E' },
+        { symbol: 'Cl', x: 50, y: 0, z: 0, radius: 24, color: '#22C55E' }
+      ],
+      bonds: [
+        { from: 0, to: 1 },
+        { from: 0, to: 2 }
+      ]
+    }
+  },
+  {
+    id: 'fe2o3',
+    reactants: { Fe: 2, O: 3 },
+    formula: 'Fe₂O₃',
+    nameAr: 'أكسيد الحديد الثلاثي (صدأ الحديد / الهيماتيت)',
+    nameEn: 'Iron(III) Oxide (Rust)',
+    equation: '2Fe + 3O ➔ Fe₂O₃',
+    typeAr: 'تفاعل احتراق وتأكسد حراري وشرار برتقالي',
+    energy: 'exothermic',
+    temperature: 'شرار أحمر ناري متطاير عند الاحتراق في الأكسجين',
+    state: 'مسحوق صلب بني مائل للحمرة',
+    safety: 'غير سام، يسبب تآكل وضعف الهياكل المعدنية',
+    visualEffect: 'fire_flames',
+    soundEffect: 'fire',
+    color: '#B91C1C',
+    summaryAr: 'الصدأ الشهير الذي يهاجم هياكل الفولاذ والحديد عند تعرضها للأكسجين، ويحترق سلك الحديد في الأكسجين النقي بلهب ناري وشرار أحمر كثيف!',
+    applicationsAr: [
+      'خام التعدين الأساسي لإنتاج فلز الحديد والصلب عالمياً',
+      'صبغة حمراء طبيعية في الدهانات والخرسانة ومستحضرات التجميل',
+      'تلميع المجوهرات والعدسات البصرية الدقيقة (أحمر الصاغة)'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'Fe', x: -40, y: -15, z: 0, radius: 25, color: '#94A3B8' },
+        { symbol: 'Fe', x: 40, y: 15, z: 0, radius: 25, color: '#94A3B8' },
+        { symbol: 'O', x: 0, y: 0, z: 0, radius: 20, color: '#EF4444' },
+        { symbol: 'O', x: -65, y: 20, z: 0, radius: 20, color: '#EF4444' },
+        { symbol: 'O', x: 65, y: -20, z: 0, radius: 20, color: '#EF4444' }
+      ],
+      bonds: [
+        { from: 0, to: 2 },
+        { from: 1, to: 2 },
+        { from: 0, to: 3 },
+        { from: 1, to: 4 }
+      ]
+    }
+  },
+  {
+    id: 'kcl',
+    reactants: { K: 1, Cl: 1 },
+    formula: 'KCl',
+    nameAr: 'كلوريد البوتاسيوم',
+    nameEn: 'Potassium Chloride',
+    equation: 'K + Cl ➔ KCl',
+    typeAr: 'تفاعل أيوني عنيف مصحوب بنار ولهب بنفسجي ساطع',
+    energy: 'exothermic',
+    temperature: 'طارد للحرارة مع وميض ناري بنفسجي مذهل',
+    state: 'صلب بلوري أبيض',
+    safety: 'تفاعل فلز البوتاسيوم مع الكلور متفجر للغاية',
+    visualEffect: 'fire_flames',
+    soundEffect: 'fire',
+    color: '#DDD6FE',
+    summaryAr: 'ملح بوتاسيومي هام ينتج من تفاعل اشتعال فلز البوتاسيوم بلهب بنفسجي مبهر مع الكلور، ويستخدم كسماد زراعي رئيسي لتغذية المحاصيل.',
+    applicationsAr: [
+      'السماد الزراعي البوتاسي الأول عالمياً (موريات البوتاس)',
+      'بديل صحي لملح الطعام لمرضى ضغط الدم المرتفع',
+      'مكمل غذائي في المحاليل الوريدية لعلاج نقص البوتاسيوم'
+    ],
+    molecule: {
+      atoms: [
+        { symbol: 'K', x: -35, y: 0, z: 0, radius: 26, color: '#8B5CF6' },
+        { symbol: 'Cl', x: 35, y: 0, z: 0, radius: 24, color: '#22C55E' }
+      ],
+      bonds: [
+        { from: 0, to: 1 }
+      ]
+    }
+  }
+];
+
+// دالة فحص التفاعل وتقديم التفسيرات العلمية
+function evaluateReaction(selectedElements) {
+  const keys = Object.keys(selectedElements).filter(k => selectedElements[k] > 0);
+
+  if (keys.length === 0) {
+    return {
+      success: false,
+      title: 'المعمل فارغ!',
+      messageAr: 'يرجى سحب أو إضافة عنصرين على الأقل إلى أنبوب الاختبار لبدء التفاعل الكيميائي.'
+    };
+  }
+
+  // فحص الغازات النبيلة
+  const nobleGases = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn', 'Og'];
+  const hasNobleGas = keys.some(k => nobleGases.includes(k));
+  if (hasNobleGas) {
+    const nobleSymbol = keys.find(k => nobleGases.includes(k));
+    return {
+      success: false,
+      title: 'لا يحدث تفاعل (غاز نبيل خامل)',
+      messageAr: `العنصر [${nobleSymbol}] هو غاز نبيل (خامل) يمتلك مداراً إلكترونياً خارجياً مكتملاً تماماً بالثمانية إلكترونات (قاعدة الثمانيات المستقرة)، لذلك لا يحتاج لفقد أو اكتساب أو مشاركة إلكترونات في الظروف العادية.`
+    };
+  }
+
+  // فحص التطابق الدقيق مع قاعدة بيانات التفاعلات
+  for (let rx of REACTIONS) {
+    const rKeys = Object.keys(rx.reactants);
+    if (rKeys.length === keys.length) {
+      let isMatch = true;
+      for (let k of rKeys) {
+        if (selectedElements[k] !== rx.reactants[k]) {
+          isMatch = false;
+          break;
+        }
+      }
+      if (isMatch) {
+        return {
+          success: true,
+          reaction: rx
+        };
+      }
+    }
+  }
+
+  // إذا لم يكن هناك تطابق دقيق، هل العناصر هي نفسها لكن بنسب مختلفة؟
+  for (let rx of REACTIONS) {
+    const rKeys = Object.keys(rx.reactants);
+    const hasSameKeys = rKeys.length === keys.length && rKeys.every(k => keys.includes(k));
+    if (hasSameKeys) {
+      const neededRatio = rKeys.map(k => `${rx.reactants[k]} من ذرات [${k}]`).join(' مع ');
+      return {
+        success: false,
+        title: 'النسب الذرية غير متكافئة!',
+        messageAr: `العناصر المختارة قادرة على التفاعل لتكوين مركب [${rx.nameAr}]، لكن النسبة الصحيحة المطلوبة هي: (${neededRatio}). عدّل عدد الذرات وحاول مجدداً!`
+      };
+    }
+  }
+
+  // تفسيرات علمية عامة
+  return {
+    success: false,
+    title: 'لا يحدث تفاعل مباشر',
+    messageAr: 'هذا المزيج من العناصر لا يكون مركباً مستقراً في الظروف القياسية وفق قواعد التكافؤ والكهروسالبية، أو يحتاج لعوامل حفازة وظروف ضغط وحرارة معقدة غير متوفرة.'
+  };
+}
+
+
+// --- MODULE SEPARATOR ---
+
+// محرك المؤثرات الصوتية التفاعلية المولد عبر Web Audio API
+// Synthesized Sound Effects Engine (Pop/Explosions, Roaring Fire, Water/Steam, Bubbles)
+
+class SoundFX {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+
+  init() {
+    if (!this.ctx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        this.ctx = new AudioContext();
+      }
+    }
+    if (this.ctx && this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
+  }
+
+  toggleSound() {
+    this.enabled = !this.enabled;
+    return this.enabled;
+  }
+
+  // صوت النقر الخفيف عند اختيار عنصر
+  playClick() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.05);
+
+    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.05);
+  }
+
+  // صوت فقاعة عند إضافة ذرة للمعمل
+  playBubble() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    const startFreq = 220 + Math.random() * 180;
+    osc.frequency.setValueAtTime(startFreq, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(startFreq * 2.8, this.ctx.currentTime + 0.12);
+
+    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.12);
+  }
+
+  // 1. صوت الفرقعة والانفجار الغازي (Pop / Explosion FX)
+  playPopExplosion() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+
+    // أ) نبضة ضوضاء بيضاء للفرقعة الحادة (Sharp Snap/Crack)
+    const bufferSize = this.ctx.sampleRate * 0.45;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const output = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const noiseFilter = this.ctx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.frequency.setValueAtTime(3200, now);
+    noiseFilter.frequency.exponentialRampToValueAtTime(200, now + 0.35);
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.45, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + 0.45);
+
+    // ب) نغمة هبوط التردد الصوتي الانفجاري (Sub-bass Thud)
+    const osc = this.ctx.createOscillator();
+    const oscGain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(45, now + 0.35);
+
+    oscGain.gain.setValueAtTime(0.4, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+    osc.connect(oscGain);
+    oscGain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.38);
+  }
+
+  // 2. صوت اشتعال النار وألسنة اللهب وطقطقة الشرر (Fire & Flame Roar FX)
+  playFireFlame() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+
+    // أ) هدير اللهب واحتكاك الهواء (Flame Roar Whoosh)
+    const bufferSize = this.ctx.sampleRate * 0.7;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const flameNoise = this.ctx.createBufferSource();
+    flameNoise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(300, now);
+    filter.frequency.linearRampToValueAtTime(1400, now + 0.3);
+    filter.frequency.exponentialRampToValueAtTime(350, now + 0.65);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.linearRampToValueAtTime(0.35, now + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+    flameNoise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    flameNoise.start(now);
+    flameNoise.stop(now + 0.7);
+
+    // ب) طقطقة شرر متتالية (Crackle pops)
+    for (let i = 0; i < 5; i++) {
+      const crackleTime = now + 0.1 + i * 0.09 + Math.random() * 0.04;
+      const cOsc = this.ctx.createOscillator();
+      const cGain = this.ctx.createGain();
+
+      cOsc.type = 'sawtooth';
+      cOsc.frequency.setValueAtTime(800 + Math.random() * 1200, crackleTime);
+      cOsc.frequency.exponentialRampToValueAtTime(200, crackleTime + 0.04);
+
+      cGain.gain.setValueAtTime(0.12, crackleTime);
+      cGain.gain.exponentialRampToValueAtTime(0.001, crackleTime + 0.04);
+
+      cOsc.connect(cGain);
+      cGain.connect(this.ctx.destination);
+
+      cOsc.start(crackleTime);
+      cOsc.stop(crackleTime + 0.04);
+    }
+  }
+
+  // 3. صوت فوران المياه والرذاذ والبخار الساخن (Water Splash & Steam Sizzle FX)
+  playWaterSteam() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+
+    // أ) هست البخار الساخن (Steam Hiss)
+    const bufferSize = this.ctx.sampleRate * 0.6;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+
+    const steam = this.ctx.createBufferSource();
+    steam.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(2400, now);
+    filter.frequency.exponentialRampToValueAtTime(4500, now + 0.4);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.02, now);
+    gain.gain.linearRampToValueAtTime(0.22, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+    steam.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    steam.start(now);
+    steam.stop(now + 0.6);
+
+    // ب) فقاعات سريعة متعددة (Bubbling liquid cascade)
+    for (let i = 0; i < 6; i++) {
+      const bubbleTime = now + i * 0.07;
+      const bOsc = this.ctx.createOscillator();
+      const bGain = this.ctx.createGain();
+
+      bOsc.type = 'sine';
+      const bFreq = 260 + Math.random() * 320;
+      bOsc.frequency.setValueAtTime(bFreq, bubbleTime);
+      bOsc.frequency.exponentialRampToValueAtTime(bFreq * 2.2, bubbleTime + 0.08);
+
+      bGain.gain.setValueAtTime(0.18, bubbleTime);
+      bGain.gain.exponentialRampToValueAtTime(0.001, bubbleTime + 0.08);
+
+      bOsc.connect(bGain);
+      bGain.connect(this.ctx.destination);
+
+      bOsc.start(bubbleTime);
+      bOsc.stop(bubbleTime + 0.08);
+    }
+  }
+
+  // تشغيل المؤثر المناسب لطبيعة التفاعل
+  playReactionSound(soundType) {
+    if (!this.enabled) return;
+
+    if (soundType === 'pop_explosion' || soundType === 'pop') {
+      this.playPopExplosion();
+    } else if (soundType === 'fire_flames' || soundType === 'fire') {
+      this.playFireFlame();
+    } else if (soundType === 'water_steam' || soundType === 'water') {
+      this.playWaterSteam();
+    } else {
+      this.playPopExplosion();
+    }
+
+    // إضافة نغمة النجاح الهارمونية بعد المؤثر الفيزيائي
+    setTimeout(() => this.playReactionSuccess(), 220);
+  }
+
+  // نغمة نجاح وتكوين المركب
+  playReactionSuccess() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const notes = [329.63, 440, 554.37, 659.25, 880]; // E4, A4, C#5, E5, A5
+    notes.forEach((freq, index) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.07);
+
+      gain.gain.setValueAtTime(0.16, this.ctx.currentTime + index * 0.07);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.07 + 0.32);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(this.ctx.currentTime + index * 0.07);
+      osc.stop(this.ctx.currentTime + index * 0.07 + 0.32);
+    });
+  }
+
+  // صوت عدم حدوث تفاعل
+  playFail() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(190, this.ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(100, this.ctx.currentTime + 0.25);
+
+    gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.25);
+  }
+}
+
+const soundManager = new SoundFX();
+
+
+// --- MODULE SEPARATOR ---
+
+// محرك الرسوميات التفاعلية (نموذج بور الذري + عارض الجزيئات 3D + محاكي التفاعلات الفيزيائية)
+// Interactive Visualizer Engine (Bohr Atom Model & 3D Molecule & Dynamic Physical FX)
+
+class AtomVisualizer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.element = null;
+    this.animationId = null;
+    this.angleOffset = 0;
+    this.speed = 0.02;
+    this.zoom = 1;
+    this.nucleusParticles = [];
+
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    this.width = rect.width || 340;
+    this.height = rect.height || 340;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    this.ctx.scale(dpr, dpr);
+  }
+
+  setElement(element) {
+    this.element = element;
+    this.generateNucleus(element.number, Math.round(element.mass - element.number));
+    if (!this.animationId) {
+      this.animate();
+    }
+  }
+
+  generateNucleus(protons, neutrons) {
+    this.nucleusParticles = [];
+    const total = Math.min(protons + Math.max(neutrons, 0), 45);
+    const pCount = Math.min(protons, 25);
+    const nCount = Math.max(total - pCount, 0);
+
+    for (let i = 0; i < pCount; i++) {
+      const r = Math.random() * 14;
+      const theta = Math.random() * Math.PI * 2;
+      this.nucleusParticles.push({
+        type: 'proton',
+        x: r * Math.cos(theta),
+        y: r * Math.sin(theta),
+        radius: 4,
+        color: '#EF4444'
+      });
+    }
+
+    for (let i = 0; i < nCount; i++) {
+      const r = Math.random() * 14;
+      const theta = Math.random() * Math.PI * 2;
+      this.nucleusParticles.push({
+        type: 'neutron',
+        x: r * Math.cos(theta),
+        y: r * Math.sin(theta),
+        radius: 4,
+        color: '#94A3B8'
+      });
+    }
+  }
+
+  animate() {
+    this.angleOffset += this.speed;
+    this.draw();
+    this.animationId = requestAnimationFrame(() => this.animate());
+  }
+
+  draw() {
+    if (!this.ctx || !this.element) return;
+    const { width, height } = this;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+    this.ctx.clearRect(0, 0, width, height);
+
+    const bgGradient = this.ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, width / 2);
+    if (isLight) {
+      bgGradient.addColorStop(0, 'rgba(248, 250, 252, 0.95)');
+      bgGradient.addColorStop(1, 'rgba(226, 232, 240, 0.98)');
+    } else {
+      bgGradient.addColorStop(0, 'rgba(15, 23, 42, 0.9)');
+      bgGradient.addColorStop(1, 'rgba(2, 6, 23, 0.95)');
+    }
+    this.ctx.fillStyle = bgGradient;
+    this.ctx.fillRect(0, 0, width, height);
+
+    const shells = this.element.shells || [1];
+    const maxRadius = Math.min(centerX, centerY) * 0.88;
+    const shellStep = (maxRadius - 32) / Math.max(shells.length, 1);
+
+    // رسم مدارات الإلكترونات
+    shells.forEach((electronCount, shellIndex) => {
+      const radius = 32 + (shellIndex + 1) * shellStep;
+
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      this.ctx.strokeStyle = isLight ? 'rgba(14, 165, 233, 0.35)' : 'rgba(56, 189, 248, 0.25)';
+      this.ctx.lineWidth = 1.5;
+      this.ctx.setLineDash([4, 4]);
+      this.ctx.stroke();
+      this.ctx.setLineDash([]);
+
+      const shellNames = ['K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+      this.ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.8)' : 'rgba(148, 163, 184, 0.6)';
+      this.ctx.font = '10px Cairo, Inter, sans-serif';
+      this.ctx.fillText(`${shellNames[shellIndex]} (${electronCount}e⁻)`, centerX + radius - 15, centerY - 6);
+
+      const direction = shellIndex % 2 === 0 ? 1 : -1;
+      const speedMultiplier = 1 / Math.sqrt(shellIndex + 1);
+
+      for (let i = 0; i < electronCount; i++) {
+        const angle = this.angleOffset * direction * speedMultiplier + (i * 2 * Math.PI) / electronCount;
+        const eX = centerX + radius * Math.cos(angle);
+        const eY = centerY + radius * Math.sin(angle);
+
+        const glow = this.ctx.createRadialGradient(eX, eY, 1, eX, eY, 8);
+        glow.addColorStop(0, 'rgba(56, 189, 248, 1)');
+        glow.addColorStop(0.5, 'rgba(6, 182, 212, 0.4)');
+        glow.addColorStop(1, 'rgba(6, 182, 212, 0)');
+        this.ctx.fillStyle = glow;
+        this.ctx.beginPath();
+        this.ctx.arc(eX, eY, 8, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.arc(eX, eY, 3.5, 0, Math.PI * 2);
+        this.ctx.fillStyle = '#0284C7';
+        this.ctx.shadowColor = '#06B6D4';
+        this.ctx.shadowBlur = 6;
+        this.ctx.fill();
+        this.ctx.shadowBlur = 0;
+      }
+    });
+
+    // توهج النواة
+    const nucleusGlow = this.ctx.createRadialGradient(centerX, centerY, 4, centerX, centerY, 30);
+    nucleusGlow.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
+    nucleusGlow.addColorStop(0.6, 'rgba(234, 179, 8, 0.2)');
+    nucleusGlow.addColorStop(1, 'rgba(239, 68, 68, 0)');
+    this.ctx.fillStyle = nucleusGlow;
+    this.ctx.beginPath();
+    this.ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+    this.ctx.fill();
+
+    this.nucleusParticles.forEach(p => {
+      this.ctx.beginPath();
+      this.ctx.arc(centerX + p.x, centerY + p.y, p.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = p.color;
+      this.ctx.fill();
+    });
+
+    this.ctx.fillStyle = '#FFFFFF';
+    this.ctx.font = 'bold 13px Cairo, Inter, sans-serif';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    this.ctx.shadowBlur = 4;
+    this.ctx.fillText(this.element.symbol, centerX, centerY);
+    this.ctx.shadowBlur = 0;
+  }
+
+  destroy() {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
+}
+
+// ----------------------------------------------------
+// عارض الجزيئات ثلاثي الأبعاد (Molecule 3D Visualizer)
+// ----------------------------------------------------
+class MoleculeVisualizer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.molecule = null;
+    this.rotX = 0.3;
+    this.rotY = 0.5;
+    this.autoRotate = true;
+    this.isDragging = false;
+    this.lastMouseX = 0;
+    this.lastMouseY = 0;
+    this.animationId = null;
+
+    this.resize();
+    this.initControls();
+    window.addEventListener('resize', () => this.resize());
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    this.width = rect.width || 340;
+    this.height = rect.height || 260;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    this.ctx.scale(dpr, dpr);
+  }
+
+  initControls() {
+    this.canvas.addEventListener('mousedown', (e) => {
+      this.isDragging = true;
+      this.autoRotate = false;
+      this.lastMouseX = e.clientX;
+      this.lastMouseY = e.clientY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!this.isDragging) return;
+      const dx = e.clientX - this.lastMouseX;
+      const dy = e.clientY - this.lastMouseY;
+      this.rotY += dx * 0.015;
+      this.rotX += dy * 0.015;
+      this.lastMouseX = e.clientX;
+      this.lastMouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (this.isDragging) {
+        this.isDragging = false;
+        setTimeout(() => { this.autoRotate = true; }, 2000);
+      }
+    });
+
+    this.canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        this.isDragging = true;
+        this.autoRotate = false;
+        this.lastMouseX = e.touches[0].clientX;
+        this.lastMouseY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!this.isDragging || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - this.lastMouseX;
+      const dy = e.touches[0].clientY - this.lastMouseY;
+      this.rotY += dx * 0.015;
+      this.rotX += dy * 0.015;
+      this.lastMouseX = e.touches[0].clientX;
+      this.lastMouseY = e.touches[0].clientY;
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      this.isDragging = false;
+      setTimeout(() => { this.autoRotate = true; }, 2000);
+    });
+  }
+
+  setMolecule(moleculeData) {
+    this.molecule = moleculeData;
+    if (!this.animationId) {
+      this.animate();
+    }
+  }
+
+  animate() {
+    if (this.autoRotate) {
+      this.rotY += 0.012;
+      this.rotX += 0.004;
+    }
+    this.draw();
+    this.animationId = requestAnimationFrame(() => this.animate());
+  }
+
+  project3D(x, y, z) {
+    const cosX = Math.cos(this.rotX);
+    const sinX = Math.sin(this.rotX);
+    let y1 = y * cosX - z * sinX;
+    let z1 = y * sinX + z * cosX;
+
+    const cosY = Math.cos(this.rotY);
+    const sinY = Math.sin(this.rotY);
+    let x2 = x * cosY + z1 * sinY;
+    let z2 = -x * sinY + z1 * cosY;
+
+    const fov = 300;
+    const scale = fov / (fov + z2);
+
+    return {
+      x: this.width / 2 + x2 * scale,
+      y: this.height / 2 + y1 * scale,
+      z: z2,
+      scale: scale
+    };
+  }
+
+  draw() {
+    if (!this.ctx || !this.molecule) return;
+    const { width, height } = this;
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    this.ctx.clearRect(0, 0, width, height);
+
+    const bgGrad = this.ctx.createRadialGradient(width / 2, height / 2, 10, width / 2, height / 2, width / 1.5);
+    if (isLight) {
+      bgGrad.addColorStop(0, 'rgba(248, 250, 252, 0.9)');
+      bgGrad.addColorStop(1, 'rgba(226, 232, 240, 0.95)');
+    } else {
+      bgGrad.addColorStop(0, 'rgba(30, 41, 59, 0.6)');
+      bgGrad.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
+    }
+    this.ctx.fillStyle = bgGrad;
+    this.ctx.fillRect(0, 0, width, height);
+
+    const projectedAtoms = this.molecule.atoms.map((atom, idx) => {
+      const proj = this.project3D(atom.x, atom.y, atom.z || 0);
+      return { ...atom, ...proj, originalIndex: idx };
+    });
+
+    if (this.molecule.bonds) {
+      this.molecule.bonds.forEach(bond => {
+        const a1 = projectedAtoms[bond.from];
+        const a2 = projectedAtoms[bond.to];
+        if (!a1 || !a2) return;
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(a1.x, a1.y);
+        this.ctx.lineTo(a2.x, a2.y);
+        this.ctx.strokeStyle = isLight ? 'rgba(100, 116, 139, 0.6)' : 'rgba(203, 213, 225, 0.7)';
+        this.ctx.lineWidth = bond.order === 2 ? 8 : 5;
+        this.ctx.lineCap = 'round';
+        this.ctx.stroke();
+
+        if (bond.order === 2) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(a1.x, a1.y);
+          this.ctx.lineTo(a2.x, a2.y);
+          this.ctx.strokeStyle = isLight ? '#F1F5F9' : 'rgba(15, 23, 42, 0.9)';
+          this.ctx.lineWidth = 2;
+          this.ctx.stroke();
+        }
+      });
+    }
+
+    const sortedAtoms = [...projectedAtoms].sort((a, b) => a.z - b.z);
+
+    sortedAtoms.forEach(atom => {
+      const radius = (atom.radius || 20) * atom.scale;
+
+      const sphereGrad = this.ctx.createRadialGradient(
+        atom.x - radius * 0.35,
+        atom.y - radius * 0.35,
+        radius * 0.1,
+        atom.x,
+        atom.y,
+        radius
+      );
+      sphereGrad.addColorStop(0, '#FFFFFF');
+      sphereGrad.addColorStop(0.3, atom.color || '#3B82F6');
+      sphereGrad.addColorStop(1, isLight ? '#334155' : '#0F172A');
+
+      this.ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+      this.ctx.shadowBlur = 10;
+      this.ctx.shadowOffsetY = 4;
+
+      this.ctx.beginPath();
+      this.ctx.arc(atom.x, atom.y, Math.max(radius, 4), 0, Math.PI * 2);
+      this.ctx.fillStyle = sphereGrad;
+      this.ctx.fill();
+
+      this.ctx.shadowColor = 'transparent';
+      this.ctx.shadowBlur = 0;
+      this.ctx.shadowOffsetY = 0;
+
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.font = `bold ${Math.max(Math.round(13 * atom.scale), 9)}px Cairo, Inter, sans-serif`;
+      this.ctx.textAlign = 'center';
+      this.ctx.textBaseline = 'middle';
+      this.ctx.shadowColor = 'rgba(0,0,0,0.9)';
+      this.ctx.shadowBlur = 3;
+      this.ctx.fillText(atom.symbol, atom.x, atom.y);
+      this.ctx.shadowBlur = 0;
+    });
+  }
+
+  destroy() {
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
+}
+
+// ----------------------------------------------------
+// محرك مؤثرات التفاعلات الفيزيائية داخل المعمل (Reactor Dynamic FX)
+// يدعم: الفرقعة والانفجار، النار واللهب، المياه والبخار والفقاعات
+// ----------------------------------------------------
+class ReactorFX {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.shockwaves = [];
+    this.active = false;
+    this.effectType = 'pop_explosion';
+    this.primaryColor = '#06B6D4';
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    this.animate();
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    this.width = rect.width || 400;
+    this.height = rect.height || 350;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    this.ctx.scale(dpr, dpr);
+  }
+
+  trigger(effectType = 'pop_explosion', color = '#06B6D4') {
+    this.active = true;
+    this.effectType = effectType;
+    this.primaryColor = color;
+    this.particles = [];
+    this.shockwaves = [];
+
+    const centerX = this.width / 2;
+    const centerY = this.height * 0.65;
+
+    // اهتزاز أنبوب التفاعل عند حدوث فرقعة أو انفجار
+    const beaker = document.getElementById('beaker-dropzone');
+    if (beaker) {
+      beaker.classList.remove('fx-shake');
+      void beaker.offsetWidth;
+      beaker.classList.add('fx-shake');
+      setTimeout(() => beaker.classList.remove('fx-shake'), 450);
+    }
+
+    if (effectType.includes('pop') || effectType.includes('explosion')) {
+      // 1. موجة الصدمة الانفجارية الدائرية (Expanding Shockwave Ring)
+      this.shockwaves.push({
+        x: centerX,
+        y: centerY,
+        radius: 10,
+        maxRadius: Math.min(this.width, this.height) * 0.65,
+        alpha: 1,
+        color: '#38BDF8',
+        lineWidth: 6
+      });
+
+      // 2. شرر وجسيمات بلازما انفجارية سريعة بـ 360 درجة
+      const count = 110;
+      for (let i = 0; i < count; i++) {
+        const speed = Math.random() * 9 + 3;
+        const angle = Math.random() * Math.PI * 2;
+        const colors = ['#FFFFFF', '#FEF08A', '#F97316', '#38BDF8', '#06B6D4'];
+        this.particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1.5,
+          radius: Math.random() * 5 + 2.5,
+          color: colors[i % colors.length],
+          alpha: 1,
+          life: 1,
+          decay: Math.random() * 0.025 + 0.018,
+          type: 'spark'
+        });
+      }
+    } else if (effectType.includes('fire') || effectType.includes('flame') || effectType.includes('bright_flash')) {
+      // ألسنة لهب وشرر احتراق متصاعد
+      const count = 95;
+      for (let i = 0; i < count; i++) {
+        const speedX = (Math.random() - 0.5) * 4.5;
+        const speedY = -(Math.random() * 7 + 3.5);
+        const colors = ['#FEF08A', '#FDE047', '#F97316', '#EF4444', '#B91C1C'];
+        this.particles.push({
+          x: centerX + (Math.random() - 0.5) * 35,
+          y: centerY + (Math.random() - 0.5) * 20,
+          vx: speedX,
+          vy: speedY,
+          radius: Math.random() * 9 + 4,
+          color: colors[i % colors.length],
+          alpha: 1,
+          life: 1,
+          decay: Math.random() * 0.02 + 0.015,
+          type: 'flame'
+        });
+      }
+
+      // دخان رمادي متصاعد
+      for (let i = 0; i < 25; i++) {
+        this.particles.push({
+          x: centerX + (Math.random() - 0.5) * 30,
+          y: centerY - 20,
+          vx: (Math.random() - 0.5) * 2.5,
+          vy: -(Math.random() * 2.5 + 1.2),
+          radius: Math.random() * 12 + 6,
+          color: '#64748B',
+          alpha: 0.6,
+          life: 1,
+          decay: 0.012,
+          type: 'smoke'
+        });
+      }
+    } else if (effectType.includes('water') || effectType.includes('steam') || effectType.includes('splash') || effectType.includes('bubbles')) {
+      // فقاعات مياه صاعدة + رذاذ مائي + بخار أبيض ناعم
+      const count = 75;
+      for (let i = 0; i < count; i++) {
+        const isSteam = i % 2 === 0;
+        const speedX = (Math.random() - 0.5) * (isSteam ? 3 : 6);
+        const speedY = isSteam ? -(Math.random() * 3 + 1.5) : -(Math.random() * 7 + 2);
+        this.particles.push({
+          x: centerX + (Math.random() - 0.5) * 40,
+          y: centerY,
+          vx: speedX,
+          vy: speedY,
+          radius: isSteam ? (Math.random() * 14 + 6) : (Math.random() * 6 + 2.5),
+          color: isSteam ? '#E2E8F0' : (i % 3 === 0 ? '#38BDF8' : '#06B6D4'),
+          alpha: isSteam ? 0.55 : 0.9,
+          life: 1,
+          decay: isSteam ? 0.014 : 0.022,
+          type: isSteam ? 'steam' : 'droplet'
+        });
+      }
+    } else {
+      // وميض عام
+      const count = 70;
+      for (let i = 0; i < count; i++) {
+        const speed = Math.random() * 6 + 2;
+        const angle = Math.random() * Math.PI * 2;
+        this.particles.push({
+          x: centerX,
+          y: centerY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 1,
+          radius: Math.random() * 5 + 2,
+          color: color,
+          alpha: 1,
+          life: 1,
+          decay: 0.02,
+          type: 'spark'
+        });
+      }
+    }
+  }
+
+  animate() {
+    this.draw();
+    requestAnimationFrame(() => this.animate());
+  }
+
+  draw() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    // 1. رسم موجات الصدمة الدائرية
+    for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+      const sw = this.shockwaves[i];
+      sw.radius += (sw.maxRadius - sw.radius) * 0.16 + 2;
+      sw.alpha -= 0.035;
+
+      if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
+        this.shockwaves.splice(i, 1);
+        continue;
+      }
+
+      this.ctx.save();
+      this.ctx.beginPath();
+      this.ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+      this.ctx.strokeStyle = sw.color;
+      this.ctx.globalAlpha = sw.alpha;
+      this.ctx.lineWidth = sw.lineWidth;
+      this.ctx.shadowColor = sw.color;
+      this.ctx.shadowBlur = 15;
+      this.ctx.stroke();
+      this.ctx.restore();
+    }
+
+    if (this.particles.length === 0 && this.shockwaves.length === 0) {
+      this.active = false;
+      return;
+    }
+
+    // 2. رسم الجسيمات التفاعلية (لهب / شرر / ماء / بخار)
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.type === 'flame') {
+        p.vy -= 0.04;
+        p.vx *= 0.98;
+        p.radius *= 0.98;
+      } else if (p.type === 'droplet') {
+        p.vy += 0.18; // جاذبية قطرات الماء
+      } else if (p.type === 'steam') {
+        p.vy -= 0.03;
+        p.radius += 0.15;
+      } else if (p.type === 'smoke') {
+        p.vy -= 0.02;
+        p.radius += 0.2;
+      }
+
+      p.life -= p.decay;
+
+      if (p.life <= 0 || p.radius <= 0.5) {
+        this.particles.splice(i, 1);
+        continue;
+      }
+
+      this.ctx.save();
+      this.ctx.globalAlpha = Math.max(p.life * p.alpha, 0);
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, Math.max(p.radius, 1), 0, Math.PI * 2);
+      this.ctx.fillStyle = p.color;
+
+      if (p.type === 'flame' || p.type === 'spark') {
+        this.ctx.shadowColor = p.color;
+        this.ctx.shadowBlur = 10;
+      } else if (p.type === 'droplet') {
+        this.ctx.shadowColor = 'rgba(56, 189, 248, 0.6)';
+        this.ctx.shadowBlur = 6;
+      }
+
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+}
+
+
+// --- MODULE SEPARATOR ---
+
+// وحدة التحكم بالجدول الدوري التفاعلي (دعم الموبايل والشاشات الصغيرة واللغات)
+// Interactive Periodic Table Controller (Mobile Responsive & Multilingual)
+
+class PeriodicTable {
+  constructor() {
+    this.elements = ALL_ELEMENTS;
+    this.currentFilter = 'all';
+    this.currentPhaseFilter = 'all';
+    this.currentViewMode = 'grid'; // 'grid' or 'cards'
+    this.searchQuery = '';
+    this.temperatureK = 298.15;
+    this.selectedElement = null;
+    this.atomVisualizer = null;
+
+    this.init();
+  }
+
+  init() {
+    this.renderGrid();
+    this.renderCategoryFilters();
+    this.bindEvents();
+    this.bindViewSwitcher();
+  }
+
+  getLang() {
+    return window.app ? window.app.currentLang : 'ar';
+  }
+
+  t(key) {
+    const lang = this.getLang();
+    return TRANSLATIONS[lang] ? TRANSLATIONS[lang][key] : key;
+  }
+
+  renderGrid() {
+    const gridContainer = document.getElementById('periodic-table-grid');
+    if (!gridContainer) return;
+
+    gridContainer.innerHTML = '';
+    const lang = this.getLang();
+    const isCards = this.currentViewMode === 'cards';
+
+    gridContainer.classList.toggle('cards-view', isCards);
+
+    this.elements.forEach(el => {
+      const cell = document.createElement('div');
+      cell.className = `element-cell category-${el.category} phase-${this.getElementPhaseAtTemp(el, this.temperatureK)}`;
+      cell.setAttribute('data-number', el.number);
+      cell.setAttribute('data-symbol', el.symbol);
+      cell.setAttribute('data-category', el.category);
+
+      if (!isCards) {
+        let col = el.group;
+        let row = el.period;
+
+        if (el.number >= 57 && el.number <= 71) {
+          row = 9;
+          col = el.number - 57 + 4;
+        } else if (el.number >= 89 && el.number <= 103) {
+          row = 10;
+          col = el.number - 89 + 4;
+        }
+
+        if (col && row) {
+          cell.style.gridColumn = col;
+          cell.style.gridRow = row;
+        }
+      } else {
+        cell.style.gridColumn = '';
+        cell.style.gridRow = '';
+      }
+
+      const catInfo = CATEGORY_INFO[el.category] || { color: '#38BDF8', nameAr: 'عنصر', nameEn: 'Element' };
+      const elementName = lang === 'ar' ? el.nameAr : el.nameEn;
+
+      cell.innerHTML = `
+        <div class="element-header">
+          <span class="element-number">${el.number}</span>
+          <span class="element-mass">${typeof el.mass === 'number' ? el.mass.toFixed(1) : el.mass}</span>
+        </div>
+        <div class="element-symbol" style="color: ${catInfo.color}">${el.symbol}</div>
+        <div class="element-name-ar">${elementName}</div>
+        <div class="element-phase-badge">${this.getPhaseLabel(this.getElementPhaseAtTemp(el, this.temperatureK))}</div>
+      `;
+
+      cell.addEventListener('click', () => {
+        soundManager.playClick();
+        this.openElementModal(el);
+      });
+
+      cell.setAttribute('draggable', 'true');
+      cell.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', JSON.stringify({ symbol: el.symbol, number: el.number }));
+      });
+
+      gridContainer.appendChild(cell);
+    });
+
+    if (!isCards) {
+      this.renderSpecialPlaceholders(gridContainer);
+    }
+  }
+
+  renderSpecialPlaceholders(container) {
+    const lang = this.getLang();
+    const lanthName = lang === 'ar' ? 'لانثانيدات' : 'Lanthanides';
+    const actName = lang === 'ar' ? 'أكتينيدات' : 'Actinides';
+
+    const lanthHolder = document.createElement('div');
+    lanthHolder.className = 'element-cell placeholder-cell category-lanthanide';
+    lanthHolder.style.gridColumn = 3;
+    lanthHolder.style.gridRow = 6;
+    lanthHolder.innerHTML = `
+      <div class="element-number">57-71</div>
+      <div class="element-symbol">La-Lu</div>
+      <div class="element-name-ar">${lanthName}</div>
+    `;
+    lanthHolder.addEventListener('click', () => this.filterByCategory('lanthanide'));
+    container.appendChild(lanthHolder);
+
+    const actHolder = document.createElement('div');
+    actHolder.className = 'element-cell placeholder-cell category-actinide';
+    actHolder.style.gridColumn = 3;
+    actHolder.style.gridRow = 7;
+    actHolder.innerHTML = `
+      <div class="element-number">89-103</div>
+      <div class="element-symbol">Ac-Lr</div>
+      <div class="element-name-ar">${actName}</div>
+    `;
+    actHolder.addEventListener('click', () => this.filterByCategory('actinide'));
+    container.appendChild(actHolder);
+  }
+
+  renderCategoryFilters() {
+    const container = document.getElementById('category-filters');
+    if (!container) return;
+
+    const lang = this.getLang();
+    const allLabel = lang === 'ar' ? 'الكل (118)' : 'All (118)';
+
+    container.innerHTML = `
+      <button class="filter-btn ${this.currentFilter === 'all' ? 'active' : ''}" data-category="all">
+        <span class="filter-dot" style="background: #38BDF8"></span>
+        ${allLabel}
+      </button>
+    `;
+
+    Object.keys(CATEGORY_INFO).forEach(catKey => {
+      const cat = CATEGORY_INFO[catKey];
+      const count = this.elements.filter(e => e.category === catKey).length;
+      const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[catKey]) || cat.nameAr;
+
+      const btn = document.createElement('button');
+      btn.className = `filter-btn ${this.currentFilter === catKey ? 'active' : ''}`;
+      btn.setAttribute('data-category', catKey);
+      btn.innerHTML = `
+        <span class="filter-dot" style="background: ${cat.color}"></span>
+        ${catName} (${count})
+      `;
+      btn.addEventListener('click', () => {
+        soundManager.playClick();
+        this.filterByCategory(catKey);
+      });
+      container.appendChild(btn);
+    });
+
+    const allBtn = container.querySelector('[data-category="all"]');
+    if (allBtn) {
+      allBtn.addEventListener('click', () => {
+        soundManager.playClick();
+        this.filterByCategory('all');
+      });
+    }
+  }
+
+  filterByCategory(category) {
+    this.currentFilter = category;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-category') === category);
+    });
+    this.applyFilters();
+  }
+
+  applyFilters() {
+    const cells = document.querySelectorAll('.element-cell:not(.placeholder-cell)');
+    const query = this.searchQuery.trim().toLowerCase();
+
+    cells.forEach(cell => {
+      const num = parseInt(cell.getAttribute('data-number'));
+      const el = this.elements.find(e => e.number === num);
+      if (!el) return;
+
+      const matchesCat = this.currentFilter === 'all' || el.category === this.currentFilter;
+      const currentPhase = this.getElementPhaseAtTemp(el, this.temperatureK);
+      const matchesPhase = this.currentPhaseFilter === 'all' || currentPhase === this.currentPhaseFilter;
+
+      const matchesSearch = !query ||
+        el.nameAr.toLowerCase().includes(query) ||
+        el.nameEn.toLowerCase().includes(query) ||
+        el.symbol.toLowerCase().includes(query) ||
+        el.number.toString() === query;
+
+      if (matchesCat && matchesPhase && matchesSearch) {
+        cell.classList.remove('dimmed');
+        cell.classList.add('highlighted');
+      } else {
+        cell.classList.add('dimmed');
+        cell.classList.remove('highlighted');
+      }
+
+      const badge = cell.querySelector('.element-phase-badge');
+      if (badge) {
+        badge.textContent = this.getPhaseLabel(currentPhase);
+      }
+      cell.className = `element-cell category-${el.category} phase-${currentPhase} ${cell.classList.contains('dimmed') ? 'dimmed' : ''}`;
+    });
+  }
+
+  getElementPhaseAtTemp(element, tempK) {
+    if (!element.melt && !element.boil) {
+      return element.phase || 'solid';
+    }
+    if (element.melt && tempK < element.melt) {
+      return 'solid';
+    }
+    if (element.boil && tempK > element.boil) {
+      return 'gas';
+    }
+    return 'liquid';
+  }
+
+  getPhaseLabel(phase) {
+    const lang = this.getLang();
+    if (lang === 'en') {
+      switch (phase) {
+        case 'solid': return 'Solid';
+        case 'liquid': return 'Liquid';
+        case 'gas': return 'Gas';
+        default: return 'Solid';
+      }
+    }
+    switch (phase) {
+      case 'solid': return 'صلب';
+      case 'liquid': return 'سائل';
+      case 'gas': return 'غاز';
+      default: return 'صلب';
+    }
+  }
+
+  bindViewSwitcher() {
+    const viewGridBtn = document.getElementById('view-grid-btn');
+    const viewCardsBtn = document.getElementById('view-cards-btn');
+
+    if (viewGridBtn && viewCardsBtn) {
+      viewGridBtn.addEventListener('click', () => {
+        soundManager.playClick();
+        this.currentViewMode = 'grid';
+        viewGridBtn.classList.add('active');
+        viewCardsBtn.classList.remove('active');
+        this.renderGrid();
+        this.applyFilters();
+      });
+
+      viewCardsBtn.addEventListener('click', () => {
+        soundManager.playClick();
+        this.currentViewMode = 'cards';
+        viewCardsBtn.classList.add('active');
+        viewGridBtn.classList.remove('active');
+        this.renderGrid();
+        this.applyFilters();
+      });
+    }
+  }
+
+  bindEvents() {
+    const searchInput = document.getElementById('element-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        this.searchQuery = e.target.value;
+        this.applyFilters();
+      });
+    }
+
+    const tempSlider = document.getElementById('temp-slider');
+    const tempDisplay = document.getElementById('temp-display');
+    if (tempSlider) {
+      tempSlider.addEventListener('input', (e) => {
+        this.temperatureK = parseFloat(e.target.value);
+        const celsius = (this.temperatureK - 273.15).toFixed(0);
+        if (tempDisplay) {
+          tempDisplay.textContent = `${this.temperatureK.toFixed(0)} K (${celsius} °C)`;
+        }
+        this.applyFilters();
+      });
+    }
+
+    document.querySelectorAll('.phase-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundManager.playClick();
+        document.querySelectorAll('.phase-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.currentPhaseFilter = btn.getAttribute('data-phase');
+        this.applyFilters();
+      });
+    });
+
+    const modalClose = document.getElementById('modal-close-btn');
+    const modal = document.getElementById('element-modal');
+    if (modalClose && modal) {
+      modalClose.addEventListener('click', () => {
+        modal.classList.add('hidden');
+        if (this.atomVisualizer) {
+          this.atomVisualizer.destroy();
+        }
+      });
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.add('hidden');
+          if (this.atomVisualizer) {
+            this.atomVisualizer.destroy();
+          }
+        }
+      });
+    }
+  }
+
+  openElementModal(element) {
+    this.selectedElement = element;
+    const modal = document.getElementById('element-modal');
+    if (!modal) return;
+
+    const lang = this.getLang();
+    const catInfo = CATEGORY_INFO[element.category] || { nameAr: 'عنصر', nameEn: 'Element', color: '#38BDF8' };
+    const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[element.category]) || catInfo.nameAr;
+
+    document.getElementById('modal-el-number').textContent = element.number;
+    document.getElementById('modal-el-symbol').textContent = element.symbol;
+    document.getElementById('modal-el-symbol').style.color = catInfo.color;
+    document.getElementById('modal-el-name-ar').textContent = element.nameAr;
+    document.getElementById('modal-el-name-en').textContent = element.nameEn;
+    document.getElementById('modal-el-category').textContent = catName;
+    document.getElementById('modal-el-category').style.borderColor = catInfo.color;
+    document.getElementById('modal-el-category').style.color = catInfo.color;
+
+    document.getElementById('modal-el-mass').textContent = typeof element.mass === 'number' ? element.mass.toFixed(3) : element.mass;
+    document.getElementById('modal-el-config').textContent = element.electronConfig || '-';
+    document.getElementById('modal-el-period').textContent = element.period || '-';
+    document.getElementById('modal-el-group').textContent = element.group || (lang === 'en' ? 'Special series' : 'سلسلة خاصة');
+    document.getElementById('modal-el-valence').textContent = element.valence !== null ? element.valence : '-';
+    document.getElementById('modal-el-electroneg').textContent = element.electronegativity || (lang === 'en' ? 'N/A' : 'غير متاح');
+    document.getElementById('modal-el-discovery').textContent = element.discovery || '-';
+
+    const meltEl = document.getElementById('modal-el-melt');
+    const boilEl = document.getElementById('modal-el-boil');
+    if (meltEl) meltEl.textContent = element.melt ? `${element.melt} K (${(element.melt - 273.15).toFixed(1)} °C)` : (lang === 'en' ? 'N/A' : 'غير محدد');
+    if (boilEl) boilEl.textContent = element.boil ? `${element.boil} K (${(element.boil - 273.15).toFixed(1)} °C)` : (lang === 'en' ? 'N/A' : 'غير محدد');
+
+    document.getElementById('modal-el-summary').textContent = element.summaryAr || 'عنصر كيميائي هام في الطبيعة والصناعة.';
+    const usesList = document.getElementById('modal-el-uses');
+    if (usesList) {
+      usesList.innerHTML = (element.usesAr || ['تطبيقات علمية وصناعية متطورة']).map(u => `<li>${u}</li>`).join('');
+    }
+
+    const addToLabBtn = document.getElementById('modal-add-to-lab');
+    if (addToLabBtn) {
+      addToLabBtn.onclick = () => {
+        soundManager.playBubble();
+        window.chemLab.addElement(element.symbol);
+        modal.classList.add('hidden');
+        if (this.atomVisualizer) this.atomVisualizer.destroy();
+        window.app.switchTab('lab');
+      };
+    }
+
+    modal.classList.remove('hidden');
+
+    if (!this.atomVisualizer) {
+      this.atomVisualizer = new AtomVisualizer('atom-bohr-canvas');
+    }
+    this.atomVisualizer.resize();
+    this.atomVisualizer.setElement(element);
+  }
+}
+
+
+// --- MODULE SEPARATOR ---
+
+// وحدة المعمل الافتراضي ومحرك دمج العناصر (دعم متعدد اللغات)
+// Virtual Chemistry Mixing Lab Controller (Multilingual Support)
+
+class ChemistryLab {
+  constructor() {
+    this.currentMix = {};
+    this.reactorFX = null;
+    this.moleculeVisualizer = null;
+    this.recipes = REACTIONS;
+    this.discoveredCount = 0;
+    this.discoveredSet = new Set();
+
+    this.commonElements = [
+      'H', 'O', 'C', 'N', 'Na', 'Cl', 'Fe', 'Mg', 'Ca', 'S',
+      'K', 'Al', 'Si', 'P', 'F', 'He', 'Cu', 'Zn', 'Li', 'I'
+    ];
+
+    this.init();
+  }
+
+  init() {
+    this.renderElementShelf();
+    this.renderRecipeBook();
+    this.bindEvents();
+
+    this.reactorFX = new ReactorFX('reactor-fx-canvas');
+    this.moleculeVisualizer = new MoleculeVisualizer('molecule-canvas');
+  }
+
+  getLang() {
+    return window.app ? window.app.currentLang : 'ar';
+  }
+
+  t(key) {
+    const lang = this.getLang();
+    return TRANSLATIONS[lang] ? TRANSLATIONS[lang][key] : key;
+  }
+
+  renderElementShelf() {
+    const shelf = document.getElementById('lab-element-shelf');
+    if (!shelf) return;
+
+    shelf.innerHTML = '';
+    const lang = this.getLang();
+
+    this.commonElements.forEach(symbol => {
+      const el = ALL_ELEMENTS.find(e => e.symbol === symbol);
+      if (!el) return;
+
+      const catInfo = CATEGORY_INFO[el.category] || { color: '#38BDF8' };
+      const elName = lang === 'ar' ? el.nameAr : el.nameEn;
+      const chip = document.createElement('div');
+      chip.className = 'lab-element-chip';
+      chip.setAttribute('draggable', 'true');
+      chip.setAttribute('data-symbol', symbol);
+      chip.innerHTML = `
+        <span class="chip-number">${el.number}</span>
+        <span class="chip-symbol" style="color: ${catInfo.color}">${el.symbol}</span>
+        <span class="chip-name">${elName}</span>
+      `;
+
+      chip.addEventListener('click', () => {
+        soundManager.playBubble();
+        this.addElement(symbol);
+      });
+
+      chip.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', JSON.stringify({ symbol }));
+      });
+
+      shelf.appendChild(chip);
+    });
+
+    const select = document.getElementById('lab-all-elements-select');
+    if (select) {
+      const defaultOptionText = this.t('labSelectOption');
+      select.innerHTML = `<option value="">${defaultOptionText}</option>`;
+      ALL_ELEMENTS.forEach(el => {
+        const opt = document.createElement('option');
+        opt.value = el.symbol;
+        const name = lang === 'ar' ? el.nameAr : el.nameEn;
+        opt.textContent = `${el.number}. ${name} (${el.symbol}) - ${lang === 'ar' ? el.nameEn : el.nameAr}`;
+        select.appendChild(opt);
+      });
+      select.onchange = (e) => {
+        if (e.target.value) {
+          soundManager.playBubble();
+          this.addElement(e.target.value);
+          e.target.value = '';
+        }
+      };
+    }
+  }
+
+  addElement(symbol, count = 1) {
+    if (!this.currentMix[symbol]) {
+      this.currentMix[symbol] = 0;
+    }
+    this.currentMix[symbol] += count;
+    this.renderBeaker();
+  }
+
+  removeElement(symbol) {
+    if (this.currentMix[symbol]) {
+      delete this.currentMix[symbol];
+      this.renderBeaker();
+    }
+  }
+
+  updateQuantity(symbol, delta) {
+    if (this.currentMix[symbol] !== undefined) {
+      this.currentMix[symbol] += delta;
+      if (this.currentMix[symbol] <= 0) {
+        delete this.currentMix[symbol];
+      }
+      this.renderBeaker();
+    }
+  }
+
+  clearBeaker() {
+    this.currentMix = {};
+    this.renderBeaker();
+    this.hideResultCards();
+    soundManager.playClick();
+  }
+
+  renderBeaker() {
+    const beakerContainer = document.getElementById('beaker-elements-list');
+    const emptyNotice = document.getElementById('beaker-empty-state');
+    const reactBtn = document.getElementById('lab-react-btn');
+    if (!beakerContainer) return;
+
+    const symbols = Object.keys(this.currentMix);
+    beakerContainer.innerHTML = '';
+    const lang = this.getLang();
+
+    if (symbols.length === 0) {
+      if (emptyNotice) emptyNotice.style.display = 'flex';
+      if (reactBtn) reactBtn.disabled = true;
+      return;
+    }
+
+    if (emptyNotice) emptyNotice.style.display = 'none';
+    if (reactBtn) reactBtn.disabled = false;
+
+    symbols.forEach(symbol => {
+      const el = ALL_ELEMENTS.find(e => e.symbol === symbol) || { nameAr: symbol, nameEn: symbol, category: 'nonmetal', number: 1 };
+      const catInfo = CATEGORY_INFO[el.category] || { color: '#38BDF8', nameAr: 'لافلز', nameEn: 'Nonmetal' };
+      const elName = lang === 'ar' ? el.nameAr : el.nameEn;
+      const catName = (TRANSLATIONS[lang] && TRANSLATIONS[lang].categories && TRANSLATIONS[lang].categories[el.category]) || catInfo.nameAr;
+      const qty = this.currentMix[symbol];
+
+      const item = document.createElement('div');
+      item.className = 'beaker-element-item';
+      item.innerHTML = `
+        <div class="beaker-item-info">
+          <span class="beaker-item-symbol" style="color: ${catInfo.color}">${symbol}</span>
+          <div class="beaker-item-text">
+            <span class="beaker-item-name">${elName}</span>
+            <span class="beaker-item-cat">${catName}</span>
+          </div>
+        </div>
+        <div class="beaker-qty-controls">
+          <button class="qty-btn btn-minus" title="Decrease">−</button>
+          <span class="qty-count">${qty}</span>
+          <button class="qty-btn btn-plus" title="Increase">+</button>
+          <button class="qty-btn btn-remove" title="Remove">×</button>
+        </div>
+      `;
+
+      item.querySelector('.btn-minus').addEventListener('click', () => {
+        soundManager.playClick();
+        this.updateQuantity(symbol, -1);
+      });
+      item.querySelector('.btn-plus').addEventListener('click', () => {
+        soundManager.playBubble();
+        this.updateQuantity(symbol, 1);
+      });
+      item.querySelector('.btn-remove').addEventListener('click', () => {
+        soundManager.playClick();
+        this.removeElement(symbol);
+      });
+
+      beakerContainer.appendChild(item);
+    });
+  }
+
+  performReaction() {
+    soundManager.init();
+    const lang = this.getLang();
+    const result = evaluateReaction(this.currentMix);
+
+    const successCard = document.getElementById('lab-result-success');
+    const failCard = document.getElementById('lab-result-fail');
+
+    if (result.success) {
+      const rx = result.reaction;
+      const soundType = rx.soundEffect || rx.visualEffect || 'pop';
+      soundManager.playReactionSound(soundType);
+
+      this.discoveredSet.add(rx.id);
+      this.updateDiscoveredBadge();
+
+      if (this.reactorFX) {
+        this.reactorFX.trigger(rx.visualEffect || 'pop_explosion', rx.color || '#38BDF8');
+      }
+
+      document.getElementById('res-formula').textContent = rx.formula;
+      document.getElementById('res-name-ar').textContent = rx.nameAr;
+      document.getElementById('res-name-en').textContent = rx.nameEn;
+      document.getElementById('res-equation').textContent = rx.equation;
+      document.getElementById('res-type').textContent = lang === 'ar' ? rx.typeAr : 'Exothermic Formation Reaction';
+      document.getElementById('res-state').textContent = lang === 'ar' ? rx.state : 'Gas / Liquid / Solid';
+      document.getElementById('res-temp').textContent = rx.temperature;
+      document.getElementById('res-summary').textContent = rx.summaryAr;
+
+      const appList = document.getElementById('res-applications');
+      if (appList) {
+        appList.innerHTML = (rx.applicationsAr || []).map(a => `<li>${a}</li>`).join('');
+      }
+
+      if (failCard) failCard.classList.add('hidden');
+      if (successCard) {
+        successCard.classList.remove('hidden');
+        successCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      if (this.moleculeVisualizer && rx.molecule) {
+        this.moleculeVisualizer.resize();
+        this.moleculeVisualizer.setMolecule(rx.molecule);
+      }
+    } else {
+      soundManager.playFail();
+
+      let title = result.title;
+      let msg = result.messageAr;
+
+      if (lang === 'en') {
+        if (result.title.includes('فارغ')) {
+          title = 'Workbench is empty!';
+          msg = 'Please drag or add at least two elements into the test beaker to begin chemical reaction.';
+        } else if (result.title.includes('نبيل')) {
+          title = 'No reaction (Inert Noble Gas)';
+          msg = 'Noble gases have a full outer valence shell (octet rule), meaning they do not naturally gain, lose, or share electrons under standard conditions.';
+        } else if (result.title.includes('النسب')) {
+          title = 'Atomic Stoichiometry Mismatch!';
+          msg = 'These elements can react, but the exact atomic ratio is incorrect. Check the recipe book and try again!';
+        } else {
+          title = 'No direct reaction';
+          msg = 'This combination of elements does not form a stable compound under standard STP conditions.';
+        }
+      }
+
+      document.getElementById('fail-title').textContent = title;
+      document.getElementById('fail-message').textContent = msg;
+
+      if (successCard) successCard.classList.add('hidden');
+      if (failCard) {
+        failCard.classList.remove('hidden');
+        failCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }
+
+  hideResultCards() {
+    const successCard = document.getElementById('lab-result-success');
+    const failCard = document.getElementById('lab-result-fail');
+    if (successCard) successCard.classList.add('hidden');
+    if (failCard) failCard.classList.add('hidden');
+  }
+
+  renderRecipeBook() {
+    const container = document.getElementById('recipe-book-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const lang = this.getLang();
+    const tryBtnText = this.t('labTryBtn');
+
+    this.recipes.forEach(rx => {
+      const isDiscovered = this.discoveredSet.has(rx.id);
+      const card = document.createElement('div');
+      card.className = `recipe-item ${isDiscovered ? 'discovered' : ''}`;
+      const name = lang === 'ar' ? rx.nameAr : rx.nameEn;
+
+      card.innerHTML = `
+        <div class="recipe-formula">${rx.formula}</div>
+        <div class="recipe-info">
+          <div class="recipe-name">${name}</div>
+          <div class="recipe-eq">${rx.equation}</div>
+        </div>
+        <button class="recipe-try-btn" title="Synthesize in Lab">${tryBtnText}</button>
+      `;
+
+      card.querySelector('.recipe-try-btn').addEventListener('click', () => {
+        soundManager.playBubble();
+        this.currentMix = { ...rx.reactants };
+        this.renderBeaker();
+        this.performReaction();
+      });
+
+      container.appendChild(card);
+    });
+
+    this.updateDiscoveredBadge();
+  }
+
+  updateDiscoveredBadge() {
+    const badge = document.getElementById('discovered-recipes-count');
+    if (badge) {
+      badge.textContent = `${this.discoveredSet.size} / ${this.recipes.length}`;
+    }
+    document.querySelectorAll('.recipe-item').forEach((card, idx) => {
+      const rx = this.recipes[idx];
+      if (rx && this.discoveredSet.has(rx.id)) {
+        card.classList.add('discovered');
+      }
+    });
+  }
+
+  bindEvents() {
+    const beakerZone = document.getElementById('beaker-dropzone');
+    if (beakerZone) {
+      beakerZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        beakerZone.classList.add('drag-active');
+      });
+      beakerZone.addEventListener('dragleave', () => {
+        beakerZone.classList.remove('drag-active');
+      });
+      beakerZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        beakerZone.classList.remove('drag-active');
+        try {
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          if (data && data.symbol) {
+            soundManager.playBubble();
+            this.addElement(data.symbol);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    }
+
+    const reactBtn = document.getElementById('lab-react-btn');
+    if (reactBtn) {
+      reactBtn.addEventListener('click', () => this.performReaction());
+    }
+
+    const clearBtn = document.getElementById('lab-clear-btn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => this.clearBeaker());
+    }
+  }
+}
+
+
+// --- MODULE SEPARATOR ---
+
+// الملف الرئيسي لتشغيل وتنسيق التطبيق مع دعم اللغتين والثيمات
+// Main Chemistry Application Orchestrator (Multilingual & Theme Toggles)
+
+class ChemistryApp {
+  constructor() {
+    this.currentTab = 'table';
+    this.currentLang = localStorage.getItem('chemlab_lang') || 'en';
+    this.currentTheme = localStorage.getItem('chemlab_theme') || 'dark';
+    this.soundEnabled = true;
+  }
+
+  init() {
+    this.applyTheme(this.currentTheme);
+    this.applyLanguage(this.currentLang, false);
+
+    window.periodicTable = new PeriodicTable();
+    window.chemLab = new ChemistryLab();
+
+    this.bindNavEvents();
+    this.bindQuickShortcuts();
+    this.bindThemeAndLangToggles();
+  }
+
+  // تبديل الثيم بين الليلي والمضيء
+  toggleTheme() {
+    const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+    this.applyTheme(newTheme);
+  }
+
+  applyTheme(theme) {
+    this.currentTheme = theme;
+    localStorage.setItem('chemlab_theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+      const isDark = theme === 'dark';
+      const icon = isDark ? '🌙' : '☀️';
+      const title = this.currentLang === 'ar' ?
+        (isDark ? 'الوضع الليلي (انقر للتبديل للمضيء)' : 'الوضع المضيء (انقر للتبديل لليلي)') :
+        (isDark ? 'Dark Mode (Click for Light Mode)' : 'Light Mode (Click for Dark Mode)');
+      themeBtn.innerHTML = `<span class="icon">${icon}</span>`;
+      themeBtn.setAttribute('title', title);
+    }
+  }
+
+  // تبديل اللغة بين العربية والإنجليزية
+  toggleLanguage() {
+    const newLang = this.currentLang === 'ar' ? 'en' : 'ar';
+    this.applyLanguage(newLang, true);
+  }
+
+  applyLanguage(lang, reRender = true) {
+    this.currentLang = lang;
+    localStorage.setItem('chemlab_lang', lang);
+
+    const isRtl = lang === 'ar';
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+
+    // تحديث نصوص الواجهة
+    this.updateStaticUIText();
+
+    // تحديث زر اللغة (أيقونة فقط)
+    const langBtn = document.getElementById('lang-toggle-btn');
+    if (langBtn) {
+      const title = lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية';
+      langBtn.innerHTML = `<span class="icon">🌐</span>`;
+      langBtn.setAttribute('title', title);
+    }
+
+    // تحديث أزرار الثيم والصوت
+    this.applyTheme(this.currentTheme);
+    this.updateSoundButton();
+
+    if (reRender) {
+      if (window.periodicTable) {
+        window.periodicTable.renderGrid();
+        window.periodicTable.renderCategoryFilters();
+        window.periodicTable.applyFilters();
+      }
+      if (window.chemLab) {
+        window.chemLab.renderElementShelf();
+        window.chemLab.renderBeaker();
+        window.chemLab.renderRecipeBook();
+      }
+    }
+  }
+
+  updateStaticUIText() {
+    const t = TRANSLATIONS[this.currentLang];
+    if (!t) return;
+
+    // العناوين وشريط التنقل
+    const titleEl = document.querySelector('.brand-title');
+    if (titleEl) titleEl.textContent = t.appTitle;
+
+    const tabTableBtn = document.querySelector('[data-tab="table"] span:last-child');
+    if (tabTableBtn) tabTableBtn.textContent = t.tabTable;
+
+    const tabLabBtn = document.querySelector('[data-tab="lab"] span:last-child');
+    if (tabLabBtn) tabLabBtn.textContent = t.tabLab;
+
+    const tabQuizBtn = document.querySelector('[data-tab="quiz"] span:last-child');
+    if (tabQuizBtn) tabQuizBtn.textContent = t.tabQuiz;
+
+    // شريط أدوات الجدول
+    const searchInput = document.getElementById('element-search');
+    if (searchInput) searchInput.placeholder = t.searchPlaceholder;
+
+    const tempLabel = document.querySelector('.temp-label');
+    if (tempLabel) tempLabel.textContent = t.tempLabel;
+
+    const phaseAll = document.querySelector('[data-phase="all"]');
+    if (phaseAll) phaseAll.textContent = t.phaseAll;
+    const phaseSolid = document.querySelector('[data-phase="solid"]');
+    if (phaseSolid) phaseSolid.textContent = t.phaseSolid;
+    const phaseLiquid = document.querySelector('[data-phase="liquid"]');
+    if (phaseLiquid) phaseLiquid.textContent = t.phaseLiquid;
+    const phaseGas = document.querySelector('[data-phase="gas"]');
+    if (phaseGas) phaseGas.textContent = t.phaseGas;
+
+    const lblViewGrid = document.getElementById('lbl-view-grid');
+    if (lblViewGrid) lblViewGrid.textContent = t.viewGrid;
+    const lblViewCards = document.getElementById('lbl-view-cards');
+    if (lblViewCards) lblViewCards.textContent = t.viewCards;
+    const mobileSwipeText = document.getElementById('mobile-swipe-text');
+    if (mobileSwipeText) mobileSwipeText.textContent = t.mobileSwipeHint;
+
+    // لوحة المعمل
+    const shelfTitle = document.getElementById('lab-shelf-title-text');
+    if (shelfTitle) shelfTitle.textContent = t.labShelfTitle;
+    const shelfBadge = document.getElementById('lab-shelf-badge');
+    if (shelfBadge) shelfBadge.textContent = t.labShelfBadge;
+    const shelfDesc = document.getElementById('lab-shelf-desc');
+    if (shelfDesc) shelfDesc.textContent = t.labShelfDesc;
+
+    const recipesTitle = document.getElementById('lab-recipes-title-text');
+    if (recipesTitle) recipesTitle.textContent = t.labRecipesTitle;
+
+    const wbTitle = document.getElementById('lab-wb-title-text');
+    if (wbTitle) wbTitle.textContent = t.labWorkbenchTitle;
+    const wbBadge = document.getElementById('lab-wb-badge');
+    if (wbBadge) wbBadge.textContent = t.labWorkbenchBadge;
+
+    const beakerEmptyTitle = document.getElementById('beaker-empty-title');
+    if (beakerEmptyTitle) beakerEmptyTitle.textContent = t.labBeakerEmptyTitle;
+    const beakerEmptyDesc = document.getElementById('beaker-empty-desc');
+    if (beakerEmptyDesc) beakerEmptyDesc.textContent = t.labBeakerEmptyDesc;
+
+    const reactBtnText = document.getElementById('lab-react-btn-text');
+    if (reactBtnText) reactBtnText.textContent = t.labReactBtn;
+    const clearBtnText = document.getElementById('lab-clear-btn-text');
+    if (clearBtnText) clearBtnText.textContent = t.labClearBtn;
+
+    // بطاقة نتائج المعمل
+    const successBadge = document.getElementById('res-success-badge');
+    if (successBadge) successBadge.textContent = t.labSuccessBadge;
+    const failBadge = document.getElementById('res-fail-badge');
+    if (failBadge) failBadge.textContent = t.labFailBadge;
+
+    const labNatLabel = document.getElementById('res-nat-label');
+    if (labNatLabel) labNatLabel.textContent = t.labNatureLabel;
+    const labStateLabel = document.getElementById('res-state-label');
+    if (labStateLabel) labStateLabel.textContent = t.labStateLabel;
+    const lab3dTitle = document.getElementById('res-3d-title');
+    if (lab3dTitle) lab3dTitle.textContent = t.lab3dTitle;
+    const labEnergyLabel = document.getElementById('res-energy-label');
+    if (labEnergyLabel) labEnergyLabel.textContent = t.labEnergyLabel;
+    const labExpTitle = document.getElementById('res-exp-title');
+    if (labExpTitle) labExpTitle.textContent = t.labExplanationTitle;
+    const labUsesTitle = document.getElementById('res-uses-title');
+    if (labUsesTitle) labUsesTitle.textContent = t.labUsesTitle;
+    const labFailTip = document.getElementById('lab-fail-tip-text');
+    if (labFailTip) labFailTip.textContent = t.labFailTip;
+
+    // نافذة تفاصيل العنصر
+    const modalHint = document.getElementById('modal-bohr-hint');
+    if (modalHint) modalHint.textContent = t.modalBohrHint;
+    const modalLabelNum = document.getElementById('lbl-modal-num');
+    if (modalLabelNum) modalLabelNum.textContent = t.modalLabelNumber;
+    const modalLabelMass = document.getElementById('lbl-modal-mass');
+    if (modalLabelMass) modalLabelMass.textContent = t.modalLabelMass;
+    const modalLabelConfig = document.getElementById('lbl-modal-config');
+    if (modalLabelConfig) modalLabelConfig.textContent = t.modalLabelConfig;
+    const modalLabelPeriod = document.getElementById('lbl-modal-period');
+    if (modalLabelPeriod) modalLabelPeriod.textContent = t.modalLabelPeriodGroup;
+    const modalLabelValence = document.getElementById('lbl-modal-val');
+    if (modalLabelValence) modalLabelValence.textContent = t.modalLabelValence;
+    const modalLabelElectroneg = document.getElementById('lbl-modal-electroneg');
+    if (modalLabelElectroneg) modalLabelElectroneg.textContent = t.modalLabelElectroneg;
+    const modalLabelMelt = document.getElementById('lbl-modal-melt');
+    if (modalLabelMelt) modalLabelMelt.textContent = t.modalLabelMelt;
+    const modalLabelBoil = document.getElementById('lbl-modal-boil');
+    if (modalLabelBoil) modalLabelBoil.textContent = t.modalLabelBoil;
+    const modalLabelDisc = document.getElementById('lbl-modal-disc');
+    if (modalLabelDisc) modalLabelDisc.textContent = t.modalLabelDiscovery;
+
+    const modalSecSum = document.getElementById('modal-sec-sum-title');
+    if (modalSecSum) modalSecSum.textContent = t.modalSecSummary;
+    const modalSecUses = document.getElementById('modal-sec-uses-title');
+    if (modalSecUses) modalSecUses.textContent = t.modalSecUses;
+    const modalAddLabBtnText = document.getElementById('modal-add-lab-text');
+    if (modalAddLabBtnText) modalAddLabBtnText.textContent = t.modalAddToLab;
+  }
+
+  updateSoundButton() {
+    const soundToggle = document.getElementById('sound-toggle-btn');
+    if (soundToggle) {
+      const isMuted = !soundManager.enabled;
+      const icon = isMuted ? '🔇' : '🔊';
+      const t = TRANSLATIONS[this.currentLang];
+      const title = isMuted ? t.soundMuted : t.soundBtn;
+      soundToggle.innerHTML = `<span class="icon">${icon}</span>`;
+      soundToggle.setAttribute('title', title);
+      soundToggle.classList.toggle('muted', isMuted);
+    }
+  }
+
+  switchTab(tabName) {
+    this.currentTab = tabName;
+
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+    });
+
+    document.querySelectorAll('.tab-content-section').forEach(sec => {
+      sec.classList.toggle('hidden', sec.getAttribute('data-section') !== tabName);
+    });
+
+    if (tabName === 'lab') {
+      if (window.chemLab.reactorFX) window.chemLab.reactorFX.resize();
+      if (window.chemLab.moleculeVisualizer) window.chemLab.moleculeVisualizer.resize();
+    }
+  }
+
+  bindNavEvents() {
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundManager.playClick();
+        const tab = btn.getAttribute('data-tab');
+        this.switchTab(tab);
+      });
+    });
+
+    const soundToggle = document.getElementById('sound-toggle-btn');
+    if (soundToggle) {
+      soundToggle.addEventListener('click', () => {
+        soundManager.toggleSound();
+        this.updateSoundButton();
+      });
+    }
+  }
+
+  bindThemeAndLangToggles() {
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        soundManager.playClick();
+        this.toggleTheme();
+      });
+    }
+
+    const langBtn = document.getElementById('lang-toggle-btn');
+    if (langBtn) {
+      langBtn.addEventListener('click', () => {
+        soundManager.playClick();
+        this.toggleLanguage();
+      });
+    }
+  }
+
+  bindQuickShortcuts() {
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('element-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          modal.classList.add('hidden');
+          if (window.periodicTable.atomVisualizer) {
+            window.periodicTable.atomVisualizer.destroy();
+          }
+        }
+      }
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  window.app = new ChemistryApp();
+  window.app.init();
+});
+
+</script>
 </body>
 </html>
