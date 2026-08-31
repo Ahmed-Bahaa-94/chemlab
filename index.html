@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ChemLab | Interactive Periodic Table & Reaction Lab</title>
+  <title>ChemLab | Interactive Periodic Table & Virtual Reaction Lab</title>
   <style>
 /* =========================================================
    مختبر الكيمياء التفاعلي والجدول الدوري (ChemLab Stylesheet)
@@ -1699,7 +1699,6 @@ html[dir="rtl"] .modal-uses-ul {
         <div class="lab-panel">
           <div class="panel-header">
             <h3 class="panel-title"><span>🧰</span> <span id="lab-shelf-title-text">Reactive Elements Shelf</span></h3>
-            <span class="panel-badge" id="lab-shelf-badge">Tap or Drag</span>
           </div>
           
           <p id="lab-shelf-desc" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
@@ -1738,12 +1737,11 @@ html[dir="rtl"] .modal-uses-ul {
           <div class="lab-panel" style="width: 100%;">
             <div class="panel-header">
               <h3 class="panel-title"><span>⚗️</span> <span id="lab-wb-title-text">Reaction Workbench</span></h3>
-              <span class="panel-badge" id="lab-wb-badge">Smart Reactor</span>
             </div>
 
             <!-- Reaction Beaker Dropzone -->
             <div class="beaker-dropzone" id="beaker-dropzone">
-              <!-- Particle FX Canvas -->
+              <!-- Particle & Pouring Tubes Canvas -->
               <canvas class="reactor-canvas" id="reactor-particle-canvas"></canvas>
 
               <!-- Empty State -->
@@ -3498,6 +3496,49 @@ class SoundFX {
     }
   }
 
+  // صوت صب السوائل وتدفقها في أنابيب الاختبار قبل التفاعل
+  playPourSound(duration = 1.1) {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.18;
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(600, now);
+    filter.frequency.linearRampToValueAtTime(1400, now + duration);
+    filter.Q.setValueAtTime(3.5, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.01, now);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.15);
+    gain.gain.setValueAtTime(0.28, now + duration - 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    noise.start(now);
+    noise.stop(now + duration);
+
+    // نغمات قطرات مائية وفقاعات أثناء الصب
+    for (let t = 0.1; t < duration - 0.15; t += 0.2) {
+      setTimeout(() => this.playBubble(), t * 1000);
+    }
+  }
+
   // تشغيل المؤثر المناسب لطبيعة التفاعل
   playReactionSound(soundType) {
     if (!this.enabled) return;
@@ -3570,8 +3611,8 @@ const soundManager = new SoundFX();
 
 // --- MODULE SEPARATOR ---
 
-// محرك الرسوميات التفاعلية (نموذج بور الذري + عارض الجزيئات 3D + محاكي التفاعلات الفيزيائية)
-// Interactive Visualizer Engine (Bohr Atom Model & 3D Molecule & Dynamic Physical FX)
+// محرك الرسوميات التفاعلية (نموذج بور الذري + عارض الجزيئات 3D + محاكي التفاعلات الفيزيائية وأنيميشن صب الأنابيب)
+// Interactive Visualizer Engine (Bohr Atom Model & 3D Molecule & Dynamic Physical Reaction FX & Pouring Test Tubes)
 
 class AtomVisualizer {
   constructor(canvasId) {
@@ -3670,74 +3711,65 @@ class AtomVisualizer {
     const shellStep = (maxRadius - 32) / Math.max(shells.length, 1);
 
     // رسم مدارات الإلكترونات
-    shells.forEach((electronCount, shellIndex) => {
-      const radius = 32 + (shellIndex + 1) * shellStep;
+    shells.forEach((electronCount, shellIdx) => {
+      const radius = 32 + (shellIdx + 1) * shellStep;
 
       this.ctx.beginPath();
       this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-      this.ctx.strokeStyle = isLight ? 'rgba(14, 165, 233, 0.35)' : 'rgba(56, 189, 248, 0.25)';
+      this.ctx.strokeStyle = isLight ? 'rgba(6, 182, 212, 0.35)' : 'rgba(56, 189, 248, 0.3)';
       this.ctx.lineWidth = 1.5;
       this.ctx.setLineDash([4, 4]);
       this.ctx.stroke();
       this.ctx.setLineDash([]);
 
-      const shellNames = ['K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-      this.ctx.fillStyle = isLight ? 'rgba(71, 85, 105, 0.8)' : 'rgba(148, 163, 184, 0.6)';
-      this.ctx.font = '10px Cairo, Inter, sans-serif';
-      this.ctx.fillText(`${shellNames[shellIndex]} (${electronCount}e⁻)`, centerX + radius - 15, centerY - 6);
-
-      const direction = shellIndex % 2 === 0 ? 1 : -1;
-      const speedMultiplier = 1 / Math.sqrt(shellIndex + 1);
+      const dir = shellIdx % 2 === 0 ? 1 : -1;
+      const speedFactor = (1 / (shellIdx + 1.2)) * 1.5;
+      const currentAngle = this.angleOffset * dir * speedFactor;
 
       for (let i = 0; i < electronCount; i++) {
-        const angle = this.angleOffset * direction * speedMultiplier + (i * 2 * Math.PI) / electronCount;
-        const eX = centerX + radius * Math.cos(angle);
-        const eY = centerY + radius * Math.sin(angle);
-
-        const glow = this.ctx.createRadialGradient(eX, eY, 1, eX, eY, 8);
-        glow.addColorStop(0, 'rgba(56, 189, 248, 1)');
-        glow.addColorStop(0.5, 'rgba(6, 182, 212, 0.4)');
-        glow.addColorStop(1, 'rgba(6, 182, 212, 0)');
-        this.ctx.fillStyle = glow;
-        this.ctx.beginPath();
-        this.ctx.arc(eX, eY, 8, 0, Math.PI * 2);
-        this.ctx.fill();
+        const eAngle = currentAngle + (i * (Math.PI * 2 / electronCount));
+        const ex = centerX + radius * Math.cos(eAngle);
+        const ey = centerY + radius * Math.sin(eAngle);
 
         this.ctx.beginPath();
-        this.ctx.arc(eX, eY, 3.5, 0, Math.PI * 2);
-        this.ctx.fillStyle = '#0284C7';
+        this.ctx.arc(ex, ey, 5, 0, Math.PI * 2);
+        this.ctx.fillStyle = '#06B6D4';
         this.ctx.shadowColor = '#06B6D4';
-        this.ctx.shadowBlur = 6;
+        this.ctx.shadowBlur = 10;
         this.ctx.fill();
         this.ctx.shadowBlur = 0;
+
+        this.ctx.beginPath();
+        this.ctx.arc(ex - 1.5, ey - 1.5, 1.8, 0, Math.PI * 2);
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.fill();
       }
     });
 
-    // توهج النواة
-    const nucleusGlow = this.ctx.createRadialGradient(centerX, centerY, 4, centerX, centerY, 30);
-    nucleusGlow.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
-    nucleusGlow.addColorStop(0.6, 'rgba(234, 179, 8, 0.2)');
-    nucleusGlow.addColorStop(1, 'rgba(239, 68, 68, 0)');
-    this.ctx.fillStyle = nucleusGlow;
+    // رسم النواة المركزية
+    this.ctx.save();
+    this.ctx.translate(centerX, centerY);
+
+    const glowGrad = this.ctx.createRadialGradient(0, 0, 2, 0, 0, 26);
+    glowGrad.addColorStop(0, 'rgba(239, 68, 68, 0.6)');
+    glowGrad.addColorStop(0.6, 'rgba(239, 68, 68, 0.2)');
+    glowGrad.addColorStop(1, 'rgba(239, 68, 68, 0)');
+    this.ctx.fillStyle = glowGrad;
     this.ctx.beginPath();
-    this.ctx.arc(centerX, centerY, 30, 0, Math.PI * 2);
+    this.ctx.arc(0, 0, 26, 0, Math.PI * 2);
     this.ctx.fill();
 
     this.nucleusParticles.forEach(p => {
       this.ctx.beginPath();
-      this.ctx.arc(centerX + p.x, centerY + p.y, p.radius, 0, Math.PI * 2);
+      this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
       this.ctx.fillStyle = p.color;
+      this.ctx.shadowColor = p.color;
+      this.ctx.shadowBlur = 4;
       this.ctx.fill();
+      this.ctx.shadowBlur = 0;
     });
 
-    this.ctx.fillStyle = '#FFFFFF';
-    this.ctx.font = 'bold 13px Cairo, Inter, sans-serif';
-    this.ctx.textAlign = 'center';
-    this.ctx.textBaseline = 'middle';
-    this.ctx.shadowColor = 'rgba(0,0,0,0.8)';
-    this.ctx.shadowBlur = 4;
-    this.ctx.fillText(this.element.symbol, centerX, centerY);
-    this.ctx.shadowBlur = 0;
+    this.ctx.restore();
   }
 
   destroy() {
@@ -3749,7 +3781,7 @@ class AtomVisualizer {
 }
 
 // ----------------------------------------------------
-// عارض الجزيئات ثلاثي الأبعاد (Molecule 3D Visualizer)
+// مجسم الجزيء ثلاثي الأبعاد 3D (3D Ball-and-Stick Molecular Visualizer)
 // ----------------------------------------------------
 class MoleculeVisualizer {
   constructor(canvasId) {
@@ -3757,140 +3789,125 @@ class MoleculeVisualizer {
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
     this.molecule = null;
-    this.rotX = 0.3;
-    this.rotY = 0.5;
-    this.autoRotate = true;
+    this.rotX = 0.25;
+    this.rotY = 0.35;
+    this.rotZ = 0;
     this.isDragging = false;
     this.lastMouseX = 0;
     this.lastMouseY = 0;
+    this.autoRotate = true;
     this.animationId = null;
 
     this.resize();
-    this.initControls();
-    window.addEventListener('resize', () => this.resize());
+    this.bindEvents();
+    this.animate();
   }
 
   resize() {
     if (!this.canvas) return;
     const rect = this.canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    this.width = rect.width || 340;
-    this.height = rect.height || 260;
+    this.width = rect.width || 360;
+    this.height = rect.height || 220;
     this.canvas.width = this.width * dpr;
     this.canvas.height = this.height * dpr;
     this.ctx.scale(dpr, dpr);
   }
 
-  initControls() {
-    this.canvas.addEventListener('mousedown', (e) => {
+  setMolecule(moleculeData) {
+    this.molecule = moleculeData;
+    this.rotX = 0.2;
+    this.rotY = 0.4;
+  }
+
+  bindEvents() {
+    if (!this.canvas) return;
+
+    const onStart = (clientX, clientY) => {
       this.isDragging = true;
       this.autoRotate = false;
-      this.lastMouseX = e.clientX;
-      this.lastMouseY = e.clientY;
-    });
+      this.lastMouseX = clientX;
+      this.lastMouseY = clientY;
+    };
 
-    window.addEventListener('mousemove', (e) => {
+    const onMove = (clientX, clientY) => {
       if (!this.isDragging) return;
-      const dx = e.clientX - this.lastMouseX;
-      const dy = e.clientY - this.lastMouseY;
-      this.rotY += dx * 0.015;
-      this.rotX += dy * 0.015;
-      this.lastMouseX = e.clientX;
-      this.lastMouseY = e.clientY;
-    });
+      const dx = clientX - this.lastMouseX;
+      const dy = clientY - this.lastMouseY;
+      this.rotY += dx * 0.01;
+      this.rotX += dy * 0.01;
+      this.lastMouseX = clientX;
+      this.lastMouseY = clientY;
+    };
 
-    window.addEventListener('mouseup', () => {
-      if (this.isDragging) {
-        this.isDragging = false;
-        setTimeout(() => { this.autoRotate = true; }, 2000);
-      }
-    });
+    const onEnd = () => {
+      this.isDragging = false;
+      setTimeout(() => {
+        if (!this.isDragging) this.autoRotate = true;
+      }, 2500);
+    };
+
+    this.canvas.addEventListener('mousedown', (e) => onStart(e.clientX, e.clientY));
+    window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', onEnd);
 
     this.canvas.addEventListener('touchstart', (e) => {
       if (e.touches.length === 1) {
-        this.isDragging = true;
-        this.autoRotate = false;
-        this.lastMouseX = e.touches[0].clientX;
-        this.lastMouseY = e.touches[0].clientY;
+        onStart(e.touches[0].clientX, e.touches[0].clientY);
       }
     }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
-      if (!this.isDragging || e.touches.length !== 1) return;
-      const dx = e.touches[0].clientX - this.lastMouseX;
-      const dy = e.touches[0].clientY - this.lastMouseY;
-      this.rotY += dx * 0.015;
-      this.rotX += dy * 0.015;
-      this.lastMouseX = e.touches[0].clientX;
-      this.lastMouseY = e.touches[0].clientY;
+      if (this.isDragging && e.touches.length === 1) {
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
     }, { passive: true });
 
-    window.addEventListener('touchend', () => {
-      this.isDragging = false;
-      setTimeout(() => { this.autoRotate = true; }, 2000);
-    });
-  }
-
-  setMolecule(moleculeData) {
-    this.molecule = moleculeData;
-    if (!this.animationId) {
-      this.animate();
-    }
+    window.addEventListener('touchend', onEnd);
   }
 
   animate() {
-    if (this.autoRotate) {
-      this.rotY += 0.012;
-      this.rotX += 0.004;
+    if (this.autoRotate && !this.isDragging) {
+      this.rotY += 0.008;
+      this.rotX += 0.003;
     }
     this.draw();
     this.animationId = requestAnimationFrame(() => this.animate());
   }
 
-  project3D(x, y, z) {
-    const cosX = Math.cos(this.rotX);
-    const sinX = Math.sin(this.rotX);
-    let y1 = y * cosX - z * sinX;
-    let z1 = y * sinX + z * cosX;
-
-    const cosY = Math.cos(this.rotY);
-    const sinY = Math.sin(this.rotY);
-    let x2 = x * cosY + z1 * sinY;
-    let z2 = -x * sinY + z1 * cosY;
-
-    const fov = 300;
-    const scale = fov / (fov + z2);
-
-    return {
-      x: this.width / 2 + x2 * scale,
-      y: this.height / 2 + y1 * scale,
-      z: z2,
-      scale: scale
-    };
-  }
-
   draw() {
-    if (!this.ctx || !this.molecule) return;
+    if (!this.ctx || !this.molecule || !this.molecule.atoms) return;
     const { width, height } = this;
+    const centerX = width / 2;
+    const centerY = height / 2;
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
     this.ctx.clearRect(0, 0, width, height);
 
-    const bgGrad = this.ctx.createRadialGradient(width / 2, height / 2, 10, width / 2, height / 2, width / 1.5);
-    if (isLight) {
-      bgGrad.addColorStop(0, 'rgba(248, 250, 252, 0.9)');
-      bgGrad.addColorStop(1, 'rgba(226, 232, 240, 0.95)');
-    } else {
-      bgGrad.addColorStop(0, 'rgba(30, 41, 59, 0.6)');
-      bgGrad.addColorStop(1, 'rgba(15, 23, 42, 0.95)');
-    }
-    this.ctx.fillStyle = bgGrad;
-    this.ctx.fillRect(0, 0, width, height);
+    const cosX = Math.cos(this.rotX), sinX = Math.sin(this.rotX);
+    const cosY = Math.cos(this.rotY), sinY = Math.sin(this.rotY);
 
     const projectedAtoms = this.molecule.atoms.map((atom, idx) => {
-      const proj = this.project3D(atom.x, atom.y, atom.z || 0);
-      return { ...atom, ...proj, originalIndex: idx };
+      let x = atom.x, y = atom.y, z = atom.z || 0;
+      let x1 = x * cosY + z * sinY;
+      let z1 = -x * sinY + z * cosY;
+      let y2 = y * cosX - z1 * sinX;
+      let z2 = y * sinX + z1 * cosX;
+
+      const scale = 180 / (180 + z2);
+      return {
+        id: idx,
+        symbol: atom.symbol,
+        color: atom.color,
+        radius: atom.radius * scale,
+        x: centerX + x1 * scale,
+        y: centerY + y2 * scale,
+        z: z2,
+        scale: scale
+      };
     });
 
+    // رسم الروابط التساهمية
     if (this.molecule.bonds) {
       this.molecule.bonds.forEach(bond => {
         const a1 = projectedAtoms[bond.from];
@@ -3900,54 +3917,39 @@ class MoleculeVisualizer {
         this.ctx.beginPath();
         this.ctx.moveTo(a1.x, a1.y);
         this.ctx.lineTo(a2.x, a2.y);
-        this.ctx.strokeStyle = isLight ? 'rgba(100, 116, 139, 0.6)' : 'rgba(203, 213, 225, 0.7)';
-        this.ctx.lineWidth = bond.order === 2 ? 8 : 5;
+        this.ctx.lineWidth = Math.max(6 * ((a1.scale + a2.scale) / 2), 2);
+        this.ctx.strokeStyle = isLight ? 'rgba(148, 163, 184, 0.9)' : 'rgba(71, 85, 105, 0.95)';
         this.ctx.lineCap = 'round';
         this.ctx.stroke();
-
-        if (bond.order === 2) {
-          this.ctx.beginPath();
-          this.ctx.moveTo(a1.x, a1.y);
-          this.ctx.lineTo(a2.x, a2.y);
-          this.ctx.strokeStyle = isLight ? '#F1F5F9' : 'rgba(15, 23, 42, 0.9)';
-          this.ctx.lineWidth = 2;
-          this.ctx.stroke();
-        }
       });
     }
 
-    const sortedAtoms = [...projectedAtoms].sort((a, b) => a.z - b.z);
+    // ترتيب الذرات حسب العمق (Z-index sorting)
+    projectedAtoms.sort((a, b) => a.z - b.z);
 
-    sortedAtoms.forEach(atom => {
-      const radius = (atom.radius || 20) * atom.scale;
-
-      const sphereGrad = this.ctx.createRadialGradient(
-        atom.x - radius * 0.35,
-        atom.y - radius * 0.35,
-        radius * 0.1,
+    projectedAtoms.forEach(atom => {
+      const grad = this.ctx.createRadialGradient(
+        atom.x - atom.radius * 0.35,
+        atom.y - atom.radius * 0.35,
+        atom.radius * 0.1,
         atom.x,
         atom.y,
-        radius
+        atom.radius
       );
-      sphereGrad.addColorStop(0, '#FFFFFF');
-      sphereGrad.addColorStop(0.3, atom.color || '#3B82F6');
-      sphereGrad.addColorStop(1, isLight ? '#334155' : '#0F172A');
-
-      this.ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-      this.ctx.shadowBlur = 10;
-      this.ctx.shadowOffsetY = 4;
+      grad.addColorStop(0, '#FFFFFF');
+      grad.addColorStop(0.35, atom.color);
+      grad.addColorStop(1, '#0F172A');
 
       this.ctx.beginPath();
-      this.ctx.arc(atom.x, atom.y, Math.max(radius, 4), 0, Math.PI * 2);
-      this.ctx.fillStyle = sphereGrad;
+      this.ctx.arc(atom.x, atom.y, atom.radius, 0, Math.PI * 2);
+      this.ctx.fillStyle = grad;
+      this.ctx.shadowColor = atom.color;
+      this.ctx.shadowBlur = 12;
       this.ctx.fill();
-
-      this.ctx.shadowColor = 'transparent';
       this.ctx.shadowBlur = 0;
-      this.ctx.shadowOffsetY = 0;
 
       this.ctx.fillStyle = '#FFFFFF';
-      this.ctx.font = `bold ${Math.max(Math.round(13 * atom.scale), 9)}px Cairo, Inter, sans-serif`;
+      this.ctx.font = `bold ${Math.max(Math.round(atom.radius * 0.85), 10)}px ${getComputedStyle(document.body).getPropertyValue('--font-mono')}`;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
       this.ctx.shadowColor = 'rgba(0,0,0,0.9)';
@@ -3966,8 +3968,7 @@ class MoleculeVisualizer {
 }
 
 // ----------------------------------------------------
-// محرك مؤثرات التفاعلات الفيزيائية داخل المعمل (Reactor Dynamic FX)
-// يدعم: الفرقعة والانفجار، النار واللهب، المياه والبخار والفقاعات
+// محرك المؤثرات الفيزيائية وصور صب أنابيب الاختبار (Reactor Pouring & Reaction FX)
 // ----------------------------------------------------
 class ReactorFX {
   constructor(canvasId) {
@@ -3977,8 +3978,11 @@ class ReactorFX {
     this.particles = [];
     this.shockwaves = [];
     this.active = false;
-    this.effectType = 'pop_explosion';
-    this.primaryColor = '#06B6D4';
+    this.isPouring = false;
+    this.pourProgress = 0;
+    this.pourColors = ['#06B6D4', '#F59E0B'];
+    this.pourCallback = null;
+
     this.resize();
     window.addEventListener('resize', () => this.resize());
     this.animate();
@@ -3993,6 +3997,57 @@ class ReactorFX {
     this.canvas.width = this.width * dpr;
     this.canvas.height = this.height * dpr;
     this.ctx.scale(dpr, dpr);
+  }
+
+  // بدء حركة صب أنابيب الاختبار
+  animatePouring(reactantColors = ['#38BDF8', '#F97316'], onComplete = null) {
+    this.isPouring = true;
+    this.pourProgress = 0;
+    this.pourColors = reactantColors.length >= 2 ? reactantColors : [reactantColors[0] || '#38BDF8', '#F59E0B'];
+    this.pourCallback = onComplete;
+    this.particles = [];
+    this.shockwaves = [];
+
+    // صوت صب السوائل
+    soundManager.playPourSound(1.1);
+
+    const startTime = performance.now();
+    const duration = 1100; // 1.1 ثانية
+
+    const step = (now) => {
+      const elapsed = now - startTime;
+      this.pourProgress = Math.min(elapsed / duration, 1);
+
+      // قطرات رذاذ وتناثر أثناء صب السوائل
+      if (this.pourProgress > 0.25 && this.pourProgress < 0.95 && Math.random() < 0.6) {
+        const centerX = this.width / 2;
+        const centerY = this.height * 0.72;
+        const color = this.pourColors[Math.random() < 0.5 ? 0 : 1];
+        this.particles.push({
+          x: centerX + (Math.random() - 0.5) * 20,
+          y: centerY,
+          vx: (Math.random() - 0.5) * 5,
+          vy: -(Math.random() * 4 + 2),
+          radius: Math.random() * 4 + 2,
+          color: color,
+          alpha: 0.9,
+          life: 1,
+          decay: 0.035,
+          type: 'droplet'
+        });
+      }
+
+      if (this.pourProgress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        this.isPouring = false;
+        if (this.pourCallback) {
+          this.pourCallback();
+        }
+      }
+    };
+
+    requestAnimationFrame(step);
   }
 
   trigger(effectType = 'pop_explosion', color = '#06B6D4') {
@@ -4081,7 +4136,7 @@ class ReactorFX {
           type: 'smoke'
         });
       }
-    } else if (effectType.includes('water') || effectType.includes('steam') || effectType.includes('splash') || effectType.includes('bubbles')) {
+    } else {
       // فقاعات مياه صاعدة + رذاذ مائي + بخار أبيض ناعم
       const count = 75;
       for (let i = 0; i < count; i++) {
@@ -4101,25 +4156,6 @@ class ReactorFX {
           type: isSteam ? 'steam' : 'droplet'
         });
       }
-    } else {
-      // وميض عام
-      const count = 70;
-      for (let i = 0; i < count; i++) {
-        const speed = Math.random() * 6 + 2;
-        const angle = Math.random() * Math.PI * 2;
-        this.particles.push({
-          x: centerX,
-          y: centerY,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed - 1,
-          radius: Math.random() * 5 + 2,
-          color: color,
-          alpha: 1,
-          life: 1,
-          decay: 0.02,
-          type: 'spark'
-        });
-      }
     }
   }
 
@@ -4132,7 +4168,12 @@ class ReactorFX {
     if (!this.ctx) return;
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    // 1. رسم موجات الصدمة الدائرية
+    // 1. رسم حركة صب أنابيب الاختبار المائلة (Test Tubes Pouring Animation)
+    if (this.isPouring) {
+      this.drawPouringTubes();
+    }
+
+    // 2. رسم موجات الصدمة الانفجارية
     for (let i = this.shockwaves.length - 1; i >= 0; i--) {
       const sw = this.shockwaves[i];
       sw.radius += (sw.maxRadius - sw.radius) * 0.16 + 2;
@@ -4155,12 +4196,7 @@ class ReactorFX {
       this.ctx.restore();
     }
 
-    if (this.particles.length === 0 && this.shockwaves.length === 0) {
-      this.active = false;
-      return;
-    }
-
-    // 2. رسم الجسيمات التفاعلية (لهب / شرر / ماء / بخار)
+    // 3. رسم الجسيمات التفاعلية (لهب / شرر / ماء / بخار)
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
       p.x += p.vx;
@@ -4171,7 +4207,7 @@ class ReactorFX {
         p.vx *= 0.98;
         p.radius *= 0.98;
       } else if (p.type === 'droplet') {
-        p.vy += 0.18; // جاذبية قطرات الماء
+        p.vy += 0.18;
       } else if (p.type === 'steam') {
         p.vy -= 0.03;
         p.radius += 0.15;
@@ -4204,6 +4240,115 @@ class ReactorFX {
       this.ctx.fill();
       this.ctx.restore();
     }
+  }
+
+  // رسم أنابيب الاختبار الزجاجية المائلة وتدفق السوائل
+  drawPouringTubes() {
+    const p = this.pourProgress;
+    const centerX = this.width / 2;
+    const targetY = this.height * 0.72;
+
+    // زاوية الميلان والانزلاق التدريجي
+    const tiltAngle = Math.min(p * 1.6, 1) * 0.78; // ميلان حتى 45 درجة تقريباً
+    const tubeAlpha = p < 0.85 ? Math.min(p * 4, 1) : Math.max((1 - p) * 6.5, 0);
+
+    // أ) الأنبوب الأيسر
+    this.ctx.save();
+    this.ctx.globalAlpha = tubeAlpha;
+    const leftX = centerX - 120 + (p < 0.2 ? (p / 0.2) * 20 : 20);
+    const leftY = 50 + (p < 0.2 ? (p / 0.2) * 15 : 15);
+
+    this.ctx.translate(leftX, leftY);
+    this.ctx.rotate(tiltAngle);
+    this.drawTestTubeGraphic(this.pourColors[0]);
+    this.ctx.restore();
+
+    // ب) الأنبوب الأيمن
+    this.ctx.save();
+    this.ctx.globalAlpha = tubeAlpha;
+    const rightX = centerX + 120 - (p < 0.2 ? (p / 0.2) * 20 : 20);
+    const rightY = 50 + (p < 0.2 ? (p / 0.2) * 15 : 15);
+
+    this.ctx.translate(rightX, rightY);
+    this.ctx.rotate(-tiltAngle);
+    this.ctx.scale(-1, 1);
+    this.drawTestTubeGraphic(this.pourColors[1]);
+    this.ctx.restore();
+
+    // ج) مجرى وتدفق السوائل المنحني المتجه إلى قاع المعمل
+    if (p > 0.2 && p < 0.95) {
+      const streamAlpha = Math.min((p - 0.2) * 4, 1) * (p > 0.8 ? (0.95 - p) * 6.6 : 1);
+      
+      // مجرى السائل الأيسر
+      this.drawLiquidStream(leftX + 25 * Math.cos(tiltAngle), leftY + 25 * Math.sin(tiltAngle) + 15, centerX - 12, targetY, this.pourColors[0], streamAlpha);
+      
+      // مجرى السائل الأيمن
+      this.drawLiquidStream(rightX - 25 * Math.cos(tiltAngle), rightY + 25 * Math.sin(tiltAngle) + 15, centerX + 12, targetY, this.pourColors[1], streamAlpha);
+
+      // بركة السائل وتجمعها في القاع
+      this.ctx.save();
+      this.ctx.globalAlpha = streamAlpha;
+      const poolGrad = this.ctx.createRadialGradient(centerX, targetY, 4, centerX, targetY, 35);
+      poolGrad.addColorStop(0, this.pourColors[0]);
+      poolGrad.addColorStop(0.5, this.pourColors[1]);
+      poolGrad.addColorStop(1, 'rgba(2, 6, 23, 0)');
+      this.ctx.fillStyle = poolGrad;
+      this.ctx.beginPath();
+      this.ctx.ellipse(centerX, targetY, 35 * p, 10 * p, 0, 0, Math.PI * 2);
+      this.ctx.fill();
+      this.ctx.restore();
+    }
+  }
+
+  // رسم أنبوب الاختبار الزجاجي بتفاصيل واقعية
+  drawTestTubeGraphic(liquidColor) {
+    const width = 24;
+    const height = 90;
+
+    // 1. السائل الملون داخل الأنبوب
+    this.ctx.fillStyle = liquidColor;
+    this.ctx.shadowColor = liquidColor;
+    this.ctx.shadowBlur = 10;
+    this.ctx.beginPath();
+    this.ctx.roundRect(-width / 2 + 2, 10, width - 4, height - 15, [0, 0, 10, 10]);
+    this.ctx.fill();
+    this.ctx.shadowBlur = 0;
+
+    // 2. الهيكل الزجاجي لأنبوب الاختبار
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+    this.ctx.lineWidth = 2.5;
+    this.ctx.beginPath();
+    this.ctx.roundRect(-width / 2, 0, width, height, [0, 0, 12, 12]);
+    this.ctx.stroke();
+
+    // 3. شفة / فوهة الأنبوب
+    this.ctx.beginPath();
+    this.ctx.roundRect(-width / 2 - 3, 0, width + 6, 5, 2);
+    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    this.ctx.fill();
+
+    // 4. انعكاس زجاجي براق
+    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    this.ctx.fillRect(-width / 2 + 4, 6, 3, height - 20);
+  }
+
+  // رسم مسار تدفق السائل من فوهة الأنبوب للقاع
+  drawLiquidStream(startX, startY, endX, endY, color, alpha) {
+    this.ctx.save();
+    this.ctx.globalAlpha = alpha;
+    this.ctx.strokeStyle = color;
+    this.ctx.shadowColor = color;
+    this.ctx.shadowBlur = 12;
+    this.ctx.lineWidth = 5;
+    this.ctx.lineCap = 'round';
+
+    this.ctx.beginPath();
+    this.ctx.moveTo(startX, startY);
+    const cpX = (startX + endX) / 2;
+    const cpY = startY + (endY - startY) * 0.4;
+    this.ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+    this.ctx.stroke();
+    this.ctx.restore();
   }
 }
 
@@ -4563,8 +4708,8 @@ class PeriodicTable {
 
 // --- MODULE SEPARATOR ---
 
-// وحدة المعمل الافتراضي ومحرك دمج العناصر (دعم متعدد اللغات)
-// Virtual Chemistry Mixing Lab Controller (Multilingual Support)
+// وحدة المعمل الافتراضي ومحرك دمج العناصر (دعم متعدد اللغات ومؤثرات صب الأنابيب)
+// Virtual Chemistry Mixing Lab Controller (Multilingual, Pouring Animation & Physical Reaction FX)
 
 class ChemistryLab {
   constructor() {
@@ -4574,6 +4719,7 @@ class ChemistryLab {
     this.recipes = REACTIONS;
     this.discoveredCount = 0;
     this.discoveredSet = new Set();
+    this.isReacting = false;
 
     this.commonElements = [
       'H', 'O', 'C', 'N', 'Na', 'Cl', 'Fe', 'Mg', 'Ca', 'S',
@@ -4588,12 +4734,19 @@ class ChemistryLab {
     this.renderRecipeBook();
     this.bindEvents();
 
-    this.reactorFX = new ReactorFX('reactor-fx-canvas');
-    this.moleculeVisualizer = new MoleculeVisualizer('molecule-canvas');
+    const reactorCanvas = document.getElementById('reactor-particle-canvas') || document.getElementById('reactor-fx-canvas');
+    if (reactorCanvas) {
+      this.reactorFX = new ReactorFX(reactorCanvas.id);
+    }
+
+    const molCanvas = document.getElementById('molecule-3d-canvas') || document.getElementById('molecule-canvas');
+    if (molCanvas) {
+      this.moleculeVisualizer = new MoleculeVisualizer(molCanvas.id);
+    }
   }
 
   getLang() {
-    return window.app ? window.app.currentLang : 'ar';
+    return window.app ? window.app.currentLang : 'en';
   }
 
   t(key) {
@@ -4619,7 +4772,7 @@ class ChemistryLab {
       chip.setAttribute('draggable', 'true');
       chip.setAttribute('data-symbol', symbol);
       chip.innerHTML = `
-        <span class="chip-number">${el.number}</span>
+        <span class="chip-number">#${el.number}</span>
         <span class="chip-symbol" style="color: ${catInfo.color}">${el.symbol}</span>
         <span class="chip-name">${elName}</span>
       `;
@@ -4636,17 +4789,21 @@ class ChemistryLab {
       shelf.appendChild(chip);
     });
 
-    const select = document.getElementById('lab-all-elements-select');
+    // ملء القائمة المنسدلة لجميع الـ 118 عنصراً
+    const select = document.getElementById('all-elements-select') || document.getElementById('lab-all-elements-select');
     if (select) {
-      const defaultOptionText = this.t('labSelectOption');
-      select.innerHTML = `<option value="">${defaultOptionText}</option>`;
+      const placeholderText = lang === 'ar' ? '+ أضف عنصراً آخر من الجدول (118)...' : '+ Add another element from table (118)...';
+      select.innerHTML = `<option value="">${placeholderText}</option>`;
+      
       ALL_ELEMENTS.forEach(el => {
         const opt = document.createElement('option');
         opt.value = el.symbol;
         const name = lang === 'ar' ? el.nameAr : el.nameEn;
-        opt.textContent = `${el.number}. ${name} (${el.symbol}) - ${lang === 'ar' ? el.nameEn : el.nameAr}`;
+        const secondary = lang === 'ar' ? el.nameEn : el.nameAr;
+        opt.textContent = `#${el.number} ${el.symbol} - ${name} (${secondary})`;
         select.appendChild(opt);
       });
+
       select.onchange = (e) => {
         if (e.target.value) {
           soundManager.playBubble();
@@ -4706,7 +4863,7 @@ class ChemistryLab {
     }
 
     if (emptyNotice) emptyNotice.style.display = 'none';
-    if (reactBtn) reactBtn.disabled = false;
+    if (reactBtn && !this.isReacting) reactBtn.disabled = false;
 
     symbols.forEach(symbol => {
       const el = ALL_ELEMENTS.find(e => e.symbol === symbol) || { nameAr: symbol, nameEn: symbol, category: 'nonmetal', number: 1 };
@@ -4751,10 +4908,50 @@ class ChemistryLab {
   }
 
   performReaction() {
+    if (this.isReacting) return;
     soundManager.init();
-    const lang = this.getLang();
-    const result = evaluateReaction(this.currentMix);
 
+    const symbols = Object.keys(this.currentMix).filter(s => this.currentMix[s] > 0);
+    if (symbols.length === 0) return;
+
+    this.isReacting = true;
+    const reactBtn = document.getElementById('lab-react-btn');
+    const reactBtnText = document.getElementById('lab-react-btn-text');
+    const lang = this.getLang();
+
+    if (reactBtn) reactBtn.disabled = true;
+    if (reactBtnText) {
+      reactBtnText.textContent = lang === 'ar' ? '🧪 جاري الصب والتفاعل...' : '🧪 Pouring & Reacting...';
+    }
+
+    // استخراج ألوان العناصر المتفاعلة لصب السوائل في الأنابيب
+    const reactantColors = symbols.map(s => {
+      const el = ALL_ELEMENTS.find(e => e.symbol === s);
+      const catInfo = el ? CATEGORY_INFO[el.category] : null;
+      return catInfo ? catInfo.color : '#06B6D4';
+    });
+
+    if (this.reactorFX) {
+      this.reactorFX.animatePouring(reactantColors, () => {
+        this.executeReactionResult();
+      });
+    } else {
+      setTimeout(() => this.executeReactionResult(), 800);
+    }
+  }
+
+  executeReactionResult() {
+    this.isReacting = false;
+    const reactBtn = document.getElementById('lab-react-btn');
+    const reactBtnText = document.getElementById('lab-react-btn-text');
+    const lang = this.getLang();
+
+    if (reactBtn) reactBtn.disabled = false;
+    if (reactBtnText) {
+      reactBtnText.textContent = lang === 'ar' ? 'دمج / بدء التفاعل الكيميائي' : 'Synthesize / React';
+    }
+
+    const result = evaluateReaction(this.currentMix);
     const successCard = document.getElementById('lab-result-success');
     const failCard = document.getElementById('lab-result-fail');
 
@@ -4835,12 +5032,12 @@ class ChemistryLab {
   }
 
   renderRecipeBook() {
-    const container = document.getElementById('recipe-book-list');
+    const container = document.getElementById('recipes-list') || document.getElementById('recipe-book-list');
     if (!container) return;
 
     container.innerHTML = '';
     const lang = this.getLang();
-    const tryBtnText = this.t('labTryBtn');
+    const tryBtnText = lang === 'ar' ? 'تجربة 🧪' : 'Try 🧪';
 
     this.recipes.forEach(rx => {
       const isDiscovered = this.discoveredSet.has(rx.id);
@@ -4871,7 +5068,7 @@ class ChemistryLab {
   }
 
   updateDiscoveredBadge() {
-    const badge = document.getElementById('discovered-recipes-count');
+    const badge = document.getElementById('discovered-count-badge') || document.getElementById('discovered-recipes-count');
     if (badge) {
       badge.textContent = `${this.discoveredSet.size} / ${this.recipes.length}`;
     }
@@ -4884,18 +5081,30 @@ class ChemistryLab {
   }
 
   bindEvents() {
-    const beakerZone = document.getElementById('beaker-dropzone');
-    if (beakerZone) {
-      beakerZone.addEventListener('dragover', (e) => {
+    const reactBtn = document.getElementById('lab-react-btn');
+    if (reactBtn) {
+      reactBtn.addEventListener('click', () => this.performReaction());
+    }
+
+    const clearBtn = document.getElementById('lab-clear-btn');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => this.clearBeaker());
+    }
+
+    const beaker = document.getElementById('beaker-dropzone');
+    if (beaker) {
+      beaker.addEventListener('dragover', (e) => {
         e.preventDefault();
-        beakerZone.classList.add('drag-active');
+        beaker.classList.add('drag-active');
       });
-      beakerZone.addEventListener('dragleave', () => {
-        beakerZone.classList.remove('drag-active');
+
+      beaker.addEventListener('dragleave', () => {
+        beaker.classList.remove('drag-active');
       });
-      beakerZone.addEventListener('drop', (e) => {
+
+      beaker.addEventListener('drop', (e) => {
         e.preventDefault();
-        beakerZone.classList.remove('drag-active');
+        beaker.classList.remove('drag-active');
         try {
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
           if (data && data.symbol) {
@@ -4906,16 +5115,6 @@ class ChemistryLab {
           console.error(err);
         }
       });
-    }
-
-    const reactBtn = document.getElementById('lab-react-btn');
-    if (reactBtn) {
-      reactBtn.addEventListener('click', () => this.performReaction());
-    }
-
-    const clearBtn = document.getElementById('lab-clear-btn');
-    if (clearBtn) {
-      clearBtn.addEventListener('click', () => this.clearBeaker());
     }
   }
 }
